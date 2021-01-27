@@ -1,0 +1,203 @@
+#define HEADER_LENGTH 195
+const String boundary = "wifiOiler-dea88064e2e3320a";
+
+/*************************************************
+ * Check, ob konfigurierter Upload-/Update server 
+ * erreichbar ist.
+ *************************************************/ 
+bool isServerAvailable(void) {
+  String cURL = "http://"+conf.uhn; //+":"+String(conf.uhp);  //TODO: Port must be given!! (test)
+  http.begin(client, cURL);
+  int httpCode = http.GET();
+  http.end();
+  
+  DEBUG_OUT.print(F("[isServerAvailable] GET, URL:"));
+  DEBUG_OUT.println(cURL);
+  IPAddress remoteHostIP;
+  if (WiFi.hostByName(conf.uhn.c_str(), remoteHostIP, 5000))
+  {
+    DEBUG_OUT.print("[isServerAvailable] IP-Adresse von '");
+    DEBUG_OUT.print(conf.uhn.c_str());
+    DEBUG_OUT.print("' ist ");
+    DEBUG_OUT.println(remoteHostIP.toString());
+  }
+  if (httpCode <= 0)
+    DEBUG_OUT.printf("[HTTP] GET() failed, error: %s\n", http.errorToString(httpCode).c_str());
+  return (httpCode==200);
+}
+
+/*************************************************
+ * Ask oilerbase, if specific file exists
+ * Then the uploaded file has arrived safely ;-)
+ * oierbase should return http 200
+ *************************************************/ 
+bool isFileThere(String fname) {
+  http.setUserAgent("wifiOiler");
+  http.begin(client ,"http://"+conf.uhn+"/fileexists.php?filename="+fname);
+  int httpCode = http.GET();
+  DEBUG_OUT.print(F("[isFileThere] httpCode = "));
+  DEBUG_OUT.println(httpCode);
+  http.end();
+  return (httpCode == 200);   // 200, wenn Datei vorhanden
+}
+
+/*************************************************
+ * Post/Upload file to oilerbase
+ * Return true when no error
+ *************************************************/ 
+bool sendFile(String fname) {
+  bool success = false;
+  
+  if (fname.startsWith("/")) fname = fname.substring(1);
+  outFile = _FILESYS.open("/"+fname, "r");
+  if (outFile) {
+    if (client.connect(conf.uhn, conf.uhp)) {
+      DEBUG_OUT.println(F("[sendFile] Starte Übertragung der Datei..."));
+      //sendContent(F("POST /upload.php HTTP/1.1"));
+      client.println("POST " + conf.url + " HTTP/1.1");
+      client.println("Host: " + conf.uhn);
+      client.println(F("User-Agent: wifiOiler/0.1"));    // wird auf Serverseite abgefragt - ggf. dort anpassen
+      client.println(F("Accept: */*"));
+      client.println("Content-Length:" + String(HEADER_LENGTH + outFile.size()+fname.length()));
+      client.println("Content-Type: multipart/form-data; boundary=" + boundary);
+      client.println("\r\n--" +  boundary);
+      client.println("Content-Disposition: form-data; name=\"userfile\"; filename=\"" + fname + "\"");
+      client.println(F("Content-Type: application/octet-stream\r\n"));
+      DEBUG_OUT.println(F("[sendFile] >>> sending file >>>"));
+      client.write(outFile);
+      client.println("\r\n--" + boundary + "--\r\n");
+
+      // don't wait for any response - we check existance with get() Call...
+      // while (client.available()) client.read();
+      client.stop();
+      DEBUG_OUT.println(F("[sendFile] Übertragung beendet"));
+      success = isFileThere(fname);
+      if (success) {
+        // Datei ist angekommen und kann gelöscht werden:
+        _FILESYS.remove("/"+fname);
+      }
+    }
+    else 
+    {
+      DEBUG_OUT.print(F("Fehler beim Öffnen der Verbindung zu: "));
+      DEBUG_OUT.println(conf.uhn);
+    }
+    outFile.close();
+  }
+  else 
+  {
+    DEBUG_OUT.print(F("Fehler beim Öffnen der Datei: "));
+    DEBUG_OUT.println(fname);
+  }
+  return success;
+}
+
+// Meine Messung nach https://stackoverflow.com/questions/8659808/how-does-http-file-upload-work
+// Die gemessene Länge ging nie korrekt bis aufs byte auf - habe den Eindruck, dass das Ende der Datei
+// nur irgendwo innerhalb der boundary landen muss - sonst Fehler.
+//
+// POST / HTTP/1.1
+// Host: localhost:8000
+// User-Agent: curl/7.52.1
+// Accept: */*
+// Content-Length: 230
+// Expect: 100-continue
+// Content-Type: multipart/form-data; boundary=------------------------dea88064e2e3320a
+//
+// Attention: two extra '-':
+// --------------------------dea88064e2e3320a
+// Content-Disposition: form-data; name="userfile"; filename="test.bin"
+// Content-Type: application/octet-stream
+// 
+// aaabbbcccddd
+// eeefffggghhh
+// --------------------------dea88064e2e3320a--
+//
+
+
+
+/***************************************************
+ * Upload von Track files
+ */
+String uploadResponse;  // can't be local
+
+void handleUpload(void)
+{
+  if (webServer.hasArg(F("result")))
+  {
+    webServer.send(200, TEXT_PLAIN, uploadResponse);
+    /* das "-END-" wird per javascript am client abgefragt und ist das Kennzeichen dafür, dass nichts mehr kommt...
+     * gleichzeitig wird der uploadResponse String verkleinert, 
+     * um wieder Speicherplatz freizugeben (falls das überhaupt dann passiert)... */
+    if (uploadResponse.endsWith("-END-")) uploadResponse = "-END-";
+    webServer.handleClient();
+  }
+  else
+  {
+    //erst mal sollte gecheckt werden, ob der Server überhaupt erreichbar ist...
+    uploadResponse = "";
+    if (isServerAvailable())
+    {
+      // Warteseite anzeigen:
+      handleFileRead("/upload.htm");
+      uint32_t wait = millis();
+      // 1s warten und webServer damit Zeit für Aktion zu geben
+      while (wait + 1000 > millis()) webServer.handleClient();
+      
+      uint8_t uploadOK = 0;
+      uint8_t uploadFailed = 0;
+      DEBUG_OUT.println(F("searching track files:"));
+      uploadResponse += F("searching track files...\n"); webServer.handleClient();
+      // Track file names: yyyymmdd-hhmm.dat
+      Dir dir = _FILESYS.openDir("/20");
+      
+      while (dir.next()) {
+        String fname = dir.fileName();
+        DEBUG_OUT.print(fname);
+        #ifdef _SPIFFS_
+          //SPIFFS: beim SPIFFS ist die Länge 18 (nicht 17), da der leitende "/" mitgezählt wird.
+          if (fname.endsWith(".dat") && (fname.length() == 17))  // Track-File (incl. einleitendem "/")
+        #else
+          //LittleFS:
+          if (fname.endsWith(".dat") && (fname.length() == 17))
+        #endif
+        {
+          DEBUG_OUT.print(F(" is a track file - will upload..."));
+          uploadResponse += "...uploading " + fname + "..."; webServer.handleClient();
+          myLedx.on(LED_GRUEN);
+          if (sendFile(fname))
+          {
+            myLedx.start LED_TRACK_UPLOAD_SUCCESS;
+            uploadOK++;
+            DEBUG_OUT.println(F("OK"));
+            uploadResponse += F("OK\n"); webServer.handleClient();
+          }
+          else 
+          {
+            myLedx.start LED_TRACK_UPLOAD_FAILED;
+            uploadFailed++;
+            DEBUG_OUT.println(F("FAILED"));
+            uploadResponse += F("FAILED\n"); webServer.handleClient();
+          }
+          myLedx.delay();
+        }
+        else
+        {
+          DEBUG_OUT.println(F(" is NO track file..."));
+        }
+      }
+      if ((uploadOK + uploadFailed) == 0)
+      {
+        uploadResponse = F("\nKeine Dateien zum Hochladen gefunden\n-END-"); webServer.handleClient();
+      }
+      else
+      {
+        uploadResponse += "\nUpload beendet\nTracks hochgeladen: " + String(uploadOK);
+        uploadResponse += "\nUpload Fehler: "+String(uploadFailed) + "\n-END-";
+        webServer.handleClient();
+        if (uploadOK > 0) checkFilesystemSpace();
+      }
+    }
+    else handleMessage(F("Upload Server not available!"));
+  }
+}
