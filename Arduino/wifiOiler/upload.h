@@ -6,7 +6,7 @@ const String boundary = "wifiOiler-dea88064e2e3320a";
  * erreichbar ist.
  *************************************************/ 
 bool isServerAvailable(void) {
-  String cURL = "http://"+conf.uhn+":"+String(conf.uhp);  //TODO: Port must be given!! (test)
+  String cURL = "http://"+conf.uhn+":"+String(conf.uhp);
   http.begin(client, cURL);
   int httpCode = http.GET();
   http.end();
