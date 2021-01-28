@@ -6,7 +6,7 @@ const String boundary = "wifiOiler-dea88064e2e3320a";
  * erreichbar ist.
  *************************************************/ 
 bool isServerAvailable(void) {
-  String cURL = "http://"+conf.uhn; //+":"+String(conf.uhp);  //TODO: Port must be given!! (test)
+  String cURL = "http://"+conf.uhn+":"+String(conf.uhp);  //TODO: Port must be given!! (test)
   http.begin(client, cURL);
   int httpCode = http.GET();
   http.end();
@@ -16,13 +16,15 @@ bool isServerAvailable(void) {
   IPAddress remoteHostIP;
   if (WiFi.hostByName(conf.uhn.c_str(), remoteHostIP, 5000))
   {
-    DEBUG_OUT.print("[isServerAvailable] IP-Adresse von '");
+    DEBUG_OUT.print(F("[isServerAvailable] IP-Adresse von '"));
     DEBUG_OUT.print(conf.uhn.c_str());
-    DEBUG_OUT.print("' ist ");
+    DEBUG_OUT.print(F("' ist "));
     DEBUG_OUT.println(remoteHostIP.toString());
   }
-  if (httpCode <= 0)
-    DEBUG_OUT.printf("[HTTP] GET() failed, error: %s\n", http.errorToString(httpCode).c_str());
+  if (httpCode <= 0){
+    DEBUG_OUT.print(F("[isServerAvailable] GET() failed, error: "));
+    DEBUG_OUT.println(http.errorToString(httpCode));
+  }
   return (httpCode==200);
 }
 

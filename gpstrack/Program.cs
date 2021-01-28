@@ -53,17 +53,15 @@ namespace gpsTrack
                     }
                     else   // Einzelbehandlung - keine Konnektierung:
                     {
-                        Console.WriteLine("Creating outfilename:");
                         OutFilename = conf.TargetPath + Path.DirectorySeparatorChar + trackFile.OnlyName() + ".gpx";
-                        Console.WriteLine("Outfilename = '{0}'", OutFilename);
-                        //TODO vorhandene Datei könnte überschrieben werden (s. option /o(verwrite)
+                        //Console.WriteLine("Creating file '{0}'", OutFilename);
                     }
                     //-------------------
                     if (OutFilename != oldOutFilename)
                     {
                         // alte Datei schließen, neue öffnen
                         CloseOutFile(outfile);
-                        outfile = OpenOutFile(OutFilename);
+                        outfile = OpenOutFile(OutFilename, conf.ForceOverwrite);
                         oldOutFilename = OutFilename;
                         outFileCounter++;
                     }
@@ -82,9 +80,9 @@ namespace gpsTrack
                             try
                             {
                                 gpsFix fix = new gpsFix(r);
-                                double distance = fix.distanceBetween(oldfix);  //TODO: wird noch nicht ausgewertet - könnte ich aber :-)(-:
-                                // if (distance > 3)   -> Abstand zwischen den Fixpunkten könnte man als Filter einbauen.
-                                if (fix.IsValidTimestamp)   //TODO: hier könnte ich das Datum der Datei nutzen (häh?? was habe ich da gemeint??)
+                                double distance = fix.distanceBetween(oldfix);
+                                //TODO: wenn der Abstand zu groß ist, könnte der Track aufgeteilt werden...
+                                if (fix.IsValidTimestamp)
                                     outfile.WriteLine(fix.getGPXstring());
                                 oldfix = fix;
                             }
@@ -129,11 +127,19 @@ namespace gpsTrack
             }
         }
 
-        static StreamWriter OpenOutFile(String outfilename)
+        static StreamWriter OpenOutFile(String outfilename, bool overwrite)
         {
-            StreamWriter result = new StreamWriter(outfilename, false);
-            writeXMLHeader(result);
-            return result;
+            
+            if (File.Exists(outfilename) && !overwrite)
+            {
+                throw new IOException("FEHLER: Datei '"+outfilename+"' existiert bereits und Option /o(verwrite) war nicht angegeben!");
+            }
+            else
+            {
+                StreamWriter result = new StreamWriter(outfilename, false);
+                writeXMLHeader(result);
+                return result;
+            }
         }
 
         static void CloseOutFile(StreamWriter sw)
@@ -152,7 +158,7 @@ namespace gpsTrack
             fout.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>");
             fout.WriteLine("<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" version=\"1.1\" creator=\"Wikipedia\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
             fout.WriteLine("    xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">");
-            fout.WriteLine("<metadata><desc>GPX-Track created from myOiler data</desc></metadata>");
+            fout.WriteLine("<metadata><desc>GPX-Track created with wifiOiler data</desc></metadata>");
             fout.WriteLine("<trk><name>Trackname1</name><desc>Trackbeschreibung</desc><trkseg>");
         }
 

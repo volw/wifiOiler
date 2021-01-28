@@ -34,15 +34,15 @@ namespace gpsTrack
             "Hinweise:",
             " - ist die Quelle eine Datei und es wurde keine Ausgabedatei angegeben, so wird eine Datei",
             "   mit dem Namen der Quelldatei und der Endung .gpx angelegt. Existiert bereits eine",
-            "   Datei mit diesem Namen, wird sie nicht überschrieben, außer es wurde die Option /f",
+            "   Datei mit diesem Namen, wird sie nicht überschrieben, außer es wurde die Option /o",
             "   angegeben.",
             " - ist die Quelle eine Datei und als Ziel wurde ein Verzeichnis angegeben, wird dort eine",
             "   Datei mit dem Namen der Quelldatei und der Endung .gpx angelegt. Existiert dort bereits eine",
-            "   Datei mit diesem Namen, wird sie nicht überschrieben, außer es wurde die Option /f",
+            "   Datei mit diesem Namen, wird sie nicht überschrieben, außer es wurde die Option /o",
             "   angegeben.",
             " - ist die Quelle ein Verzeichnis und es wurde kein Zielverzeichnis angegeben, werden/wird",
             "   die Zieldatei(en) im Quellverzeichnis mit der/den Endung(en) .gpx angelegt. Bereits",
-            "   existierende Dateien werden nicht überschrieben, außer es wurde die Option /f angegeben.",
+            "   existierende Dateien werden nicht überschrieben, außer es wurde die Option /o angegeben.",
             " - /d(aily): mehrere Dateien eines Tages werden in einer Track-Datei zusammengefasst.",
             "             Der Name der Zieldatei wird aus dem Tagesdatum gebildet.",
             " - /r(ename): Quelldateien, die als Datum sechs Nullen zeigen, werden entsprechend umbenannt,",
@@ -58,24 +58,22 @@ namespace gpsTrack
         public bool IsValid = false;
         public bool Rename = false;
         public List<BinaryTrackFile> SourceFiles;
-        //public BinaryTrackFile[] SourceFiles = { };
 
         public Configuration(string[] args)
         {
-            if (args.Length < 1 || args.Length > 5)
+            if (args.Length == 1 && args[0] == "/?")
+            {
+                PrintUsage("");
+                return;
+            }
+            if (args.Length > 5)
             {
                 PrintUsage("Fehler: Falsche Anzahl Parameter.");
                 return;
             }
             for (int i = 0; i < args.Length; i++)
             {
-                //if (args[i].Equals("/d") || args[i].Equals("/daily")) DailyConnect = true;
-                //else if (args[i].Equals("/o") || args[i].Equals("/overwrite")) ForceOverwrite = true;
-                //else if (args[i].Equals("/r") || args[i].Equals("/rename")) Rename = true;
-                //else if (args[i].StartsWith("/"))
-
-
-                Console.WriteLine("Argument {0} = {1}", i, args[i]);
+                //Console.WriteLine("Argument {0} = {1}", i, args[i]);
                 // mit folgender Abfrage ist "/d", "/daily" und jede Zwischenform möglich (also auch "/dai" und "/dail", etc.)
                 if (args[i].StartsWith("/d", StringComparison.OrdinalIgnoreCase) && "/daily".StartsWith(args[i], StringComparison.OrdinalIgnoreCase))
                     DailyConnect = true;
@@ -91,18 +89,13 @@ namespace gpsTrack
                 else if (String.IsNullOrEmpty(SourcePath)) SourcePath = args[i];
                 else TargetPath = args[i];
             }
-            if (String.IsNullOrEmpty(SourcePath))
-            {
-                PrintUsage("Fehler: Quelldatei(en) oder -verzeichnis wurde nicht angegeben.");
-                return;
-            }
 
+            if (String.IsNullOrEmpty(SourcePath)) SourcePath = ".";
+            if (Directory.Exists(SourcePath)) SourcePath = Path.GetFullPath(SourcePath) + "\\*.dat";
             // Eingabedatei(en) lesen:
             String path = Path.GetDirectoryName(SourcePath);
             if (String.IsNullOrWhiteSpace(path)) path = ".";
             path = Path.GetFullPath(path);
-
-            //String pattern = Path.GetFileName(SourcePath);
 
             DirectoryInfo di = new DirectoryInfo(path);
             FileInfo[] filelist = di.GetFiles(Path.GetFileName(SourcePath));
@@ -115,7 +108,6 @@ namespace gpsTrack
             // wenn Ziel nicht angegeben, nutzen wir als Ausgabeverzeichnis das Quellverz.
             if (String.IsNullOrEmpty(TargetPath))
             {
-                //TargetPath = Path.GetDirectoryName(SourcePath);
                 TargetPath = path;
             }
             if (Directory.Exists(TargetPath))
@@ -135,14 +127,10 @@ namespace gpsTrack
                 BinaryTrackFile btFile = new BinaryTrackFile(fi);
                 if (btFile.IsValid)
                     SourceFiles.Add(btFile);
-                //SourceFiles.Append(new BinaryTrackFile(fi));
             }
 
             // aufsteigend sortieren (nach 1. Fixpunkt der Trackdatei (= Name der Datei)):
             SourceFiles.Sort((f1, f2) => f1.Startzeit.CompareTo(f2.Startzeit));
-            //Array.Sort(SourceFiles, (f1, f2) => f1.Startzeit.CompareTo(f2.Startzeit));
-
-
 
             // da bis hier ja alles gut gegangen ist...
             IsValid = true;

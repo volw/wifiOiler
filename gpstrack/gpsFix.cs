@@ -65,6 +65,7 @@ namespace gpsTrack
             catch (Exception)
             {
                 this.datum = 0;
+                //TODO: wenn mehrere Fehler in Folge auftreten, wird u.U. eine falsche Datei (ein falsches Format) ausgewertet.
             }
         }
 
@@ -121,16 +122,12 @@ namespace gpsTrack
              */
 
             StringBuilder sb = new StringBuilder();
-            //sb.AppendFormat("<trkpt lat=\"{0:0.000000}\" lon=\"{1:0.000000}\">", this.loclat, this.loclng);
-            //sb.AppendFormat("<trkpt lat=\"{0}\" lon=\"{1}\">", this.loclat.ToString(Culture, "{0.000000}"), this.loclng.ToString(Culture));
-            //sb.AppendFormat("<trkpt lat=\"{0}\" lon=\"{1}\">", this.loclat.ToString("0.00000", Culture), this.loclng.ToString("0.00000", Culture));
-
             sb.AppendFormat("<trkpt lat=\"{0}\" lon=\"{1}\">", Math.Round(this.loclat, 6).ToString(Culture), Math.Round(this.loclng, 6).ToString(Culture));
             sb.AppendFormat("<ele>{0}</ele>", this.alt.ToString(Culture));
             sb.AppendFormat("<hdop>{0}</hdop>", this.hdop.ToString(Culture));
 
             String sDate = this.datum.ToString();
-            // use Calendar.ToFourDigitYear(Int32) - not "20"
+            //TODO: use Calendar.ToFourDigitYear(Int32) - not "20"
             sDate = "20" + sDate.Substring(sDate.Length - 2) + '-'
                  + sDate.Substring(sDate.Length - 4, 2) + '-'
                  + sDate.Substring(0, sDate.Length - 4);

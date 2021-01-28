@@ -1,20 +1,26 @@
 # Oilerbase
 Die sogenannte Oilerbase ist ein Raspberry Pi mit einem Apache Web-Server, der zwei Funktionen zur Verfügung stellt.
-- Aufgezeichnete Tracks können (wenn man länger unterwegs ist) unterwegs hochgeladen werden, um Speicherplatz auf dem Öler freizugeben.
+- Vom Öler aufgezeichnete Fahrstrecken (Tracks) können per Knopfdruck hochgeladen werden, um Speicherplatz auf dem Öler freizugeben. Bei intensiver Nutzung sollte man das alle 1-2 Wochen machen - es können aber mehr als 40 Stunden Fahrzeit aufgezeichnet werden, ohne die Tracks hochzuladen. Ist der Speicherplatz erschöpft, wird die Aufzeichnungsfunktion automatisch deaktiviert.
 
 - Außerdem können auf der Oilerbase Updates bereitgestellt werden, die mit der integrierten Update-Funktion des Ölers heruntergeladen und eingespielt werden können.
+
+  
+
+[TOC]
+
+### Benötigtes Zubehör
 
 Folgende Dinge werden benötigt, um eine Oilerbase aufzubauen und zu betreiben:
 
 - 1 Raspberry Pi, (z.B. ein RPi 3 Modell B+) plus passendes Netzteil.
 - eine MicroSD Card, Empfehlung: 16GB.
-- eine öffentliche IP-Adresse oder ein DynIP Dienstleister (Dynamic DNS Service). Eine Beispielkonfiguration findet man weiter unten.
+- möchte man die Oilerbase nutzen, wenn man länger auf Tour ist, ist eine öffentliche IP-Adresse oder ein DynDNS Dienstleister (Dynamic DNS Service) erforderlich. Hinweise zur Einrichtung findet man weiter unten. Sind der Öler und die Oilerbase gewöhnlich im gleichen Netz eingebucht, kann dieser Schritt ausgelassen werden. 
 
 Um mit dem Öler zu kommunizieren, wurden einige PHP Scripte erstellt, die hier zu finden sind. Die Funktionen auf dem Öler und die Scripte auf dem Web-Server sind eng miteinander verzahnt.  Z.B. ziehen Änderungen an den Öler Funktionen sehr wahrscheinlich Änderungen an den Skripten nach sich und umgekehrt.
 
 Die Konfiguration der Oilerbase ist recht einfach - im Grunde werden nur Standardfunktionen genutzt. Nachfolgend die einzelnen Schritte, um einen Rasberry Pi (z.B. das Modell Raspberry Pi 3 Modell B+) in Betrieb zu nehmen.
 
-### Betriebssystem
+### Betriebssystem installieren
 
 - Download eines Betriebssystem-Image, **Raspberry Pi OS Lite** reicht. Am besten von der Heimatseite https://www.raspberrypi.org/software/operating-systems
 - Schreiben des Images auf die MicroSD Karte (z.B. mit [balenaEtcher](https://www.balena.io/etcher/) oder [Win32 Disk Imager](https://sourceforge.net/projects/win32diskimager/))
@@ -103,123 +109,142 @@ Die Konfiguration der Oilerbase ist recht einfach - im Grunde werden nur Standar
   ```
 
   
-### Apache Web Server    
+### Apache Web Server installieren
 
-* Jetzt installieren wir den Apache Web-Server:
+##### Installation des Apache Web-Servers
 
-  `sudo apt install apache2`
+`sudo apt install apache2`
 
-  Nach erfolgreicher Installation kann man schon die Standardseite des Webservers aufrufen. Hier den oben gewählten Hostnamen nutzen, z.B.
+Nach erfolgreicher Installation kann man schon die Standardseite des Webservers aufrufen. Hier den oben gewählten Hostnamen nutzen, z.B.
 
-  `http://oilerbase`
+`http://oilerbase`
 
-* Apache Web Server sicherer machen:
+##### Apache Web Server absichern
 
-  `sudo nano /etc/apache2/apache2.conf`
+`sudo nano /etc/apache2/apache2.conf`
 
-  Dort folgende Änderungen vornehmen. Sind die Schlüsselwörter schon vorhanden, dort ändern oder wenn sie nicht existieren, am Ende der Datei hinzufügen. Der Servername kann frei gewählt werden:
+Dort folgende Änderungen vornehmen. Sind die Schlüsselwörter schon vorhanden, dort ändern oder wenn sie nicht existieren, am Ende der Datei hinzufügen. Der Servername kann frei gewählt werden:
 
-  ```
-  # Keine Details zum Server anzeigen
-  ServerSignature Off
-  ServerTokens Prod
-  ServerName oilerbase
-  ```
+```
+# Keine Details zum Server anzeigen
+ServerSignature Off
+ServerTokens Prod
+ServerName oilerbase
+```
 
-  Folgenden Abschnitt löschen, da wir das Verzeichnis /usr/share nicht verwenden:
+Folgenden Abschnitt löschen, da wir das Verzeichnis /usr/share nicht verwenden:
 
-  ```
-  <Directory /usr/share>
-      AllowOverride None
-      Require all granted
-  </Directory>
-  ```
+```
+<Directory /usr/share>
+    AllowOverride None
+    Require all granted
+</Directory>
+```
 
-  Folgenden Abschnitt ändern. Wichtig sind die Minuszeichen vor den Optionen. "-Indexes" verhindert z.B. die automatische Anzeige von Verzeichnislisten, wenn im angewählten Ordner keine "index.html" Datei gefunden wird. "FollowSymLinks" schließen wir aus, da wir keine Links verwenden. Wir könnten auch die ganze Zeile ersetzen mit: `Options none`. Allerdings ist es oft sinnvoll, bestimmte Optionen bewusst auszuschließen (z.B. wenn sie beim übergeordneten Verzeichnis erlaubt wurden):
+Folgenden Abschnitt ändern. Wichtig sind die Minuszeichen vor den Optionen. "-Indexes" verhindert z.B. die automatische Anzeige von Verzeichnislisten, wenn im angewählten Ordner keine "index.html" Datei gefunden wird. "FollowSymLinks" schließen wir aus, da wir keine Links verwenden. Wir könnten auch die ganze Zeile ersetzen mit: `Options none`. Allerdings ist es oft sinnvoll, bestimmte Optionen bewusst auszuschließen (z.B. wenn sie beim übergeordneten Verzeichnis erlaubt wurden):
 
-  ```
-  <Directory /var/www/>
-      Options -Indexes -FollowSymLinks
-      AllowOverride None
-      Require all granted
-  </Directory>
-  ```
+```
+<Directory /var/www/>
+    Options -Indexes -FollowSymLinks
+    AllowOverride None
+    Require all granted
+</Directory>
+```
 
-  Datei speichern und Editor verlassen. 
+Datei speichern und Editor verlassen. 
 
-  Die apache Konfiguration kann mit folgendem Befehl geprüft werden:
+Die Apache Konfiguration kann mit folgendem Befehl geprüft werden:
 
-  `sudo apachectl configtest`
+`sudo apachectl configtest`
 
-  Als nächstes bauen wir die Verzeichnisstruktur für unseren Webserver auf:
+##### Verzeichnisstruktur einrichten
 
-  ```
-  sudo rm /var/www/* -R
-  sudo mkdir /var/www/html
-  sudo mkdir /var/www/update
-  sudo mkdir /var/www/update/WemosMini
-  sudo mkdir /var/www/uploads
-  sudo chmod 755 /var/www -R
-  sudo chmod 757 /var/www/uploads
-  ```
+Als nächstes bauen wir die Verzeichnisstruktur für unseren Webserver auf:
 
-* Um einfacher auf die Dateien zugreifen zu können, installieren wir noch Samba. Außerdem benötigen wir PHP für den Web-Server (bzw. die Scripte hier im Verzeichnis):
+```
+sudo rm /var/www/* -R
+sudo mkdir /var/www/html
+sudo mkdir /var/www/update
+sudo mkdir /var/www/update/WemosMini
+sudo mkdir /var/www/uploads
+sudo chmod 755 /var/www -R
+sudo chmod 757 /var/www/uploads
+```
 
-  `sudo apt install php samba`
+### Installation von Samba
 
-  Samba muss konfiguriert werden:
+Um einfacher auf die Dateien zugreifen zu können, installieren wir noch Samba. Außerdem benötigen wir PHP für den Web-Server (bzw. die Scripte hier im Verzeichnis):
 
-  `sudo nano /etc/samba/smb.conf`
+`sudo apt install php samba`
 
-  In dieser Datei werden am Ende einige Zeilen hinzugefügt, um das Verzeichnis des Webservers 'zugänglich' zu machen:
+Samba muss konfiguriert werden:
 
-  ```
-  [oilerweb]
-    path=/var/www
-    read only = no
-  ```
+`sudo nano /etc/samba/smb.conf`
 
-  Editor beenden und mit folgendem Befehl ein Passwort für die Freigabe setzen. Dieses Passwort wird benötigt, um das Verzeichnis unter Windows einzubinden (zu mounten):
+In dieser Datei werden am Ende einige Zeilen hinzugefügt, um das Verzeichnis des Webservers 'zugänglich' zu machen:
 
-  `smbpasswd -a root` (und zweimal Passwort eingeben)
+```
+[oilerweb]
+  path=/var/www
+  read only = no
+```
 
-  Danach dann unter Windows (in einer Eingabeaufforderung oder Konsole) mit dem oben gewählten Passwort (entsprechend ändern):
+Editor beenden und mit folgendem Befehl ein Passwort für die Freigabe setzen. Dieses Passwort wird benötigt, um das Verzeichnis unter Windows einzubinden (zu mounten):
 
-  `net use * \\oilerbase\oilerweb passwort /user:root /persistent:yes`
+`smbpasswd -a root` (und zweimal Passwort eingeben)
 
-  Die Ausgabe sollte so oder ähnlich lauten:
+##### Verzeichnis unter Windows einbinden
 
-  > ```
-  > Laufwerk Z: ist jetzt mit \\oilerbase\oilerweb verbunden.
-  > 
-  > Der Befehl wurde erfolgreich ausgeführt.
-  > ```
+Danach dann unter Windows (in einer Eingabeaufforderung oder Konsole) mit dem oben gewählten Passwort (entsprechend ändern):
 
-* nun können wir in das Verzeichnis die hier aufgelisteten Dateien in das entsprechende Verzeichnis kopieren (in diesem Fall Z:\html). 
+`net use * \\oilerbase\oilerweb passwort /user:root /persistent:yes`
 
-  Wenn Z: im weiteren Verlauf verwendet wird, steht es beispielhaft für den Laufwerksbuchstaben, der beim net use Befehl (s.o.) zugewiesen wurde.
+Die Ausgabe sollte so oder ähnlich lauten:
 
-* Und nun der erste Test: Browser starten und Adresse der Oilerbase eingeben:
+> ```
+> Laufwerk Z: ist jetzt mit \\oilerbase\oilerweb verbunden.
+> 
+> Der Befehl wurde erfolgreich ausgeführt.
+> ```
 
-* `http://oilerbase` oder `http://oilerbase.fritz.box`(sollte auch gehen, wenn eine Fritz.box im Einsatz ist). Als Ergebnis wird ein einfaches OK oben links auf einer leeren Seite angezeigt.
+nun können wir die hier aufgelisteten Dateien in das entsprechende Verzeichnis kopieren (nach unserem Beispiel Z:\html). 
 
-* Um den Öler zu testen (wenn dieser schon betriebsbereit und konfiguriert ist) können folgende Aktionen durchgeführt werden:
+Wenn Z: im weiteren Verlauf verwendet wird, steht es beispielhaft für den Laufwerksbuchstaben, der beim net use Befehl (s.o.) zugewiesen wurde.
 
-  * Test der "Update Oiler" Funktion: Ordner im Update Verzeichnis anlegen, der eine höhere Versionsnummer hat, als der Öler. Also z.B. Z:\update\WemosMini\4.9.999
+Und nun der erste Test: Browser starten und Adresse der Oilerbase eingeben:
 
-    Ein/zwei kleinere Dateien in diesen Ordner kopieren (ist eigentlich egal, sollte aber nicht den bestehenden Dateien auf dem Öler namentlich in die Quere kommen). Also z.B. "test.txt" oder "beispiel.dat".
+http://oilerbase` oder `http://oilerbase.fritz.box`(sollte auch gehen, wenn eine Fritz.box im Einsatz ist). Als Ergebnis wird ein einfaches OK oben links auf einer leeren Seite angezeigt.
 
-    Dann die Update Funktion des Ölers aufrufen. Die Dateien sollten ohne Fehlermeldung transferiert werden. Ist dies der Fall, dann die Dateien über den File Browser des Ölers wieder löschen (sie stören eigentlich nicht, nehmen aber Platz weg).
+### Öler testen
 
-    Im Falle eines Fehlers sollten die Logs des Webservers überprüft werden. Man findet sie normalerweise in /var/log/apache2. Zusätzlich kann die Ausgabe des Ölers helfen. Dazu im Öler ggf. die Funktion "Logging to file?" anschalten (s. Konfiguration) und die Aktion wiederholen. Danach findet man im File Browser die Datei "myLogger.txt" und ein Klick darauf zeigt den Inhalt im Editor Fenster an. ACHTUNG: nicht vergessen, die "Logging to file" Option wieder auszuschalten!
-    
-  * Test der "Upload Tracks" Funktion: im File Browser des Ölers zwei Dateien erzeugen mit Namensmuster der Track Dateien (z.B. "20210614-1523.dat" und "20210615-1245.dat", Namen in das Eingabefeld eintragen, dann "New file" drücken). Nun im Hauptmenü die Funktion "Upload Tracks" wählen.
-  
-    
+Um den Öler zu testen (wenn dieser schon betriebsbereit und konfiguriert ist) können folgende Aktionen durchgeführt werden:
+
+**Test der "Update Oiler" Funktion**: Ordner im Update Verzeichnis anlegen, der eine höhere Versionsnummer hat, als der Öler. Also z.B. Z:\update\WemosMini\4.9.999
+
+Ein/zwei kleinere Dateien in diesen Ordner kopieren (ist eigentlich egal, sollte aber nicht den bestehenden Dateien auf dem Öler namentlich in die Quere kommen). Also z.B. "test.txt" oder "beispiel.dat".
+
+Dann die Update Funktion des Ölers aufrufen. Die Dateien sollten ohne Fehlermeldung transferiert werden. Ist dies der Fall, dann die Dateien über den File Browser des Ölers wieder löschen (sie stören eigentlich nicht, nehmen aber Platz weg).
+
+Im Falle eines Fehlers sollten die Logs des Webservers überprüft werden. Man findet sie normalerweise in /var/log/apache2. Zusätzlich kann die Ausgabe des Ölers helfen. Dazu im Öler ggf. die Funktion "Logging to file?" anschalten (s. Konfiguration) und die Aktion wiederholen. Danach findet man im File Browser die Datei "myLogger.txt" und ein Klick darauf zeigt den Inhalt im Editor Fenster an. ACHTUNG: nicht vergessen, die "Logging to file" Option wieder auszuschalten!
+
+**Test der "Upload Tracks" Funktion**: im File Browser des Ölers zwei Dateien erzeugen mit Namensmuster der Track Dateien (z.B. "/20210614-1523.dat" und "/20210615-1245.dat"). Dazu den Namen in das Eingabefeld eintragen, dann "New file" drücken, etwas in das Editorfenster eintragen und "Save" drücken). Nun im Hauptmenü die Funktion "Upload Tracks" wählen.
+
+### Oilerbase veröffentlichen
+
+"Veröffentlichen" hört sich etwas hochtrabend an, gemeint ist damit die Bereitstellung der Oilerbase im großen, weiten Internet, damit der Öler von unterwegs darauf zugreifen kann. Dazu benötigt die Oilerbase eine eindeutige IP-Adresse, damit sie eindeutig identifiziert werden kann. Da fest zugewiesene IP Adressen knapp sind und man als Otto Normalverbraucher auch keine gebucht hat (ja, das kostet Geld), kann man einen sogenannten DynDNS Service in Anspruch nehmen (der durchaus kostenlos nutzbar ist). Dieser Service bekommt von unserem "Internet Router", der von unserem Provider täglich mit einer anderen IP-Adresse versorgt wird, diese IP-Adresse jedes Mal nach Änderung mitgeteilt. So kann er immer die richtige IP-Adresse rausgeben, wenn er im Internet danach gefragt wird. Der so gefundene Internet Router leitet die Anfrage des Ölers dann weiter an die Oilerbase und schon haben sich beide gefunden...
+
+Wie dieses DynDNS nun auf dem eigenen Internet Router eingerichtet wird, ist vom Hersteller abhängig. 
+
+Sie ähneln sich aber in den meisten Fällen darin, dass entweder ein DynDNS Anbieter aus einer Liste ausgewählt wird oder eine Update URL angegeben werden muss. Dazu werden noch die Anmeldedaten eingegeben, die man zur Erstellung eines Kontos beim Anbieter verwendet hat. Fertig.
+
+Beim jeweiligen Hersteller des eigenen Routers sollte eine Beschreibung zur Einrichtung eines DynDNS Dienstes zu finden sein. Manche Router Hersteller bieten sogar selber einen kostenlosen DynDNS Service für ihre Kunden an. Ansonsten findet man diese Dienste im Internet, wenn man z.B. nach "DynDNS kostenlos" sucht. Bei dem von mir anfangs gewählten Anbieter musste einmal im Monat (Erinnerung per E-Mail) die freie Nutzung bestätigt/verlängert werden (dafür gab's coole Domain Namen).
+
+
+
+
 
 weiteres:
 
-- check der apache konfig: "sudo apachectl configtest"
 - apache version: "sudo apache2 -v"
 - DynIP Konfiguration
 - 
