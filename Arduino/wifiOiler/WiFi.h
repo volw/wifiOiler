@@ -108,6 +108,7 @@ bool setupWiFi(void) {
       DEBUG_OUT.print(F("My IP address: "));
       DEBUG_OUT.println(WiFi.softAPIP());
       myDisplay.PrintWlanState(WIFI_ACCESSPOINT);
+      connected = true;
     }
     else 
     {

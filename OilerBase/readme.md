@@ -147,7 +147,11 @@ Die Konfiguration der Oilerbase ist recht einfach - im Grunde werden nur Standar
 
   Datei speichern und Editor verlassen. 
 
-  Folgende Befehle eingeben, um einige Verzeichnisse vorzubereiten:
+  Die apache Konfiguration kann mit folgendem Befehl geprüft werden:
+
+  `sudo apachectl configtest`
+
+  Als nächstes bauen wir die Verzeichnisstruktur für unseren Webserver auf:
 
   ```
   sudo rm /var/www/* -R
@@ -201,15 +205,17 @@ Die Konfiguration der Oilerbase ist recht einfach - im Grunde werden nur Standar
 
 * Um den Öler zu testen (wenn dieser schon betriebsbereit und konfiguriert ist) können folgende Aktionen durchgeführt werden:
 
-  * Update-Funktion: Ordner im Update Verzeichnis anlegen, der eine höhere Versionsnummer hat, als der Öler. Also z.B. Z:\update\WemosMini\4.9.999
+  * Test der "Update Oiler" Funktion: Ordner im Update Verzeichnis anlegen, der eine höhere Versionsnummer hat, als der Öler. Also z.B. Z:\update\WemosMini\4.9.999
 
     Ein/zwei kleinere Dateien in diesen Ordner kopieren (ist eigentlich egal, sollte aber nicht den bestehenden Dateien auf dem Öler namentlich in die Quere kommen). Also z.B. "test.txt" oder "beispiel.dat".
 
     Dann die Update Funktion des Ölers aufrufen. Die Dateien sollten ohne Fehlermeldung transferiert werden. Ist dies der Fall, dann die Dateien über den File Browser des Ölers wieder löschen (sie stören eigentlich nicht, nehmen aber Platz weg).
 
-    Gibt es Fehler, dann die Logs des Webservers prüfen. Man findet sie normalerweise in /var/log/apache2 oder die Ausgabe des Ölers prüfen. Dazu im Öler ggf. die Funktion "Logging to file?" anschalten (s. Konfiguration) und die Aktion wiederholen.
-
-
+    Im Falle eines Fehlers sollten die Logs des Webservers überprüft werden. Man findet sie normalerweise in /var/log/apache2. Zusätzlich kann die Ausgabe des Ölers helfen. Dazu im Öler ggf. die Funktion "Logging to file?" anschalten (s. Konfiguration) und die Aktion wiederholen. Danach findet man im File Browser die Datei "myLogger.txt" und ein Klick darauf zeigt den Inhalt im Editor Fenster an. ACHTUNG: nicht vergessen, die "Logging to file" Option wieder auszuschalten!
+    
+  * Test der "Upload Tracks" Funktion: im File Browser des Ölers zwei Dateien erzeugen mit Namensmuster der Track Dateien (z.B. "20210614-1523.dat" und "20210615-1245.dat", Namen in das Eingabefeld eintragen, dann "New file" drücken). Nun im Hauptmenü die Funktion "Upload Tracks" wählen.
+  
+    
 
 weiteres:
 

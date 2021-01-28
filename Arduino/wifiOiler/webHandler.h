@@ -30,6 +30,8 @@ void setupWebServer(void) {
   }, handleFileUpload);
 
   webServer.onNotFound([]() {
+    DEBUG_OUT.print(F("[webServer.onNotFound] "));
+    DEBUG_OUT.println(webServer.uri());
     if (!handleFileRead(webServer.uri())) {
       webServer.send(404, TEXT_PLAIN, F("FileNotFound"));
     }
@@ -66,9 +68,10 @@ String getContentType(String fname) {
  *************************************************/
 bool handleFileRead(String path) 
 {
-  DEBUG_OUT.println("handleFileRead: " + path);
+  //DEBUG_OUT.println("[handleFileRead] " + path);
   // wenn keine Datei mitgegeben wurde, nehmen wir index.htm an:
   if (path.endsWith("/")) path += "index.htm";
+  if (!path.startsWith("/")) path = "/"+path;
 
   String contentType = getContentType(path);
   String pathWithGz = path + ".gz";
