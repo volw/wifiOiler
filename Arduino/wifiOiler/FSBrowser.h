@@ -10,20 +10,20 @@ const char PROGMEM * BAD_ARGS = "BAD ARGS";
  **********************************************************************/
 void checkFilesystemSpace(void)
 {
-  if (currentfpw > 0) {  // only check, if recording still active
+  if (GVcurrentfpw > 0) {  // only check, if recording still active
     // wenn nur noch Platz für weniger als MIN_MINUTES_FREE, dann tracking deaktivieren
     FSInfo fs_info;
     if (_FILESYS.info(fs_info)) {
       uint32_t freespace = fs_info.totalBytes - (uint32_t)(fs_info.usedBytes * 1.05);
       uint32_t gpsrec = freespace / GPS_RECORD_SIZE;    // Platz für (gpsrec) GPS Records
-      uint32_t gpsmin = (gpsrec * conf.fpw) / 60;     // Umrechnung in Minuten
+      uint32_t gpsmin = (gpsrec * GVoilerConf.fpw) / 60;     // Umrechnung in Minuten
       uint16_t gpshours = gpsmin / 60;
   
       // diese Abfrage unbedingt VOR gpsmin "Reduzierung"
-      if (conf.fpw > 0) {
-        currentfpw = gpsmin < MIN_MINUTES_FREE ? 0 : conf.fpw;
+      if (GVoilerConf.fpw > 0) {
+        GVcurrentfpw = gpsmin < MIN_MINUTES_FREE ? 0 : GVoilerConf.fpw;
       }
-      else currentfpw = 0;  // to be sure... (Aufzeichnung deaktiviert)
+      else GVcurrentfpw = 0;  // to be sure... (Aufzeichnung deaktiviert)
       
       gpsmin = gpsmin % 60;
   
@@ -33,7 +33,7 @@ void checkFilesystemSpace(void)
       
       DEBUG_OUT.println(out);
   
-      lastFScheck = millis();
+      GVlastFScheck = millis();
     }
   } //else DEBUG_OUT.println(F("[checkFilesystemSpace] no check / tracking allready inactive"));
 }
@@ -43,12 +43,12 @@ void checkFilesystemSpace(void)
  ****************************************************/
 void handleFileList() {
   Dir dir;
-  if (webServer.hasArg("dir"))
+  if (GVwebServer.hasArg("dir"))
     dir = _FILESYS.openDir("/");
-  else if (webServer.hasArg("tracks"))
+  else if (GVwebServer.hasArg("tracks"))
     dir = _FILESYS.openDir("/2");
   else {
-    webServer.send(500, TEXT_PLAIN, BAD_ARGS);
+    GVwebServer.send(500, TEXT_PLAIN, BAD_ARGS);
     return;
   }
 
@@ -67,7 +67,7 @@ void handleFileList() {
     #endif
   }
   output += "]";
-  webServer.send(200, F("text/json"), output);
+  GVwebServer.send(200, F("text/json"), output);
 }
 
 /**********************************************
@@ -75,25 +75,25 @@ void handleFileList() {
  *                             Datei umbenennen
  **********************************************/
 void handleFileCreate() {
-  if (webServer.args() == 0) {
-    return webServer.send(500, TEXT_PLAIN, BAD_ARGS);
+  if (GVwebServer.args() == 0) {
+    return GVwebServer.send(500, TEXT_PLAIN, BAD_ARGS);
   }
-  String newPath = webServer.arg(0);
+  String newPath = GVwebServer.arg(0);
     
   DEBUG_OUT.println("handleFileCreate: " + newPath);
   if (newPath == "/") {
-    return webServer.send(500, TEXT_PLAIN, BAD_PATH);
+    return GVwebServer.send(500, TEXT_PLAIN, BAD_PATH);
   }
   if (_FILESYS.exists(newPath)) {
-    return webServer.send(500, TEXT_PLAIN, F("Target file exists"));
+    return GVwebServer.send(500, TEXT_PLAIN, F("Target file exists"));
   }
-  if (webServer.args() > 1) {   // Datei umbenennen
-    String oldPath = webServer.arg(1);
+  if (GVwebServer.args() > 1) {   // Datei umbenennen
+    String oldPath = GVwebServer.arg(1);
     if (!_FILESYS.exists(oldPath)) {
-      return webServer.send(500, TEXT_PLAIN, F("Source file does'nt exist"));
+      return GVwebServer.send(500, TEXT_PLAIN, F("Source file does'nt exist"));
     }
     if (!_FILESYS.rename(oldPath, newPath)) { // old, new
-      return webServer.send(500, TEXT_PLAIN, F("Could'nt rename file"));
+      return GVwebServer.send(500, TEXT_PLAIN, F("Could'nt rename file"));
     }
   }
   else  // neue Datei anlegen
@@ -102,31 +102,31 @@ void handleFileCreate() {
     if (file) {
       file.close();
     } else {
-      return webServer.send(500, TEXT_PLAIN, F("Could'nt create file"));
+      return GVwebServer.send(500, TEXT_PLAIN, F("Could'nt create file"));
     }
   }
-  webServer.send(200, TEXT_PLAIN, "");
+  GVwebServer.send(200, TEXT_PLAIN, "");
 }
 
 /***************************************************
  * webHandler für FileBrowser: Datei löschen
  ***************************************************/
 void handleFileDelete() {
-  if (webServer.args() == 0) {
-    return webServer.send(500, TEXT_PLAIN, BAD_ARGS);
+  if (GVwebServer.args() == 0) {
+    return GVwebServer.send(500, TEXT_PLAIN, BAD_ARGS);
   }
-  String path = webServer.arg(0);
+  String path = GVwebServer.arg(0);
   DEBUG_OUT.println("handleFileDelete: " + path);
   if (path == "/") {
-    return webServer.send(500, TEXT_PLAIN, BAD_PATH);
+    return GVwebServer.send(500, TEXT_PLAIN, BAD_PATH);
   }
   if (!_FILESYS.exists(path)) {
-    return webServer.send(404, TEXT_PLAIN, F("FileNotFound"));
+    return GVwebServer.send(404, TEXT_PLAIN, F("FileNotFound"));
   }
   _FILESYS.remove(path);
 
   checkFilesystemSpace();
-  webServer.send(200, TEXT_PLAIN, "");
+  GVwebServer.send(200, TEXT_PLAIN, "");
   path = String();
 }
 
@@ -135,33 +135,33 @@ void handleFileDelete() {
  * danach Check auf Firmware und Speicherplatz
  ***********************************************/
 void handleFileUpload() {
-  if (webServer.uri() != F("/edit")) {
-    DEBUG_OUT.println(F("handleFileUpload: webServer.uri() != /edit"));
+  if (GVwebServer.uri() != F("/edit")) {
+    DEBUG_OUT.println(F("handleFileUpload: GVwebServer.uri() != /edit"));
     return;
   }
-  HTTPUpload& upload = webServer.upload();
+  HTTPUpload& upload = GVwebServer.upload();
   if (upload.status == UPLOAD_FILE_START) {
     String fname = upload.filename;
-    myDisplay.PrintMessage("FileUpload\n");
-    myDisplay.MessageAdd(fname);
+    GVmyDisplay.PrintMessage("FileUpload\n");
+    GVmyDisplay.MessageAdd(fname);
     if (!fname.startsWith("/")) {
       fname = "/" + fname;
     }
     DEBUG_OUT.print(F("handleFileUpload Name: ")); DEBUG_OUT.println(fname);
-    fsUploadFile = _FILESYS.open(fname, "w");
+    GVfsUploadFile = _FILESYS.open(fname, "w");
   } else if (upload.status == UPLOAD_FILE_WRITE) {
-    myLedx.on(LED_GRUEN);
-    if (fsUploadFile) {
-      fsUploadFile.write(upload.buf, upload.currentSize);
+    GVmyLedx.on(LED_GRUEN);
+    if (GVfsUploadFile) {
+      GVfsUploadFile.write(upload.buf, upload.currentSize);
     }
-    myLedx.off();
+    GVmyLedx.off();
   } else if (upload.status == UPLOAD_FILE_END) {
     DEBUG_OUT.print(F("handleFileUpload Size: ")); DEBUG_OUT.println(upload.totalSize);
-    if (fsUploadFile) {
-      fsUploadFile.close();
-      myLedx.start LED_FILE_UPLOAD_SUCCESS;
-      myDisplay.PrintMessage("Success");
-      myLedx.delay();
+    if (GVfsUploadFile) {
+      GVfsUploadFile.close();
+      GVmyLedx.start LED_FILE_UPLOAD_SUCCESS;
+      GVmyDisplay.PrintMessage("Success");
+      GVmyLedx.delay();
       checkforUpdate();
     }
     checkFilesystemSpace();

@@ -103,12 +103,12 @@ void configureGPS(void)
   String line;
 
   //TODO debug entfernen:
-  DEBUG_OUT.println("reading gps device config file " + conf.gcf);
+  DEBUG_OUT.println("reading gps device config file " + GVoilerConf.gcf);
   
-  fsUploadFile = _FILESYS.open(conf.gcf.startsWith("/") ? conf.gcf : "/" + conf.gcf, "r");
-  while(fsUploadFile.available()) {
+  GVfsUploadFile = _FILESYS.open(GVoilerConf.gcf.startsWith("/") ? GVoilerConf.gcf : "/" + GVoilerConf.gcf, "r");
+  while(GVfsUploadFile.available()) {
     //Lets read line by line from the file
-    line = fsUploadFile.readStringUntil('\n');
+    line = GVfsUploadFile.readStringUntil('\n');
     line.trim();
 
     //TODO debug entfernen:
@@ -167,5 +167,5 @@ void configureGPS(void)
       gpsConfig[0] = i = 0;
     }
   }
-  fsUploadFile.close();
+  GVfsUploadFile.close();
 }

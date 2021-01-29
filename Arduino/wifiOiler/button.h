@@ -9,15 +9,15 @@ void setupButton(void)
   pinMode(BUTTON_PIN, INPUT);
   if (digitalRead(BUTTON_PIN) == HIGH)
   {
-    maintenanceMode = true;
-    myDisplay.setMaintenanceMode(true);
+    GVmaintenanceMode = true;
+    GVmyDisplay.setMaintenanceMode(true);
     DEBUG_OUT.println(F("[setupButton] Button pressed during start.."));
-    myLedx.start LED_START_BUTTON_PRESSED;
+    GVmyLedx.start LED_START_BUTTON_PRESSED;
     DEBUG_OUT.println(F("[setupButton] enter maintenance mode.."));
-    //myLedx.printInfo(DEBUG_OUT);
-    myLedx.delay();
+    //GVmyLedx.printInfo(DEBUG_OUT);
+    GVmyLedx.delay();
     while (digitalRead(BUTTON_PIN) == HIGH) yield();  // warten, bis Button losgelassen wird
-    myLedx.on(LED_GRUEN);
+    GVmyLedx.on(LED_GRUEN);
   } 
 
   // Button initialisieren
@@ -34,20 +34,20 @@ void setupButton(void)
  **********************************************************************/
 void checkButton()
 {
-  buttonState = digitalRead(BUTTON_PIN);
-  if (buttonState != lastButtonState)
+  GVbuttonState = digitalRead(BUTTON_PIN);
+  if (GVbuttonState != GVlastButtonState)
   {
-    //DEBUG_OUT.println(buttonState == HIGH ? "HIGH" : "Low");
-    if (buttonState == HIGH)
+    //DEBUG_OUT.println(GVbuttonState == HIGH ? "HIGH" : "Low");
+    if (GVbuttonState == HIGH)
     {
-      if (millisPressed == 0) millisPressed = millis();
+      if (GVmillisPressed == 0) GVmillisPressed = millis();
     }
-    else if (millisPressed > 0)
+    else if (GVmillisPressed > 0)
     {
       // noch ein wenig debouncen:
-      if (lastPressed + DEBOUNCE_MS < millis())
+      if (GVlastPressed + DEBOUNCE_MS < millis())
       {
-        if (millisPressed + BUTTON_LONG_DURATION < millis())
+        if (GVmillisPressed + BUTTON_LONG_DURATION < millis())
         {
           DEBUG_OUT.print(F("toggle WiFi requested..."));
           toggleWiFi();
@@ -55,17 +55,17 @@ void checkButton()
         else
         {
           DEBUG_OUT.println(F("switching pump mode requested..."));
-          if (!myDisplay.Acknowledge())
-            setNewMode((tPumpMode)(pumpMode + 1)); // check in setNewMode()    
+          if (!GVmyDisplay.Acknowledge())
+            setNewMode((tPumpMode)(GVpumpMode + 1)); // check in setNewMode()    
         }
-        lastPressed = millis();
+        GVlastPressed = millis();
       }
-      millisPressed = 0;
+      GVmillisPressed = 0;
     }
-    lastButtonState = buttonState;
+    GVlastButtonState = GVbuttonState;
   }
-  else if (buttonState == HIGH && millisPressed > 0 && millisPressed + BUTTON_LONG_DURATION < millis())
+  else if (GVbuttonState == HIGH && GVmillisPressed > 0 && GVmillisPressed + BUTTON_LONG_DURATION < millis())
   {
-    myLedx.on(LED_ROT);
+    GVmyLedx.on(LED_ROT);
   }
 }

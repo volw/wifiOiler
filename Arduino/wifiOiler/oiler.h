@@ -10,45 +10,45 @@ void setNewMode(tPumpMode newMode)
   // da bei MODE_PERMANENT der "Öl-zähler" nicht aktualisiert wird,
   // um die Anzahl der Schreibvorgänge im Filesystem zu begrenzen,
   // hier jetzt nachholen, bevor er neu gesetzt wird:
-  if (pumpMode == MODE_PERMANENT) {
+  if (GVpumpMode == MODE_PERMANENT) {
     #ifndef _NO_PUMP_ 
-      conf.updateOilCounter();
+      GVoilerConf.updateOilCounter();
     #endif    
-    oilCounter = 0;
+    GVoilCounter = 0;
   }
 
   DEBUG_OUT.print(F("New pump mode is >"));
   DEBUG_OUT.print(getPumpModeStr(newMode));
   DEBUG_OUT.print(F("< - meters til pump: "));
-  pumpMode = newMode;
+  GVpumpMode = newMode;
   if (newMode == MODE_OFF)
     DEBUG_OUT.println(F("(Pumpe deaktiviert)"));
-  else if (getModeMeters(pumpMode) < meterSincePump)
+  else if (getModeMeters(GVpumpMode) < GVmeterSincePump)
     DEBUG_OUT.println(0);
   else
-    DEBUG_OUT.println(getModeMeters(pumpMode) - meterSincePump);
+    DEBUG_OUT.println(getModeMeters(GVpumpMode) - GVmeterSincePump);
   
-  myDisplay.PrintModeStr(getPumpModeStr(pumpMode));
+  GVmyDisplay.PrintModeStr(getPumpModeStr(GVpumpMode));
   //LED Response einleiten:
-  if (newMode == MODE_OFF) myLedx.start LED_SWITCH_MODE_OFF;
-  else myLedx.start LED_SWITCH_MODE_RESPONSE;
+  if (newMode == MODE_OFF) GVmyLedx.start LED_SWITCH_MODE_OFF;
+  else GVmyLedx.start LED_SWITCH_MODE_RESPONSE;
 }
 
 /**************************************************
- * check oil: conf.otk < conf.use ?? 
+ * check oil: GVoilerConf.otk < GVoilerConf.use ?? 
  **************************************************/
 void checkTank(void)
 {
   // Prüfen, ob Tank leer:
-  if (conf.otk <= conf.use)
+  if (GVoilerConf.otk <= GVoilerConf.use)
   {
-    myDisplay.PrintAckMessage("Refill\noil tank +");  //20200310i
+    GVmyDisplay.PrintAckMessage("Refill\noil tank +");  //20200310i
     // dann ein bisschen Theater machen:
     DEBUG_OUT.println(F("Tank leer? - Öl nachfüllen und Zähler zurücksetzen (Konfiguration)"));
-    myLedx.add(LED_GRUEN, 175);
-    myLedx.add(LED_ROT, 150);
-    myLedx.start(10);
-    myLedx.delay();
+    GVmyLedx.add(LED_GRUEN, 175);
+    GVmyLedx.add(LED_ROT, 150);
+    GVmyLedx.start(10);
+    GVmyLedx.delay();
   }
 }
 
@@ -59,11 +59,11 @@ uint16_t getModeMeters(tPumpMode mode)
 {
   switch (mode) {
     case MODE_NORMAL: 
-      return conf.nmm;
+      return GVoilerConf.nmm;
     case MODE_REGEN: 
-      return conf.rmm;
+      return GVoilerConf.rmm;
     case MODE_OFFROAD: 
-      return conf.omm;
+      return GVoilerConf.omm;
   }
   // bei MODE_OFF und MODE_PERMANENT:
   return 0; 
@@ -72,12 +72,12 @@ uint16_t getModeMeters(tPumpMode mode)
 /***************************************************
  * Anzahl Meter, die simuliert werden, wenn kein GPS
  * Signal empfangen wird. Innerhalb der Karenzeit
- * (gemessen ab Start des Ölers = conf.wts) wird nicht
+ * (gemessen ab Start des Ölers = GVoilerConf.wts) wird nicht
  * simuliert, also 0 zurückgegeben.
  **************************************************/
 uint8_t simMeters()
 {
-  return (millis() > (conf.wts * 1000UL)) ? conf.sim : 0;
+  return (millis() > (GVoilerConf.wts * 1000UL)) ? GVoilerConf.sim : 0;
 }
 
 /**************************************************
@@ -99,7 +99,7 @@ String getPumpModeStr(tPumpMode nMode) {
 ***********************************************/
 bool isMoving()
 {
-  return (movementCounter > MIN_MOVEMENT_POSITIV);
+  return (GVmovementCounter > MIN_MOVEMENT_POSITIV);
 }
 
 /***********************************************
@@ -109,7 +109,7 @@ bool isMoving()
 ***********************************************/
 bool isHalting()
 {
-  return (movementCounter < MAX_MOVEMENT_NEGATIVE);
+  return (GVmovementCounter < MAX_MOVEMENT_NEGATIVE);
 }
 
 /***********************************
@@ -120,31 +120,31 @@ bool InitiatePump() {
   #ifdef _NO_PUMP_ 
     return true;
   #endif
-  if (myPumpx.isActive()) return false;
+  if (GVmyPumpx.isActive()) return false;
 
   // innerhalb der ersten 1,5 Sekunden nach Button Press soll nicht gleich gepumpt werden
   // damit bei Ziel 'Aus' über 'Permanent' nicht gleich gepumpt wird.
-  if ((lastPressed + 1500) > millis()) return false;
+  if ((GVlastPressed + 1500) > millis()) return false;
 
   DEBUG_OUT.print(F("[InitiatePump] pumpen nach (s): "));
   DEBUG_OUT.print(millis() / 1000);
   DEBUG_OUT.print(F(", pump mode is >"));
-  DEBUG_OUT.print(getPumpModeStr(pumpMode));    
+  DEBUG_OUT.print(getPumpModeStr(GVpumpMode));    
   DEBUG_OUT.println(F("<"));
-  totalPumpCount += conf.pac;
-  conf.use += conf.pac;
+  GVtotalPumpCount += GVoilerConf.pac;
+  GVoilerConf.use += GVoilerConf.pac;
   // bei Dauerpumpen keine Aktualisierung (erst danach)
-  if (pumpMode != MODE_PERMANENT) {
-    if (!conf.updateOilCounter()) {
+  if (GVpumpMode != MODE_PERMANENT) {
+    if (!GVoilerConf.updateOilCounter()) {
       DEBUG_OUT.println(F("[InitiatePump] Fehler beim Öffnen der OilCounter Datei"));
     }
   }
-  myPumpx.start PUMP_ACTION;
-  myLedx.start LED_SHOW_PUMP_ACTION;
-  myDisplay.Invert(1500);
+  GVmyPumpx.start PUMP_ACTION;
+  GVmyLedx.start LED_SHOW_PUMP_ACTION;
+  GVmyDisplay.Invert(1500);
   
-  // vor Aufruf wird bereits geprüft, ob meterSincePump größer als conf.getModeMeters(pumpMode) ist
+  // vor Aufruf wird bereits geprüft, ob GVmeterSincePump größer als GVoilerConf.getModeMeters(GVpumpMode) ist
   // (obige Aussage stimmt nicht: bei Auslösen Pumpentest über Menü wird nicht geprüft!!!)
-  meterSincePump = 0;
+  GVmeterSincePump = 0;
   return true;
 }

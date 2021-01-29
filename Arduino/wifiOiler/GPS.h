@@ -1,16 +1,16 @@
-// gpsNes.date.value()..........: uint32_t   4
-// gpsNew.time.value()..........: uint32_t   4
-// gpsNew.location.lat()........: double     8
-// gpsNew.location.lng()........: double     8
-// gpsNew.hdop.value()..........: float      4
-// gpsNew.speed.kmph()..........: float      4
-// gpsNew.altitude.meters().....: float      4
-// gpsNew.location.age()........: uint32_t   4
-// millis()-oldLocationAge......: uint32_t   4
-// dist.........................: float      4
-// meterSincePump...............: float      4
-// getModeMeters(pumpMode)......: uint16_t   2
-// SUMME........................:           54
+// GVgpsNew.date.value()..........: uint32_t   4
+// GVgpsNew.time.value()..........: uint32_t   4
+// GVgpsNew.location.lat()........: double     8
+// GVgpsNew.location.lng()........: double     8
+// GVgpsNew.hdop.value()..........: float      4
+// GVgpsNew.speed.kmph()..........: float      4
+// GVgpsNew.altitude.meters().....: float      4
+// GVgpsNew.location.age()........: uint32_t   4
+// millis()-GVoldLocationAge......: uint32_t   4
+// dist...........................: float      4
+// GVmeterSincePump...............: float      4
+// getModeMeters(GVpumpMode)......: uint16_t   2
+// SUMME..........................:           54
 // also pro MB ca. 15 Stunden Fahrzeit
 
 // der Compiler berücksichtigt Hardware Optimierung
@@ -42,7 +42,7 @@ union gpsUnion  // Struktur gpsData wird hier über das char array gelegt
   gpsData data;
 };
 
-gpsUnion gps; // global, no need to allocate each time
+gpsUnion GVgps; // global, no need to allocate each time
 const char PROGMEM * GPSLogFile = "/gpslog.txt";
 
 /******************************************
@@ -51,14 +51,14 @@ const char PROGMEM * GPSLogFile = "/gpslog.txt";
 void setupGPS(void)
 {
   // GPS initialisieren:
-  if (!maintenanceMode) {
+  if (!GVmaintenanceMode) {
     DEBUG_OUT.println(F("[setupGPS] Initializing GPS module..."));
     gpsSerial.begin(9600);  // einige GPS Module senden nur mit 4800 baud...
     delay(100);
-    if (conf.gcf.length() > 0)
+    if (GVoilerConf.gcf.length() > 0)
     {
-      if (!conf.gcf.startsWith("/")) conf.gcf = "/" + conf.gcf;
-      if (_FILESYS.exists(conf.gcf.c_str()))
+      if (!GVoilerConf.gcf.startsWith("/")) GVoilerConf.gcf = "/" + GVoilerConf.gcf;
+      if (_FILESYS.exists(GVoilerConf.gcf.c_str()))
       {
         delay(100);
         DEBUG_OUT.println(F("[setupGPS] calling configureGPS()"));
@@ -67,14 +67,14 @@ void setupGPS(void)
       else
       {
         DEBUG_OUT.print(F("[setupGPS] ERROR: GPS Config file not found, check configuration : "));
-        DEBUG_OUT.println(conf.gcf);
+        DEBUG_OUT.println(GVoilerConf.gcf);
       }
     }
     else DEBUG_OUT.println(F("[setupGPS] no GPS configuration file given"));
   }
   
   // fuer Notlauffunktion vorbereiten
-  lastGPSData = millis();
+  GVlastGPSData = millis();
 }
 
 /************************************************
@@ -83,10 +83,10 @@ void setupGPS(void)
  * Rueckgabe true, wenn Satzende erreicht wurde.
  ************************************************/
 bool evalGPS(char data) {
-  gpsBuffer[gpsBufferIndex] = data;
-  gpsBuffer[gpsBufferIndex + 1] = '\0';
+  GVgpsBuffer[GVgpsBufferIndex] = data;
+  GVgpsBuffer[GVgpsBufferIndex + 1] = '\0';
   // wenn Puffer voll, werden restliche Zeichen verschluckt...
-  if (gpsBufferIndex < GPS_BUFFER_LENGTH - 1) gpsBufferIndex++;
+  if (GVgpsBufferIndex < GPS_BUFFER_LENGTH - 1) GVgpsBufferIndex++;
   return (data == '\n');
 }
 
@@ -96,68 +96,68 @@ bool evalGPS(char data) {
  * 
  ************************************************************************************/
 void checkGPSdata() {
-  if (!maintenanceMode)
+  if (!GVmaintenanceMode)
   {
     while (gpsSerial.available())
     {
       if (evalGPS(gpsSerial.read())) // nur ganze Sätze auswerten
       {
-        if (conf.gdl) {
-          outFile = _FILESYS.open(GPSLogFile, "a");
-          outFile.print(gpsBuffer);
-          outFile.close();
+        if (GVoilerConf.gdl) {
+          GVoutFile = _FILESYS.open(GPSLogFile, "a");
+          GVoutFile.print(GVgpsBuffer);
+          GVoutFile.close();
         }
 
         // nur RMC und GGA Saetze auswerten:
         if (isGGArecord() || isRMCrecord())
         {
-          myDisplay.PrintGpsState(GPS_ACTIVE);
-          lastGPSData = millis();
+          GVmyDisplay.PrintGpsState(GPS_ACTIVE);
+          GVlastGPSData = millis();
                     
           // TinyGPSPlus Objekt fuettern:
-          for (int i = 0; gpsBuffer[i]; i++) gpsNew.encode(gpsBuffer[i]);
+          for (int i = 0; GVgpsBuffer[i]; i++) GVgpsNew.encode(GVgpsBuffer[i]);
   
           if (isGGArecord()) analyzeGPSInfo();
         }
-        gpsBufferIndex = 0;
+        GVgpsBufferIndex = 0;
       }
     }
   }
   
-  if ((lastGPScheck + 1000) < millis()) // nur 1/s aufrufen
+  if ((GVlastGPScheck + 1000) < millis()) // nur 1/s aufrufen
   {
     // Wenn überhaupt keine GGA-/RMC-Sätze empfangen wurden: Display Status aktualisieren
-    if ((lastGPSData + 3000) < millis()) //TODO: Konstante im Code
+    if ((GVlastGPSData + 3000) < millis()) //TODO: Konstante im Code
     {
-      myDisplay.PrintGpsState(GPS_NONE);
+      GVmyDisplay.PrintGpsState(GPS_NONE);
     }
 
     // Wenn die letzte Koordinate zu alt, Karenzzeit abgelaufen und KEIN Wartungsmodus, dann simulieren:
-    if ((oldLocationAge + 3000) < millis() && (conf.wts * 1000) < millis() && !maintenanceMode)
+    if ((GVoldLocationAge + 3000) < millis() && (GVoilerConf.wts * 1000) < millis() && !GVmaintenanceMode)
     {
       // nach der Karenzzeit und 3s keine GPS-Daten = simulieren
-      meterSincePump += conf.sim;
+      GVmeterSincePump += GVoilerConf.sim;
     }
-    lastGPScheck = millis();
+    GVlastGPScheck = millis();
   }
 
   //TODO: check, if this is right here:
-  myDisplay.PrintMeter(getModeMeters(pumpMode) - meterSincePump);  
+  GVmyDisplay.PrintMeter(getModeMeters(GVpumpMode) - GVmeterSincePump);  
   
   // egal, wie oben die Berechnung war, hier die Entscheidung, ob gepumpt werden muss..
   // aber nicht oefter als 1 mal pro Sekunde. Ausserdem funktioniert Dauerpumpen so auch im WartungsMode:
-  if (pumpMode != MODE_OFF && meterSincePump >= getModeMeters(pumpMode))
+  if (GVpumpMode != MODE_OFF && GVmeterSincePump >= getModeMeters(GVpumpMode))
   {
     //DEBUG_OUT.println(F("[checkGPSdata] calling InitiatePump()"));
     // Erst pumpen, dann Dauerpumpem nach x mal abschalten, wenn sich Moped bewegt...
-    if (InitiatePump() && pumpMode == MODE_PERMANENT)
+    if (InitiatePump() && GVpumpMode == MODE_PERMANENT)
     {
-      oilCounter++;
-      if (isMoving() && (oilCounter >= MAX_PUMP_ACTION_WHEN_MOVING))
+      GVoilCounter++;
+      if (isMoving() && (GVoilCounter >= MAX_PUMP_ACTION_WHEN_MOVING))
       {
         DEBUG_OUT.println(F("[checkGPSdata] Dauerpumpen wird ausgeschaltet..."));
         setNewMode(MODE_NORMAL);
-        // oilCounter wird in setNewMode() gesetzt
+        // GVoilCounter wird in setNewMode() gesetzt
       }
     }
   }
@@ -171,9 +171,9 @@ bool isGGArecord()
 {
   // Abfrage auf "$..GGA" (wobei . beliebiges Zeichen)
   // auf die Übergabe des Puffers als Parameter wird aus Optimierungsgründen verzichtet
-  if (gpsBuffer[0] != '$') return false;
-  if (gpsBuffer[1] == 0 || gpsBuffer[2] == 0) return false;
-  if (gpsBuffer[3] != 'G' || gpsBuffer[4] != 'G' || gpsBuffer[5] != 'A') return false;
+  if (GVgpsBuffer[0] != '$') return false;
+  if (GVgpsBuffer[1] == 0 || GVgpsBuffer[2] == 0) return false;
+  if (GVgpsBuffer[3] != 'G' || GVgpsBuffer[4] != 'G' || GVgpsBuffer[5] != 'A') return false;
   return true;
 }
 
@@ -185,9 +185,9 @@ bool isGGArecord()
 {
   // Abfrage auf "$..RMC" (wobei . beliebiges Zeichen)
   // auf die Übergabe des Puffers als Parameter wird aus Optimierungsgründen verzichtet
-  if (gpsBuffer[0] != '$') return false;
-  if (gpsBuffer[1] == 0 || gpsBuffer[2] == 0) return false;
-  if (gpsBuffer[3] != 'R' || gpsBuffer[4] != 'M' || gpsBuffer[5] != 'C') return false;
+  if (GVgpsBuffer[0] != '$') return false;
+  if (GVgpsBuffer[1] == 0 || GVgpsBuffer[2] == 0) return false;
+  if (GVgpsBuffer[3] != 'R' || GVgpsBuffer[4] != 'M' || GVgpsBuffer[5] != 'C') return false;
   return true;
 }
 
@@ -201,33 +201,32 @@ bool isGGArecord()
 bool analyzeGPSInfo() {
   float distance = 0;
   bool filter = false;
-  bool isUpdated = gpsNew.location.isUpdated();   // benoetige ich unten noch mal
+  bool isUpdated = GVgpsNew.location.isUpdated();   // benoetige ich unten noch mal
 
-  myDisplay.PrintFixState(isUpdated);
-  if (gpsNew.speed.isUpdated()) myDisplay.PrintKmh(gpsNew.speed.kmph());
+  GVmyDisplay.PrintFixState(isUpdated);
+  if (GVgpsNew.speed.isUpdated()) GVmyDisplay.PrintKmh(GVgpsNew.speed.kmph());
 
   //DEBUG_OUT.println(F("[analyzeGPSInfo] <<<"));
   if (isUpdated)  // wahr, wenn aktuelle GPS-Daten vorliegen
   {
-    //DEBUG_OUT.println(F("[analyzeGPSInfo] gps updated (valid location, i.e. gpsNew.location.isUpdated())"));
-    if (oldLat != 0 || oldLng != 0)  // alte Koordinate vorhanden?
+    //DEBUG_OUT.println(F("[analyzeGPSInfo] gps updated (valid location, i.e. GVgpsNew.location.isUpdated())"));
+    if (GVoldLat != 0 || GVoldLng != 0)  // alte Koordinate vorhanden?
     {
-      distance = gpsNew.distanceBetween(oldLat, oldLng, gpsNew.location.lat(), gpsNew.location.lng());
+      distance = GVgpsNew.distanceBetween(GVoldLat, GVoldLng, GVgpsNew.location.lat(), GVgpsNew.location.lng());
       // Low-Pass Filter:
-      if ((distance * 100) <= conf.glf)  // LowPass Filter (in cm)
+      if ((distance * 100) <= GVoilerConf.glf)  // LowPass Filter (in cm)
       {
         distance = 0;   // Simulation: auf der Stelle bleiben
         filter = true;
       } 
-      else if (millis() > (oldLocationAge + MAX_OLD_LOCATION_AGE)) // wenn die alte Koordinate zu alt ist..
+      else if (millis() > (GVoldLocationAge + MAX_OLD_LOCATION_AGE)) // wenn die alte Koordinate zu alt ist..
       {
         // ..wird doch lieber simuliert (ausserhalb Karenzzeit):
         distance = simMeters();
       }
       else  // hier hat eine "echte" Bewegung stattgefunden:
       {
-        totalDist += distance;
-        lastMoveMillis = millis();
+        GVtotalDist += distance;
       }
     }
     else  // simulieren:
@@ -236,13 +235,13 @@ bool analyzeGPSInfo() {
     }
     if (!filter)  // sonst wird praktisch Verbleib auf alter Koordinate simuliert
     {
-      oldLat = gpsNew.location.lat();
-      oldLng = gpsNew.location.lng();  // nach Abruf ist isUpdated() unbrauchbar
+      GVoldLat = GVgpsNew.location.lat();
+      GVoldLng = GVgpsNew.location.lng();  // nach Abruf ist isUpdated() unbrauchbar
     }
-    oldLocationAge = millis();
+    GVoldLocationAge = millis();
   }
 // hier keine Simulation nötig, wird an aufrufender Stelle gemacht...
-  meterSincePump += distance;
+  GVmeterSincePump += distance;
   
   if (isUpdated && !filter) // nur dann Satz in Datei schreiben
   {
@@ -272,9 +271,9 @@ bool createDateFilename(uint32_t date, uint32_t time) {
   buffer[8] = '\0';
 
   time /= 10000;  // Sekunden und Millisekunden raus...
-  gpsTrackFilename = String(buffer) + "-" + ((time < 1000) ? "0" + String(time) : String(time));
-  DEBUG_OUT.print("date & time: "); DEBUG_OUT.println(gpsTrackFilename);
-  gpsTrackFilename = "/" + gpsTrackFilename + ".dat";
+  GVgpsTrackFilename = String(buffer) + "-" + ((time < 1000) ? "0" + String(time) : String(time));
+  DEBUG_OUT.print("date & time: "); DEBUG_OUT.println(GVgpsTrackFilename);
+  GVgpsTrackFilename = "/" + GVgpsTrackFilename + ".dat";
  
   return true;
 }
@@ -283,10 +282,10 @@ bool createDateFilename(uint32_t date, uint32_t time) {
 /***********************************************
  * Check Movement
  * --------------
- * uint32_t lastMovementCheck
- * uint8_t  movementCounter    Anzahl Movements (bei Bewegung ++ (max 30), bei Stillstand -- (min 0))
- * double   lastTotalDist      um real Movement zu checken
- * (double totalDist : real gemessene gefahrene Distanz)
+ * uint32_t GVlastMovementCheck
+ * uint8_t  GVmovementCounter    Anzahl Movements (bei Bewegung ++ (max 30), bei Stillstand -- (min 0))
+ * double   GVlastTotalDist      um real Movement zu checken
+ * (double GVtotalDist : real gemessene gefahrene Distanz)
  * Jede Sekunde wird geprüft, ob sich die total gefahrene (nur per GPS gemessene) Strecke geändert hat.
  * Wenn das so ist, wird ein Zähler erhöht (bis max. MAX_MOVEMENT_COUNT, derzeit 30).
  * Ist dieser Zählerstand also 30, bedeutet dies, dass sich die Strecke 
@@ -294,31 +293,31 @@ bool createDateFilename(uint32_t date, uint32_t time) {
  ***********************************************/ 
 void checkMovement()
 {
-  if (((conf.wts * 1000) < millis()) && ((lastMovementCheck + 1000) < millis()))
+  if (((GVoilerConf.wts * 1000) < millis()) && ((GVlastMovementCheck + 1000) < millis()))
   {
-    if (lastTotalDist != totalDist) // es hat eine Bewegung stattgefunden
+    if (GVlastTotalDist != GVtotalDist) // es hat eine Bewegung stattgefunden
     {
-      if (movementCounter < MAX_MOVEMENT_COUNT) movementCounter++;
-      lastTotalDist = totalDist;
+      if (GVmovementCounter < MAX_MOVEMENT_COUNT) GVmovementCounter++;
+      GVlastTotalDist = GVtotalDist;
     }
     else  // keine Bewegung
     {
-      if (movementCounter > 0) movementCounter--;
+      if (GVmovementCounter > 0) GVmovementCounter--;
     }
-    lastMovementCheck = millis();
+    GVlastMovementCheck = millis();
     
     // Hier noch eine Ausgabe für's Log:
-    if (isMoving() && !lastMovingState)
+    if (isMoving() && !GVlastMovingState)
     {
-      lastMovingState = true;
+      GVlastMovingState = true;
       DEBUG_OUT.println(F("[checkMovement] Info: Vehicle started moving."));
-      myDisplay.PrintMoveState(true); //20200310i
+      GVmyDisplay.PrintMoveState(true); //20200310i
     }
-    if (isHalting() && lastMovingState)
+    if (isHalting() && GVlastMovingState)
     {
-      lastMovingState = false;
+      GVlastMovingState = false;
       DEBUG_OUT.println(F("[checkMovement] Info: Vehicle STOPPED!"));
-      myDisplay.PrintMoveState(false);
+      GVmyDisplay.PrintMoveState(false);
     }    
   }
 }
@@ -331,68 +330,68 @@ void checkMovement()
  * Format: s. struct
  ********************************************************/
 void writeGPSInfo(float dist) {
-  if (currentfpw == 0) 
+  if (GVcurrentfpw == 0) 
   {
-    if (!myLedx.isActive()) myLedx.start LED_GPS_WRITE_NO_TRACKS;
-    myDisplay.PrintFileState(false);
+    if (!GVmyLedx.isActive()) GVmyLedx.start LED_GPS_WRITE_NO_TRACKS;
+    GVmyDisplay.PrintFileState(false);
     return;  // bei 0 keine Tracks...
   }
   
-  if (!validGPSFilename)  // es gibt noch keinen Dateinamen - aber so gut wie sicher Datum und Uhrzeit...
+  if (!GVvalidGPSFilename)  // es gibt noch keinen Dateinamen - aber so gut wie sicher Datum und Uhrzeit...
   {
     // return == false, falls Datum noch 0 war...
-    validGPSFilename = createDateFilename(gpsNew.date.value(), gpsNew.time.value());
+    GVvalidGPSFilename = createDateFilename(GVgpsNew.date.value(), GVgpsNew.time.value());
   }
 
   // wenn nur alle paar Sekunden geschrieben wird, sollte der dist Wert aufkumuliert werden 
-  cumDist += dist;
+  GVcumDist += dist;
 
-  if (!validGPSFilename)
+  if (!GVvalidGPSFilename)
   {
-    myDisplay.PrintFileState(false);
+    GVmyDisplay.PrintFileState(false);
     return;
   }
-  if ((lastGPSwrite + ((long)(conf.fpw * 1000) - 200L)) > millis())
+  if ((GVlastGPSwrite + ((long)(GVoilerConf.fpw * 1000) - 200L)) > millis())
     return; 
 
-  outFile = _FILESYS.open(gpsTrackFilename, "a");
-  if (outFile) {
-    gps.data.datum  = gpsNew.date.isValid() ? gpsNew.date.value() : 0;
-    gps.data.zeit   = gpsNew.time.isValid() ? gpsNew.time.value() : 0;
-    if (gpsNew.location.isValid()) {
-      gps.data.loclat = gpsNew.location.lat();
-      gps.data.loclng = gpsNew.location.lng();
+  GVoutFile = _FILESYS.open(GVgpsTrackFilename, "a");
+  if (GVoutFile) {
+    GVgps.data.datum  = GVgpsNew.date.isValid() ? GVgpsNew.date.value() : 0;
+    GVgps.data.zeit   = GVgpsNew.time.isValid() ? GVgpsNew.time.value() : 0;
+    if (GVgpsNew.location.isValid()) {
+      GVgps.data.loclat = GVgpsNew.location.lat();
+      GVgps.data.loclng = GVgpsNew.location.lng();
     } else {
-      gps.data.loclat = 0;
-      gps.data.loclng = 0;
+      GVgps.data.loclat = 0;
+      GVgps.data.loclng = 0;
     }
-    gps.data.hdop   = (float)(gpsNew.hdop.isValid() ? gpsNew.hdop.value() : 0);
-    gps.data.speed  = (float)(gpsNew.speed.isValid() ? gpsNew.speed.kmph() : 0);
-    gps.data.alt    = (float)(gpsNew.altitude.isValid() ? gpsNew.altitude.meters() : 0);
-    gps.data.locage = gpsNew.location.age();
-    gps.data.oldage = (millis()-oldLocationAge);
-    gps.data.dist   = cumDist;
-    gps.data.msp    = meterSincePump;
-    gps.data.pmode  = getModeMeters(pumpMode);
+    GVgps.data.hdop   = (float)(GVgpsNew.hdop.isValid() ? GVgpsNew.hdop.value() : 0);
+    GVgps.data.speed  = (float)(GVgpsNew.speed.isValid() ? GVgpsNew.speed.kmph() : 0);
+    GVgps.data.alt    = (float)(GVgpsNew.altitude.isValid() ? GVgpsNew.altitude.meters() : 0);
+    GVgps.data.locage = GVgpsNew.location.age();
+    GVgps.data.oldage = (millis()-GVoldLocationAge);
+    GVgps.data.dist   = GVcumDist;
+    GVgps.data.msp    = GVmeterSincePump;
+    GVgps.data.pmode  = getModeMeters(GVpumpMode);
   
-    outFile.write((uint8_t*)gps.buffer, sizeof(gps.buffer));
-    outFile.close();
-    lastGPSwrite = millis();
-    cumDist = 0;
+    GVoutFile.write((uint8_t*)GVgps.buffer, sizeof(GVgps.buffer));
+    GVoutFile.close();
+    GVlastGPSwrite = millis();
+    GVcumDist = 0;
 
     // alle MIN_MINUTES_FREE nachsehen, ob noch Platz im Filesystem ist - sonst Aufzeichnung einstellen
-    if (((millis() - lastFScheck) / 60000) > MIN_MINUTES_FREE) 
+    if (((millis() - GVlastFScheck) / 60000) > MIN_MINUTES_FREE) 
     {
       checkFilesystemSpace();
     }
-    if (!myLedx.isActive()) myLedx.start LED_GPS_WRITE_SUCCESS;
-    totalGPSwrite++;
-    myDisplay.PrintFileState(true);
+    if (!GVmyLedx.isActive()) GVmyLedx.start LED_GPS_WRITE_SUCCESS;
+    GVtotalGPSwrite++;
+    GVmyDisplay.PrintFileState(true);
   }
   else // error writing to file
   {
-    if (!myLedx.isActive()) myLedx.start LED_GPS_WRITE_FAILED;
-    totalWriteErrors++;
-    myDisplay.PrintFileState(false);
+    if (!GVmyLedx.isActive()) GVmyLedx.start LED_GPS_WRITE_FAILED;
+    GVtotalWriteErrors++;
+    GVmyDisplay.PrintFileState(false);
   }
 }

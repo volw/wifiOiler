@@ -5,7 +5,7 @@
  * 1.11: 1.10 war nicht richtig implementiert (millis() abziehen bei Zeitprüfung)
  *     : checkFilesystemSpace() in Web-Handler eingefügt, die Einfluss auf Speicherplatz haben (upload, delete, etc.)
  * 1.21: Update vom Web-Server implementiert
- * 1.22: Bug with file system check (currentfpw introduced)
+ * 1.22: Bug with file system check (GVcurrentfpw introduced)
  * 1.23: waiting page (update) improved
  * 1.24: handle reboot by myself (not automatic by ESP8266httpUpdate) - improved user feedback
  * - released -
@@ -52,7 +52,7 @@
  * 4.2.005: own littlefs browser with simple editor introduced
  * 4.2.006: file system browser with editor as configuration item (s. config)
  * 4.2.007: get rid of httpUpdate()
- * 4.2.008: sending updateMessage on UPDATEOK and REBOOT
+ * 4.2.008: sending GVupdateMessage on UPDATEOK and REBOOT
  * 4.2.009: code completely restructured
  * 4.2.010: ota update optimized
  * 4.2.011: reboot routine renewed, new reboot.htm
@@ -176,16 +176,16 @@ typedef PumpModes tPumpMode;
 #define LED_TRACK_UPLOAD_SUCCESS (LED_GRUEN,  50,  50,  3)  // vorsicht: delaying / modal
 #define LED_TRACK_UPLOAD_FAILED  (LED_ROT  ,  50,  50,  3)  // vorsicht: delaying / modal
 #define LED_FILE_UPLOAD_SUCCESS  (LED_GRUEN, 500,  50)      // vorsicht: delaying / modal
-#define LED_SWITCH_MODE_RESPONSE (LED_GRUEN, 300, 200, pumpMode)
+#define LED_SWITCH_MODE_RESPONSE (LED_GRUEN, 300, 200, GVpumpMode)
 #define LED_SWITCH_MODE_OFF      (LED_ROT,   300, 200)
 #define LED_TEST_GRUEN           (LED_GRUEN, 200, 100,  3)
 #define LED_TEST_ROT             (LED_ROT  , 200, 100,  3)
-#define LED_SHOW_PUMP_ACTION     (LED_ROT, PUMP_ON_DURATION, PUMP_OFF_DURATION, conf.pac)
+#define LED_SHOW_PUMP_ACTION     (LED_ROT, PUMP_ON_DURATION, PUMP_OFF_DURATION, GVoilerConf.pac)
 #define LED_SHOW_WIFI_OFF        (LED_ROT  ,  50,  50,  3)
 #define LED_SHOW_WIFI_ON         (LED_GRUEN,  50,  50,  3)
 
 // Für Pumpe:
-#define PUMP_ACTION              (PUMP_PIN, PUMP_ON_DURATION, PUMP_OFF_DURATION, conf.pac)
+#define PUMP_ACTION              (PUMP_PIN, PUMP_ON_DURATION, PUMP_OFF_DURATION, GVoilerConf.pac)
 // einige Feste LED Signale gibt es noch:
 // während der Initialisierung leuchtet die LED grün
 // wenn Öltank Leer, wird 10 mal abwechselnd (rot/grün) geblinkt (während Initialisierung)

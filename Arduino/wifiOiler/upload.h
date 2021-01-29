@@ -6,24 +6,24 @@ const String boundary = "wifiOiler-dea88064e2e3320a";
  * erreichbar ist.
  *************************************************/ 
 bool isServerAvailable(void) {
-  String cURL = "http://"+conf.uhn+":"+String(conf.uhp);
-  http.begin(client, cURL);
-  int httpCode = http.GET();
-  http.end();
+  String cURL = "http://"+GVoilerConf.uhn+":"+String(GVoilerConf.uhp);
+  GVhttp.begin(GVwifiClient, cURL);
+  int httpCode = GVhttp.GET();
+  GVhttp.end();
   
   DEBUG_OUT.print(F("[isServerAvailable] GET, URL:"));
   DEBUG_OUT.println(cURL);
   IPAddress remoteHostIP;
-  if (WiFi.hostByName(conf.uhn.c_str(), remoteHostIP, 5000))
+  if (WiFi.hostByName(GVoilerConf.uhn.c_str(), remoteHostIP, 5000))
   {
     DEBUG_OUT.print(F("[isServerAvailable] IP-Adresse von '"));
-    DEBUG_OUT.print(conf.uhn.c_str());
+    DEBUG_OUT.print(GVoilerConf.uhn.c_str());
     DEBUG_OUT.print(F("' ist "));
     DEBUG_OUT.println(remoteHostIP.toString());
   }
   if (httpCode <= 0){
     DEBUG_OUT.print(F("[isServerAvailable] GET() failed, error: "));
-    DEBUG_OUT.println(http.errorToString(httpCode));
+    DEBUG_OUT.println(GVhttp.errorToString(httpCode));
   }
   return (httpCode==200);
 }
@@ -34,12 +34,12 @@ bool isServerAvailable(void) {
  * oierbase should return http 200
  *************************************************/ 
 bool isFileThere(String fname) {
-  http.setUserAgent("wifiOiler");
-  http.begin(client ,"http://"+conf.uhn+"/fileexists.php?filename="+fname);
-  int httpCode = http.GET();
+  GVhttp.setUserAgent("wifiOiler");
+  GVhttp.begin(GVwifiClient ,"http://"+GVoilerConf.uhn+"/fileexists.php?filename="+fname);
+  int httpCode = GVhttp.GET();
   DEBUG_OUT.print(F("[isFileThere] httpCode = "));
   DEBUG_OUT.println(httpCode);
-  http.end();
+  GVhttp.end();
   return (httpCode == 200);   // 200, wenn Datei vorhanden
 }
 
@@ -51,27 +51,27 @@ bool sendFile(String fname) {
   bool success = false;
   
   if (fname.startsWith("/")) fname = fname.substring(1);
-  outFile = _FILESYS.open("/"+fname, "r");
-  if (outFile) {
-    if (client.connect(conf.uhn, conf.uhp)) {
+  GVoutFile = _FILESYS.open("/"+fname, "r");
+  if (GVoutFile) {
+    if (GVwifiClient.connect(GVoilerConf.uhn, GVoilerConf.uhp)) {
       DEBUG_OUT.println(F("[sendFile] Starte Übertragung der Datei..."));
       //sendContent(F("POST /upload.php HTTP/1.1"));
-      client.println("POST " + conf.url + " HTTP/1.1");
-      client.println("Host: " + conf.uhn);
-      client.println(F("User-Agent: wifiOiler/0.1"));    // wird auf Serverseite abgefragt - ggf. dort anpassen
-      client.println(F("Accept: */*"));
-      client.println("Content-Length:" + String(HEADER_LENGTH + outFile.size()+fname.length()));
-      client.println("Content-Type: multipart/form-data; boundary=" + boundary);
-      client.println("\r\n--" +  boundary);
-      client.println("Content-Disposition: form-data; name=\"userfile\"; filename=\"" + fname + "\"");
-      client.println(F("Content-Type: application/octet-stream\r\n"));
+      GVwifiClient.println("POST " + GVoilerConf.url + " HTTP/1.1");
+      GVwifiClient.println("Host: " + GVoilerConf.uhn);
+      GVwifiClient.println(F("User-Agent: wifiOiler/0.1"));    // wird auf Serverseite abgefragt - ggf. dort anpassen
+      GVwifiClient.println(F("Accept: */*"));
+      GVwifiClient.println("Content-Length:" + String(HEADER_LENGTH + GVoutFile.size()+fname.length()));
+      GVwifiClient.println("Content-Type: multipart/form-data; boundary=" + boundary);
+      GVwifiClient.println("\r\n--" +  boundary);
+      GVwifiClient.println("Content-Disposition: form-data; name=\"userfile\"; filename=\"" + fname + "\"");
+      GVwifiClient.println(F("Content-Type: application/octet-stream\r\n"));
       DEBUG_OUT.println(F("[sendFile] >>> sending file >>>"));
-      client.write(outFile);
-      client.println("\r\n--" + boundary + "--\r\n");
+      GVwifiClient.write(GVoutFile);
+      GVwifiClient.println("\r\n--" + boundary + "--\r\n");
 
       // don't wait for any response - we check existance with get() Call...
-      // while (client.available()) client.read();
-      client.stop();
+      // while (GVwifiClient.available()) GVwifiClient.read();
+      GVwifiClient.stop();
       DEBUG_OUT.println(F("[sendFile] Übertragung beendet"));
       success = isFileThere(fname);
       if (success) {
@@ -82,9 +82,9 @@ bool sendFile(String fname) {
     else 
     {
       DEBUG_OUT.print(F("Fehler beim Öffnen der Verbindung zu: "));
-      DEBUG_OUT.println(conf.uhn);
+      DEBUG_OUT.println(GVoilerConf.uhn);
     }
-    outFile.close();
+    GVoutFile.close();
   }
   else 
   {
@@ -125,14 +125,14 @@ String uploadResponse;  // can't be local
 
 void handleUpload(void)
 {
-  if (webServer.hasArg(F("result")))
+  if (GVwebServer.hasArg(F("result")))
   {
-    webServer.send(200, TEXT_PLAIN, uploadResponse);
+    GVwebServer.send(200, TEXT_PLAIN, uploadResponse);
     /* das "-END-" wird per javascript am client abgefragt und ist das Kennzeichen dafür, dass nichts mehr kommt...
      * gleichzeitig wird der uploadResponse String verkleinert, 
      * um wieder Speicherplatz freizugeben (falls das überhaupt dann passiert)... */
     if (uploadResponse.endsWith("-END-")) uploadResponse = "-END-";
-    webServer.handleClient();
+    GVwebServer.handleClient();
   }
   else
   {
@@ -144,12 +144,12 @@ void handleUpload(void)
       handleFileRead("/upload.htm");
       uint32_t wait = millis();
       // 1s warten und webServer damit Zeit für Aktion zu geben
-      while (wait + 1000 > millis()) webServer.handleClient();
+      while (wait + 1000 > millis()) GVwebServer.handleClient();
       
       uint8_t uploadOK = 0;
       uint8_t uploadFailed = 0;
       DEBUG_OUT.println(F("searching track files:"));
-      uploadResponse += F("searching track files...\n"); webServer.handleClient();
+      uploadResponse += F("searching track files...\n"); GVwebServer.handleClient();
       // Track file names: yyyymmdd-hhmm.dat
       Dir dir = _FILESYS.openDir("/20");
       
@@ -165,23 +165,23 @@ void handleUpload(void)
         #endif
         {
           DEBUG_OUT.print(F(" is a track file - will upload..."));
-          uploadResponse += "...uploading " + fname + "..."; webServer.handleClient();
-          myLedx.on(LED_GRUEN);
+          uploadResponse += "...uploading " + fname + "..."; GVwebServer.handleClient();
+          GVmyLedx.on(LED_GRUEN);
           if (sendFile(fname))
           {
-            myLedx.start LED_TRACK_UPLOAD_SUCCESS;
+            GVmyLedx.start LED_TRACK_UPLOAD_SUCCESS;
             uploadOK++;
             DEBUG_OUT.println(F("OK"));
-            uploadResponse += F("OK\n"); webServer.handleClient();
+            uploadResponse += F("OK\n"); GVwebServer.handleClient();
           }
           else 
           {
-            myLedx.start LED_TRACK_UPLOAD_FAILED;
+            GVmyLedx.start LED_TRACK_UPLOAD_FAILED;
             uploadFailed++;
             DEBUG_OUT.println(F("FAILED"));
-            uploadResponse += F("FAILED\n"); webServer.handleClient();
+            uploadResponse += F("FAILED\n"); GVwebServer.handleClient();
           }
-          myLedx.delay();
+          GVmyLedx.delay();
         }
         else
         {
@@ -190,13 +190,13 @@ void handleUpload(void)
       }
       if ((uploadOK + uploadFailed) == 0)
       {
-        uploadResponse = F("\nKeine Dateien zum Hochladen gefunden\n-END-"); webServer.handleClient();
+        uploadResponse = F("\nKeine Dateien zum Hochladen gefunden\n-END-"); GVwebServer.handleClient();
       }
       else
       {
         uploadResponse += "\nUpload beendet\nTracks hochgeladen: " + String(uploadOK);
         uploadResponse += "\nUpload Fehler: "+String(uploadFailed) + "\n-END-";
-        webServer.handleClient();
+        GVwebServer.handleClient();
         if (uploadOK > 0) checkFilesystemSpace();
       }
     }
