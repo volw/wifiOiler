@@ -2,7 +2,7 @@
 
 Die Fahrstrecken werden vom Öler in einem eigenen Format aufgezeichnet.
 
-Mit diesem Tool können die Track-Dateien in das GPX Format konvertiert werden. Dann lassen sie sich z.B. in Google Earth anzeigen.
+Mit diesem Tool können die Track-Dateien in das GPX Format konvertiert werden. Dann lassen sie sich z.B. in Google Earth anzeigen. Um das Projekt zu kompilieren, bzw. zu erstellen, wird Visual Studio benötigt (z.B. das kostenfrei nutzbare Visual Studio Community). 
 
 **Syntax:** `gpstrack.exe [Quelle [Ziel]] [/o(verwrite)] [/d(aily)] [/r(ename)]`
 

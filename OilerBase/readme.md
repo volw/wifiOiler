@@ -111,7 +111,7 @@ Die Konfiguration der Oilerbase ist recht einfach - im Grunde werden nur Standar
   
 ### Apache Web Server installieren
 
-##### Installation des Apache Web-Servers
+#### Installation des Apache Web-Servers
 
 `sudo apt install apache2`
 
@@ -119,7 +119,7 @@ Nach erfolgreicher Installation kann man schon die Standardseite des Webservers 
 
 `http://oilerbase`
 
-##### Apache Web Server absichern
+#### Apache Web Server absichern
 
 `sudo nano /etc/apache2/apache2.conf`
 
@@ -157,7 +157,7 @@ Die Apache Konfiguration kann mit folgendem Befehl geprüft werden:
 
 `sudo apachectl configtest`
 
-##### Verzeichnisstruktur einrichten
+#### Verzeichnisstruktur einrichten
 
 Als nächstes bauen wir die Verzeichnisstruktur für unseren Webserver auf:
 
@@ -193,7 +193,7 @@ Editor beenden und mit folgendem Befehl ein Passwort für die Freigabe setzen. D
 
 `smbpasswd -a root` (und zweimal Passwort eingeben)
 
-##### Verzeichnis unter Windows einbinden
+#### Verzeichnis unter Windows einbinden
 
 Danach dann unter Windows (in einer Eingabeaufforderung oder Konsole) mit dem oben gewählten Passwort (entsprechend ändern):
 
@@ -213,7 +213,7 @@ Wenn Z: im weiteren Verlauf verwendet wird, steht es beispielhaft für den Laufw
 
 Und nun der erste Test: Browser starten und Adresse der Oilerbase eingeben:
 
-http://oilerbase` oder `http://oilerbase.fritz.box`(sollte auch gehen, wenn eine Fritz.box im Einsatz ist). Als Ergebnis wird ein einfaches OK oben links auf einer leeren Seite angezeigt.
+`http://oilerbase` oder `http://oilerbase.fritz.box`(sollte auch gehen, wenn eine Fritz.box im Einsatz ist). Als Ergebnis wird ein einfaches OK oben links auf einer leeren Seite angezeigt.
 
 ### Öler testen
 
@@ -238,14 +238,3 @@ Wie dieses DynDNS nun auf dem eigenen Internet Router eingerichtet wird, ist vom
 Sie ähneln sich aber in den meisten Fällen darin, dass entweder ein DynDNS Anbieter aus einer Liste ausgewählt wird oder eine Update URL angegeben werden muss. Dazu werden noch die Anmeldedaten eingegeben, die man zur Erstellung eines Kontos beim Anbieter verwendet hat. Fertig.
 
 Beim jeweiligen Hersteller des eigenen Routers sollte eine Beschreibung zur Einrichtung eines DynDNS Dienstes zu finden sein. Manche Router Hersteller bieten sogar selber einen kostenlosen DynDNS Service für ihre Kunden an. Ansonsten findet man diese Dienste im Internet, wenn man z.B. nach "DynDNS kostenlos" sucht. Bei dem von mir anfangs gewählten Anbieter musste einmal im Monat (Erinnerung per E-Mail) die freie Nutzung bestätigt/verlängert werden (dafür gab's coole Domain Namen).
-
-
-
-
-
-weiteres:
-
-- apache version: "sudo apache2 -v"
-- DynIP Konfiguration
-- 
-- 
