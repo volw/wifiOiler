@@ -22,9 +22,9 @@ Dabei bedeuten:
 
 **`gpstrack`** alle Dateien im aktuellen Verzeichnis mit der Endung .dat werden konvertiert in Dateien mit der Endung .gpx.
 
-**`gpstrack D:\temp /d`**alle Dateien im Verzeichnis D:\temp (mit Endung *.dat) werden auf Tagesbasis zusammengefasst und in das Verzeichnis D:\temp geschrieben (mit Endung .gpx)
+**`gpstrack D:\temp /d`** alle Dateien im Verzeichnis D:\temp (mit Endung *.dat) werden auf Tagesbasis zusammengefasst und in das Verzeichnis D:\temp geschrieben (mit Endung .gpx)
 
-**`gpstrack . Alpentour2020.gpx /o`**alle Dateien aus dem aktuellen Verzeichnis (s. den Punkt) werden in einer Zieldatei mit Namen "Alpentour2020.gpx" zusammengefasst. Falls die Datei schon existiert, wird sie überschrieben. Die Ausgabe dabei sieht etwa so aus (Ausschnitt):
+**`gpstrack . Alpentour2020.gpx /o`** alle Dateien aus dem aktuellen Verzeichnis (s. den Punkt) werden in einer Zieldatei mit Namen "Alpentour2020.gpx" zusammengefasst. Falls die Datei schon existiert, wird sie überschrieben. Die Ausgabe dabei sieht etwa so aus (Ausschnitt):
 
 <img src="../docs/images/gpxtrackex.jpg" alt="Ausgabe Alt-Text" style="zoom:50%;" />
 
