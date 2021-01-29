@@ -34,8 +34,8 @@ Hiermit kann man testen, ob der Öler richtig aufgebaut und angeschlossen wurde. 
 ### Test LED
 Die LED blinkt dreimal grün und dreimal rot. So kann festgestellt werden, ob die zweifarbige LED richtig angeschlossen wurde.
 ### Upload Tracks
-Ist ein Upload Server vorhanden, können die aufgezeichneten Tracks hochgeladen werden. Nach erfolgreichem Upload werden sie im Öler Dateisystem gelöscht, um den Speicherplatz wieder freizugeben. Siehe Dokumentation zur [Oilerbase](../OilerBase/Oilerbase.md).
+Ist ein Upload Server vorhanden, können die aufgezeichneten Tracks hochgeladen werden. Nach erfolgreichem Upload werden sie im Öler Dateisystem gelöscht, um den Speicherplatz wieder freizugeben. Siehe Dokumentation zur [Oilerbase](../OilerBase/readme.md).
 ### Update Oiler
-Ist die Oilerbase implementiert, kann von dieser ein Update geladen und installiert werden (es gibt allerdings auch andere Wege). Siehe Dokumentation zur [Oilerbase](../OilerBase/Oilerbase.md).
+Ist die Oilerbase implementiert, kann von dieser ein Update geladen und installiert werden (es gibt allerdings auch andere Wege). Siehe Dokumentation zur [Oilerbase](../OilerBase/readme.md).
 ### Soft Reboot
 Mit dieser Funktion kann der Öler neu gestartet werden. Normalerweise überflüssig, kann man aber mal verwenden, wenn man die Einstellungen per Editor geändert hat und diese aktiv werden sollen.
