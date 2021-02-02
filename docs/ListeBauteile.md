@@ -1,7 +1,8 @@
 # Bauteilliste
 Die meisten hier gelisteten Teile habe ich bei reichelt.de bezogen und verlinke sie auch entsprechend als Beispiel. Das tue ich, damit es keine Unstimmigkeiten bei der Beschaffung der Teile gibt. Dies soll keine Werbung für einen bestimmten Versender sein und ich bekomme auch keine Vergünstigungen dafür.
 <br>
-* 1 x Wemos D1 mini [(Beispiel)](https://www.reichelt.de/d1-mini-esp8266-v3-0-d1-mini-p253978.html)
+
+* 1 x Wemos (Lolin) D1 mini V2, die genaue Bezeichnung ist wohl "ESP8266 D1 Mini ESP-12F" [(Beispiel)](https://www.reichelt.de/d1-mini-esp8266-v3-0-d1-mini-p253978.html) 
 * 1 x Spannungswandler auf 5V [(Beispiel)](https://www.reichelt.de/dc-dc-wandler-2-5-w-5-v-500-ma-to-220-lc78-05-0-5-p242823.html)
 * 2 x Folienkondensator für Spannungswandler [(Beispiel)](https://www.reichelt.de/folienkondensator-100nf-63v-rm2-5-mks02-63-100n-p12314.html)
 * 1 x Elko [(Beispiel)](https://www.reichelt.de/elko-radial-10-f-63-v-rm-2-0-85-c-2000h-20--rad-10-63-p15099.html)
@@ -14,6 +15,7 @@ Die meisten hier gelisteten Teile habe ich bei reichelt.de bezogen und verlinke 
 * 1 x Stiftleiste (8) für Außenanschlüsse [(Beispiel)](https://www.reichelt.de/stiftleiste-fuer-anschlussklemme-8-polig-rm5mm-stl-017-08-p72099.html)
 * 1 x Anschlussklemme für Außenanschlüsse [(Beispiel)](https://www.reichelt.de/steckbare-anschlussklemme-8-polig-rm5mm-akl-007-08-p72092.html)
 * 1 x GPS Modul (siehe z.B. ebay) [(Beispiel)](https://www.ebay.de/itm/172363912859)
+* 4 x Abstandsbolzen M3/6mm, für GPS Modul Montage auf Platine ([Beispiel](https://smile.amazon.de/Schrauben-Schraubenmutter-Sechskant-Distanzh%C3%BClsen-Aufbewahrungsbox/dp/B07KTZW5VL/ref=sr_1_23))
 * 1 x Universalgehäuse 85 x 50 x 29 [(Beispiel)](https://www.conrad.de/de/p/tru-components-tc-2028-sw203-1588521-modul-gehaeuse-85-x-50-x-29-abs-schwarz-1-st-1588521.html)
 * Optional: 0.96 Inch OLED I2C Display [(Beispiel)](https://www.az-delivery.de/en/products/0-96zolldisplay)
 * Ölpumpe, z.B. Dellorto Ölpumpe 12308 ([Beispiel](https://www.ebay.de/itm/Dellorto-Olpumpe-12308-/283344637971))<br>
@@ -21,7 +23,7 @@ Die meisten hier gelisteten Teile habe ich bei reichelt.de bezogen und verlinke 
 * Zweifarbige LED ([Beispiel](https://www.reichelt.de/duo-led-3-mm-bedrahtet-2-pin-rt-gn-14-mcd-60--led-3-rg-p10229.html))
 * Button/Drucktaster  ([Beispiel](https://www.reichelt.de/drucktaster-ip67-sw-is-r3s-sw-p105682.html))
 * Kabel zum Anschluss von LED und Button im Cockpit, sollte abgeschirmt sein ([Beispiel](https://www.reichelt.de/fernmeldeleitung-2-x-2-x-0-6-mm-5-m-ysty-2x2-5-p22965.html))
-* öltank aus dem Modellbau, Größe je nach verfügbarem Platz ([Beispiel](https://www.conrad.de/de/p/du-bro-404-kunstflugtank-120-ml-2190015.html)).
+* Öltank aus dem Modellbau, Größe je nach verfügbarem Platz ([Beispiel](https://www.conrad.de/de/p/du-bro-404-kunstflugtank-120-ml-2190015.html)).
 * KFZ-Flachsicherung ([Beispiel](https://www.reichelt.de/kfz-sicherung-normoto-3-a-violett-imaxx-f1503-p242048.html))
 * KFZ Sicherungshalter ([Beispiel](https://www.reichelt.de/kfz-sicherungshalter-normoto-20-a-32-v-ip56-imaxx-h1325-p229033.html))
 * Öl Auslassdüse am Kettenrad (hier am besten mal Ersatzteile bei kommerziellen Ölern checken). Es reicht auch ein dünnes, stabiles (ggf. schräg angeschnittenes Plastikröhrchen, sollte unten am Kettenrad enden, kurz über der Kette, damit die Schwungkraft das Öl zur Kette transportiert). Ist der Auslass, also der Durchmesser dieses Röhrchens zu groß, läuft u.U. der ölschlauch leer, gerade wenn es im Sommer etwas heißer und das Öl "dünner" wird.
@@ -29,6 +31,7 @@ Die meisten hier gelisteten Teile habe ich bei reichelt.de bezogen und verlinke 
 * Befestigungsmaterial für Schläuche und Kabel zur Verlegung am/im Motorrad.
 * Ggf. noch ein Ventil für den Entlüftungsschlauch am Tank. Durch heftige Schüttelbewegungen im Gelände kann eventuell durch den Entlüftungsschlauch Öl entweichen ([Beispiel](https://www.amazon.de/dp/B07CMRJ314/ref=pe_3044161_189395811_TE_SCE_3p_dp_1)).
 #### Anmerkungen
+* Die oben erwähnten Abstandsbolzen für die GPS-Modul Montage sind leider nicht wirtschaftlich zu beschaffen. Eigentlich kann man diese nur in Sortimentsboxen finden, die sich auch noch irgendwie viel zu teuer anfühlen (8-10,- Euro für eine Handvoll Plastik) und sehr wahrscheinlich nur teilweise gebraucht werden. Manchmal kann man solche Bolzen beim Auseinandernehmen von Elektroschrott finden. In der Größe M3 sind sie zwar etwas wuchtig, aber auch sehr stabil. M2 ist für die größeren Öffnungen im GPS-Modul schon fast zu klein. Kunststoff oder Messing ist Geschmacksache, man sollte aber daran denken, dass Messing leitfähig ist (noch besser als Zinn). Sehr passend sind hier M3 Varianten aus Kunststoff.
 * Bei der Wahl der Kondensatoren und der entsprechenden Schaltung rund um den Spannungswandler gibt es vielleicht Optimierungsbedarf. Ich habe damit zu wenig Ahnung/Erfahrung und habe mir Teile der Schaltung im Internet zusammengesucht. Eins ist aber sicher: die Schaltung verrichtet bei mir seit drei Jahren einwandfreie Dienste. Vorschläge zur Optimierung nehme ich aber gerne entgegen. Anfangs habe ich übrigens lineare Spannungswandler (wie den LF50CV) verwendet - die wurden mir aber zu heiß.
 * die 8er Stiftleiste durchzutrennen, um zwei 4er Leisten zu bekommen kann schon mal in die Hose gehen. Glatt in der Mitte zu brechen ist schon eine Herausforderung, besser ist schneiden, wobei das Material schon recht hart ist. Wenn man es wirklich sauber haben will, bestellt man sich 4er Leisten. Ich persönlich bestelle immer 16er und schneide sie zurecht.
 * Als GPS Modul verwende ich die älteren aber sehr bewährten Neo-6M Module von u-blox. Die 8er Reihe habe ich auch schon getestet (in der Grundkonfiguration) und bin damit auch sehr zufrieden. Sicherlich kann man noch mehr aus den neueren Modulen herausholen. Für eine genauere Analyse fehlte mir aber bis jetzt die Zeit. Für die Auswahl ist aber wichtig, was auf dem verbauten u-blox Chip steht und nicht in der Artikelbeschreibung. Schon mehrfach habe ich gehört, dass das billigste Suchergebnis bei z.B. ebay nicht unbedingt das war, was es versprach...
