@@ -1,3 +1,9 @@
+const char PROGMEM * C_CONNECTTEST    = "Microsoft Connect Test";
+const char PROGMEM * C_HOTSPOT_DETECT = "<html><script type='text/javascript'>window['_gaUserPrefs']={ioo:function(){return true;}}</script><head><title>Success</title><style></style></head><body>Success</body></html>";
+const char PROGMEM * C_SERVE_INLINE   = "[GVwebServer.onNotFound] serve inline: ";
+const char PROGMEM * C_FILENOTFOUND   = "[GVwebServer.onNotFound] not found: ";
+const char PROGMEM * C_SERVEFILE      = "[GVwebServer.onNotFound] serve: ";
+
 /*****************************************************************
  * setup Web Server handler
  *****************************************************************/
@@ -30,14 +36,23 @@ void setupWebServer(void) {
   }, handleFileUpload);
 
   GVwebServer.onNotFound([]() {
-    DEBUG_OUT.print(F("[GVwebServer.onNotFound] "));
-    DEBUG_OUT.println(GVwebServer.uri());
-    if (!handleFileRead(GVwebServer.uri())) {
-      GVwebServer.send(404, TEXT_PLAIN, F("FileNotFound"));
+    if (GVwebServer.uri().equalsIgnoreCase("/connecttest.txt")){
+      DEBUG_OUT.print(C_SERVE_INLINE);
+      GVwebServer.send(200, TEXT_PLAIN, C_CONNECTTEST);
+    } else if (GVwebServer.uri().equalsIgnoreCase("/hotspot-detect.html")){
+      DEBUG_OUT.print(C_SERVE_INLINE);
+      GVwebServer.send(200, TEXT_HTML, C_HOTSPOT_DETECT);
+    } else {
+      if (!handleFileRead(GVwebServer.uri())) {
+        DEBUG_OUT.print(C_FILENOTFOUND);
+        GVwebServer.send(404, TEXT_PLAIN, F("FileNotFound"));
+      } else DEBUG_OUT.print(C_SERVEFILE);
     }
+    DEBUG_OUT.println(GVwebServer.uri());
   });
   GVwebServer.begin();
 }
+
 
 /*************************************************
  * Content type anhand Dateiendung identifizieren
@@ -58,7 +73,6 @@ String getContentType(String fname) {
   else if (fname.endsWith(F(".gz")))   return F("application/x-gzip");
   else return TEXT_PLAIN;
 }
-
 
 
 /*************************************************
