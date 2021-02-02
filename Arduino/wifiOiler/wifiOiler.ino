@@ -1,3 +1,21 @@
+/****
+ *      wifiOiler, an automatic distance depending motorbike chain oiler
+ *      Copyright (C) 2019-2021, volw
+ *
+ *      This program is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ ****/
+
 // ACHTUNG: defines in wifioiler.h beachten!!
 #include <ESP8266WiFiMulti.h>
 #include <DNSServer.h>
@@ -108,7 +126,7 @@ void setup()
   GVmyDisplay.PrintKmh(0);
 
   if (!_FILESYS.begin()) {
-    Serial.println(F("Fehler bei Initialisierung des Dateisystems!"));
+    Serial.println(F(MSG_ERROR_INITIALISING_FILESYSTEM));
   }
 
   GVoilerConf.read();
@@ -120,11 +138,11 @@ void setup()
   // Öffnen und schließen der Datei seeehr langsam sein und das ganze Ding voll ausbremsen - also nur kurz
   // aktiviert lassen (ein paar Stunden oder sogar 1-2 Tage geht aber schon)!
   if (!myLogger.begin(GVoilerConf.lgf ? "/myLogger.txt" : "", GVoilerConf.lgs)) {
-    Serial.println(F("Fehler bei Initialisierung des (LittleFS) Logger!"));
+    Serial.println(F(MSG_ERROR_INITIALISING_LOGGER));
   }
   GVmyDisplay.MessageAdd(".", 10000);
   
-  DEBUG_OUT.println(F("********** Starting..."));
+  DEBUG_OUT.println(F(MSG_PROGRESS_STARTING_INIT));
 
   setupButton();
 
@@ -148,9 +166,9 @@ void setup()
 
   checkTank();  // Öltank leer?
 
-  DEBUG_OUT.print(F("This is wifiOiler version "));
+  DEBUG_OUT.print(F(MSG_VERSION_MESSAGE_1));
   DEBUG_OUT.print(VERSION);
-  DEBUG_OUT.print(F(" on board "));
+  DEBUG_OUT.print(F(MSG_VERSION_MESSAGE_2));
   DEBUG_OUT.println(BOARD_TYPE);
 
   if (GVoilerConf.wso || GVmaintenanceMode) 
@@ -160,10 +178,10 @@ void setup()
   GVmyDisplay.PrintMessage("wifiOiler\n  v");
   GVmyDisplay.MessageAdd(VERSION,2000);
   #ifdef _NO_PUMP_
-    DEBUG_OUT.println(F("ACHTUNG: Pumpe dauerhaft deaktiviert!!"));
+    DEBUG_OUT.println(F(MSG_ATT_PUMP_DEACTIVATED));
     GVmyDisplay.PrintAckMessage("Pumpe\ndeaktiv.\n(confirm)");
   #endif
-  DEBUG_OUT.println(F("-------- Initialisierung beendet."));
+  DEBUG_OUT.println(F(MSG_PROGRESS_STARTING_END));
 }
 
 /*******************************************************************
