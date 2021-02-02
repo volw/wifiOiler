@@ -100,7 +100,7 @@ void checkGPSdata() {
   {
     while (gpsSerial.available())
     {
-      if (evalGPS(gpsSerial.read())) // nur ganze Sätze auswerten
+      if (evalGPS(gpsSerial.read())) // true, if eol
       {
         if (GVoilerConf.gdl) {
           GVoutFile = _FILESYS.open(GPSLogFile, "a");
@@ -139,25 +139,24 @@ void checkGPSdata() {
       GVmeterSincePump += GVoilerConf.sim;
     }
     GVlastGPScheck = millis();
-  }
-
-  //TODO: check, if this is right here:
-  GVmyDisplay.PrintMeter(getModeMeters(GVpumpMode) - GVmeterSincePump);  
   
-  // egal, wie oben die Berechnung war, hier die Entscheidung, ob gepumpt werden muss..
-  // aber nicht oefter als 1 mal pro Sekunde. Ausserdem funktioniert Dauerpumpen so auch im WartungsMode:
-  if (GVpumpMode != MODE_OFF && GVmeterSincePump >= getModeMeters(GVpumpMode))
-  {
-    //DEBUG_OUT.println(F("[checkGPSdata] calling InitiatePump()"));
-    // Erst pumpen, dann Dauerpumpem nach x mal abschalten, wenn sich Moped bewegt...
-    if (InitiatePump() && GVpumpMode == MODE_PERMANENT)
+    GVmyDisplay.PrintMeter(getModeMeters(GVpumpMode) - GVmeterSincePump);  
+    
+    // egal, wie oben die Berechnung war, hier die Entscheidung, ob gepumpt werden muss..
+    // aber nicht oefter als 1 mal pro Sekunde. Ausserdem funktioniert Dauerpumpen so auch im WartungsMode:
+    if (GVpumpMode != MODE_OFF && GVmeterSincePump >= getModeMeters(GVpumpMode))
     {
-      GVoilCounter++;
-      if (isMoving() && (GVoilCounter >= MAX_PUMP_ACTION_WHEN_MOVING))
+      //DEBUG_OUT.println(F("[checkGPSdata] calling InitiatePump()"));
+      // Erst pumpen, dann Dauerpumpem nach x mal abschalten, wenn sich Moped bewegt...
+      if (InitiatePump() && GVpumpMode == MODE_PERMANENT)
       {
-        DEBUG_OUT.println(F("[checkGPSdata] Dauerpumpen wird ausgeschaltet..."));
-        setNewMode(MODE_NORMAL);
-        // GVoilCounter wird in setNewMode() gesetzt
+        GVoilCounter++;
+        if (isMoving() && (GVoilCounter >= MAX_PUMP_ACTION_WHEN_MOVING))
+        {
+          DEBUG_OUT.println(F("[checkGPSdata] Dauerpumpen wird ausgeschaltet..."));
+          setNewMode(MODE_NORMAL);
+          // GVoilCounter wird in setNewMode() gesetzt
+        }
       }
     }
   }
