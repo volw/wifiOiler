@@ -20,11 +20,8 @@ void setupButton(void)
     GVmyLedx.on(LED_GRUEN);
   } 
 
-  // Button initialisieren
-  pinMode(BUTTON_PIN, INPUT);
   //attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), ButtonISR, CHANGE);
   // mit Interrupts keine saubere Umsetzung hinbekommen... (reine Abfrage ist viel genauer und prellt auch nicht so)
-  delay(50);     // kurze Zeit zum "Setzen"
 }
 
 /**********************************************************************
