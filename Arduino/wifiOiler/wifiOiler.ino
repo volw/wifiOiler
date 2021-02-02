@@ -31,7 +31,7 @@ uint32_t GVoldLocationAge = 0;  // Zeitpunkt (millis) des letzten Fixpunktes
 float    GVoldLat = 0;          // letzte gültige Koordinate (millis, Latitude = Breitengrad)
 float    GVoldLng = 0;          // letzte gültige Koordinate (millis, Longitude = Längengrad)
 uint32_t GVlastGPSData = 0;     // Zeitpunkt (millis) der letzten GPS-Auswertung (egal was, Hauptsache gültiger Satz)
-uint32_t GVlastGPScheck = 0;    //20200309,I: wird benötigt, damit finaler Check in checkGPSdata() nur 1/s aufgerufen wird
+uint32_t GVlastGPScheck = 0;    // wird benötigt, damit finaler Check in checkGPSdata() nur 1/s aufgerufen wird
 
 //********** Check Movement ****:
 uint32_t GVlastMovementCheck = 0;     // pro Sekunde nur ein Check
@@ -93,7 +93,11 @@ oilerDisplay GVmyDisplay;
 void setup() 
 {    
   GVmyLedx.on(LED_GRUEN); // LED an waehrend Initialisierung
+  pinMode(BUTTON_PIN, OUTPUT);
+  digitalWrite(BUTTON_PIN, LOW);
+    
   Serial.begin(9600);
+  Serial.println();
 
   GVmyDisplay.Init();
   GVmyDisplay.PrintMessage("Init", 10000);
@@ -112,7 +116,7 @@ void setup()
   GVcurrentfpw = GVoilerConf.fpw;  // merken, GVcurrentfpw bestimmt je nach Platz im FS, ob Tracks geschrieben werden...
 
   // Logging in Datei und Serial (sonst als 2. Parameter: false)
-  // VORSICHT: falls Datei sehr groß wird (250KB reichen schon fast), können Schreiboperationen (incl.
+  // VORSICHT: falls Datei sehr groß wird, können Schreiboperationen (incl.
   // Öffnen und schließen der Datei seeehr langsam sein und das ganze Ding voll ausbremsen - also nur kurz
   // aktiviert lassen (ein paar Stunden oder sogar 1-2 Tage geht aber schon)!
   if (!myLogger.begin(GVoilerConf.lgf ? "/myLogger.txt" : "", GVoilerConf.lgs)) {
@@ -120,7 +124,7 @@ void setup()
   }
   GVmyDisplay.MessageAdd(".", 10000);
   
-  DEBUG_OUT.println(F("\n********** Starting..."));
+  DEBUG_OUT.println(F("********** Starting..."));
 
   setupButton();
 
@@ -140,7 +144,6 @@ void setup()
   GVmyDisplay.MessageAdd(".", 10000);
 
   setupWebServer();
-  delay(100);
   GVmyDisplay.MessageAdd(".", 10000);
 
   checkTank();  // Öltank leer?
