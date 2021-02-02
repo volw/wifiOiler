@@ -52,7 +52,7 @@ bool isServerAvailable(void) {
  * oierbase should return http 200
  *************************************************/ 
 bool isFileThere(String fname) {
-  GVhttp.setUserAgent("wifiOiler");
+  //GVhttp.setUserAgent(F(HTTP_USER_AGENT));
   GVhttp.begin(GVwifiClient ,"http://"+GVoilerConf.uhn+"/fileexists.php?filename="+fname);
   int httpCode = GVhttp.GET();
   DEBUG_OUT.print(F("[isFileThere] httpCode = "));

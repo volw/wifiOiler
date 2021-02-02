@@ -162,6 +162,7 @@ void setup()
   GVmyDisplay.MessageAdd(".", 10000);
 
   setupWebServer();
+  GVhttp.setUserAgent(F(HTTP_USER_AGENT));  // only allow this user agent on oilerbase (see php scripts)
   GVmyDisplay.MessageAdd(".", 10000);
 
   checkTank();  // Öltank leer?

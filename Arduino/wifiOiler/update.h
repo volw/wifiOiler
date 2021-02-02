@@ -113,7 +113,7 @@ bool getUpdateInfo(void)
   String url = "http://" + GVoilerConf.uhn + "/update.php?board="+BOARD_TYPE+"&version="+VERSION;
   String result = "";
 
-  GVhttp.setUserAgent(F("wifiOiler"));
+  //GVhttp.setUserAgent(F(HTTP_USER_AGENT));
   GVhttp.begin(GVwifiClient, url);
 
   int httpCode = GVhttp.GET();
@@ -164,7 +164,7 @@ bool downloadFile(String subPath)
   String fname = subPath.substring(nPos)+"$";
   DEBUG_OUT.printf("[downloadFile] downloading \"%s\" to \"%s\"\n", subPath.c_str(), fname.c_str());
 
-  GVhttp.setUserAgent(F("wifiOiler"));
+  //GVhttp.setUserAgent(F(HTTP_USER_AGENT));
   GVhttp.begin(GVwifiClient, url);
   // start connection and send HTTP header
   int httpCode = GVhttp.GET();

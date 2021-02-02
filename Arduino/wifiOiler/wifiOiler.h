@@ -16,7 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ****/
 
-﻿/**
+
+/****
  * Changelog:
  * 1.03: Beim Schreiben eines GPS Fixes wird die LED nur dann ausgelöst, wenn sie NICHT aktiv ist
  * 1.10: Wenn zu wenig Platz im Filesystem ist, wird Tracking deaktiviert (s. checkFilesystemSpace())
@@ -129,6 +130,8 @@
 //#define DEBUG_OUT Serial
 
 //#define LED_BUILTIN 2
+
+#define HTTP_USER_AGENT "wifiOiler"
 
 //max. Zeichen pro GPS Record
 #define GPS_BUFFER_LENGTH 90
