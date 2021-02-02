@@ -32,7 +32,7 @@ uint8_t readWifiData(void) {
     }
   }
   GVfsUploadFile.close();
-  return counter; // Anzahl wifi configs zur�ckgeben...
+  return counter; // Anzahl wifi configs zurückgeben...
 }
 
 /*****************************************************************
