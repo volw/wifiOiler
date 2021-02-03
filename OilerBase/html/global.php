@@ -7,9 +7,10 @@ $MYLOG      = "/var/www/log/myphp.log";
 $uploaddir  = '/var/www/uploads/';
 
 function mylog($meldung) {
-  global $MYLOG;
+  //global $MYLOG;
   //error_log(date("d.m.Y-H:i:s") . ": " . $meldung . "\n", 3, $MYLOG);
-  error_log($meldung, 4);
+  // using apache log:
+  error_log($meldung, 4); // 4 = using SAPI logging handler
 }
 
 function startsWith($haystack, $needle)

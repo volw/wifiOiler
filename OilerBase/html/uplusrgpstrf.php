@@ -20,6 +20,7 @@ function main() {
       $fileexists = file_exists($uploadfile);
     } else {
       mylog("No filename given (may be unauthorized use)");
+    	http_response_code(404);
       return;
     }
   
@@ -30,7 +31,9 @@ function main() {
       } else {
         mylog("Erfolgreicher Upload, neue Datei wurde angelegt: '{$uploadfile}'");
       }
+    	http_response_code(200);
     } else {
+    	http_response_code(404);
       mylog("Fehler beim Verschieben der Datei: '{$uploadfile}'");
     }
   }
