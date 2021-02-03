@@ -158,7 +158,7 @@ bool getUpdateInfo(void)
 bool downloadFile(String subPath)
 {
   bool result = false;
-  String url = "http://" + GVoilerConf.uhn + "/update.php?file="+subPath;
+  String url = "http://" + GVoilerConf.uhn + ":" + GVoilerConf.uhp + "/update.php?file="+subPath;
   int nPos = subPath.lastIndexOf("/");
   //save file to temp. name (to be sure, that complete update has been uploaded):
   String fname = subPath.substring(nPos)+"$";
@@ -242,7 +242,7 @@ bool handleUpdateFiles(void){
   
       if (downloadFile(GVupdateFiles[i].fileName)){   // wie mit Fehlern umgehen?
         GVupdateFiles[i].state = _UF_UPLOADOK;
-        DEBUG_OUT.print(F("[handleUpdate] download finshed:"));
+        DEBUG_OUT.print(F("[handleUpdate] download complete:"));
         DEBUG_OUT.println(GVupdateFiles[i].fileName);
         GVupdateMessage += " (OK)<br>"; 
         GVwebServer.handleClient();
@@ -337,11 +337,10 @@ void handleUpdate(void)
     GVupdateResult = UPD_NOT_ACTIVE;
   
     //erst mal sollte gecheckt werden, ob der Server überhaupt erreichbar ist...
-    DEBUG_OUT.print(F("[handleUpdate] trying to connect to "));
-    DEBUG_OUT.println(GVoilerConf.uhn);
+    DEBUG_OUT.printf(PSTR("[handleUpdate] trying to connect to %s:%d\n"), GVoilerConf.uhn.c_str(), GVoilerConf.uhp);
     if (!isServerAvailable())
     {
-      return GVwebServer.send( 500, TEXT_HTML, F("Update Server nicht erreichbar!"));
+      return GVwebServer.send( 500, TEXT_HTML, "Update Server '"+GVoilerConf.uhn+":"+GVoilerConf.uhp+"' nicht erreichbar!");
     }
 
     // Update Infos vom Server besorgen:

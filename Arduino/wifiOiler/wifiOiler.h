@@ -131,6 +131,8 @@
 
 //#define LED_BUILTIN 2
 
+// wird der HTTP_USER_AGENT geändert (Sonderzeichen vermeiden!), dann sollte auch in der 'global.php' (oilerbase)
+// die Variable $USER_AGENT entsprechend angepasst werden (s. oilerbase/html/global.php)
 #define HTTP_USER_AGENT "wifiOiler"
 
 //max. Zeichen pro GPS Record

@@ -53,7 +53,7 @@ bool isServerAvailable(void) {
  *************************************************/ 
 bool isFileThere(String fname) {
   //GVhttp.setUserAgent(F(HTTP_USER_AGENT));
-  GVhttp.begin(GVwifiClient ,"http://"+GVoilerConf.uhn+"/fileexists.php?filename="+fname);
+  GVhttp.begin(GVwifiClient ,"http://"+GVoilerConf.uhn+":"+GVoilerConf.uhp+"/fileexists.php?filename="+fname);
   int httpCode = GVhttp.GET();
   DEBUG_OUT.print(F("[isFileThere] httpCode = "));
   DEBUG_OUT.println(httpCode);
@@ -100,7 +100,9 @@ bool sendFile(String fname) {
     else 
     {
       DEBUG_OUT.print(F("Fehler beim Öffnen der Verbindung zu: "));
-      DEBUG_OUT.println(GVoilerConf.uhn);
+      DEBUG_OUT.print(GVoilerConf.uhn);
+      DEBUG_OUT.print(":");
+      DEBUG_OUT.println(GVoilerConf.uhp);
     }
     GVoutFile.close();
   }
