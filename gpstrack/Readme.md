@@ -10,7 +10,7 @@ Dabei bedeuten:
 
 **Quelle:** ein Verzeichnis oder Suchmuster für Dateien, wie z.B. "D:\Touren\August" oder "202108*.dat". Wird als Quelle ein Verzeichnis angegeben, wird versucht, alle Dateien in diesem Verzeichnis mit der Endung .dat zu konvertieren.
 
-**Ziel:** ist das Ziel ein existierendes Verzeichnis, werden die erzeugten .gpx Dateien in dieses Verzeichnis geschrieben. Existiert das Ziel dagegen nicht, wird als Ziel eine Datei angenommen und die Quelldateien werden in dieser Zieldatei zusammengefasst.
+**Ziel:** ist das Ziel ein existierendes Verzeichnis, werden die erzeugten .gpx Dateien in dieses Verzeichnis geschrieben. Existiert das Ziel dagegen nicht, wird als Ziel eine Datei angenommen und die Quelldateien werden in dieser Zieldatei zusammengefasst. Wenn kein Ziel angegeben wird, werden die Ausgabedateien in das Quellverzeichnis geschrieben.
 
 **/o(verwrite):** wird diese Option angegeben, werden existierende Zieldateien ohne Nachfrage überschrieben. Die Option kann vollständig oder teilweise angegeben werden (also "/o" oder  "/overwrite" oder allen Zwischenformen).
 

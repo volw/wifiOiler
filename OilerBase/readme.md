@@ -1,12 +1,20 @@
 # Oilerbase
 Die sogenannte Oilerbase ist ein Raspberry Pi mit einem Apache Web-Server, der zwei Funktionen zur Verfügung stellt.
-- Vom Öler aufgezeichnete Fahrstrecken (Tracks) können per Knopfdruck hochgeladen werden, um Speicherplatz auf dem Öler freizugeben. Bei intensiver Nutzung sollte man das alle 1-2 Wochen machen - es können aber mehr als 40 Stunden Fahrzeit aufgezeichnet werden, ohne die Tracks hochzuladen. Ist der Speicherplatz erschöpft, wird die Aufzeichnungsfunktion automatisch deaktiviert.
+- Vom Öler aufgezeichnete Fahrstrecken (Tracks) können per Knopfdruck hochgeladen werden, um die Tracks zuhause zu sichern und Speicherplatz auf dem Öler freizugeben. Bei intensiver Nutzung sollte man das alle 1-2 Wochen machen - es können aber mehr als 40 Stunden Fahrzeit aufgezeichnet werden, ohne die Tracks hochzuladen. Ist der Speicherplatz erschöpft, wird die Aufzeichnungsfunktion automatisch deaktiviert.
 
-- Außerdem können auf der Oilerbase Updates bereitgestellt werden, die mit der integrierten Update-Funktion des Ölers heruntergeladen und eingespielt werden können.
+- Außerdem können auf der Oilerbase Updates bereitgestellt werden, die mit der integrierten Update-Funktion des Ölers heruntergeladen und eingespielt werden können. So können selbst Anpassungen am Öler vorgenommen und diese leicht eingespielt werden.
 
-  
-
-[TOC]
+## Inhalt  
+- [Benötigtes Zubehör](#Benötigtes-Zubehör)
+- [Betriebssystem installieren](#Betriebssystem-installieren)
+- [Apache Web Server installieren](#Apache-Web-Server-installieren)
+	- [Installation des Apache Web-Servers](#Installation-des-Apache-Web-Servers)
+	- [Apache Web Server absichern](#Apache-Web-Server-absichern)
+	- [Verzeichnisstruktur einrichten](#Verzeichnisstruktur-einrichten)
+- [Installation von Samba](#Installation-von-Samba)
+	- [Verzeichnis unter Windows einbinden](#Verzeichnis-unter-Windows-einbinden)
+- [Öler testen](#Öler-testen)
+- [Oilerbase veröffentlichen](#Oilerbase-veröffentlichen)
 
 ### Benötigtes Zubehör
 
@@ -24,7 +32,7 @@ Die Konfiguration der Oilerbase ist recht einfach - im Grunde werden nur Standar
 
 - Download eines Betriebssystem-Image, **Raspberry Pi OS Lite** reicht. Am besten von der Heimatseite https://www.raspberrypi.org/software/operating-systems
 - Schreiben des Images auf die MicroSD Karte (z.B. mit [balenaEtcher](https://www.balena.io/etcher/) oder [Win32 Disk Imager](https://sourceforge.net/projects/win32diskimager/))
-- SD-Karte noch für Windows im Leser stecken lassen. Windows ist u.U. der Meinung, dass die Karte formatiert werden muss, da Windows das Format nicht erkennt. Diese Meldungen bitte ignorieren (abbrechen). Eine auch für Windows lesbare Partition (FAT32) ist allerdings dabei. Dort findet man Verzeichnisse und Dateien (deren Namen z.B. mit "kernel", "fixup" oder "start" anfangen). 
+- SD-Karte noch für Windows im Leser stecken lassen. Kann man nicht auf die Karte zugreifen, diese evtl. neu einstecken. Windows ist u.U. der Meinung, dass die Karte formatiert werden muss, da Windows das Format nicht erkennt. Diese Meldungen bitte ignorieren (abbrechen). Eine auch für Windows lesbare Partition (FAT32) ist allerdings dabei. Dort findet man Verzeichnisse und Dateien (deren Namen z.B. mit "kernel", "fixup" oder "start" anfangen). 
   Dort konfigurieren wir WLAN vor dem Start des Raspberry Pis mit der frisch beschriebenen Karte - und zwar so ([Quelle](https://www.raspberrypi.org/documentation/configuration/wireless/headless.md)):
 - Auf der FAT32 Partition der SD-Karte eine Datei mit Namen *wpa_supplicant.conf* mit folgendem Inhalt anlegen und die Daten des eigenen WLANs eintragen:
 
@@ -59,11 +67,11 @@ Die Konfiguration der Oilerbase ist recht einfach - im Grunde werden nur Standar
 
   `sudo raspi-config`
 
-  Folgende Punkte anwählen:
+  Folgende Punkte anwählen und ändern:
 
   * System Options -> **Hostname**: z.B. 'oilerbase'
 
-  * System Options -> **Password**: Passwort für User pi wählen
+  * System Options -> **Password**: neues Passwort für User pi wählen
 
   * [Optional] Localisation Options -> **Locale**: 'de_DE.UTF-8 UTF-8' auswählen, anschließende Frage nach 'Default Locale' mit 'de_DE.UTF-8' bestätigen.
 
@@ -93,7 +101,7 @@ Die Konfiguration der Oilerbase ist recht einfach - im Grunde werden nur Standar
     
     `ssh pi@oilerbase`
   
-* [Optional] Willkommensbildschirm ändern, damit wir bei Anmeldung entsprechend begrüßt werden. Dazu in die Datei /home/pi/.profile am Ende hinzufügen (andere "Schriftarten" s. [hier](http://patorjk.com/software/taag)):
+* [**Optional**] Willkommensbildschirm ändern, damit wir bei Anmeldung entsprechend begrüßt werden. Dazu Datei "/home/pi/.profile" bearbeiten. Also: `nano ~/.profile`, dann ans Ende der Datei und dort mit rechter Maustaste die folgenden Zeilen aus der Zwischenablage einfügen (andere "Schriftarten" s. [hier](http://patorjk.com/software/taag)):
 
   ```
   cat << 'EOF'
@@ -123,7 +131,7 @@ Nach erfolgreicher Installation kann man schon die Standardseite des Webservers 
 
 `sudo nano /etc/apache2/apache2.conf`
 
-Dort folgende Änderungen vornehmen. Sind die Schlüsselwörter schon vorhanden, dort ändern oder wenn sie nicht existieren, am Ende der Datei hinzufügen. Der Servername kann frei gewählt werden:
+Dort folgende Änderungen vornehmen. Sind die Schlüsselwörter schon vorhanden, dort ändern oder wenn sie nicht existieren, am Ende der Datei hinzufügen. Der Servername kann frei gewählt werden und muss nicht mit dem oben gewählten Hostnamen übereinstimmen:
 
 ```
 # Keine Details zum Server anzeigen
@@ -173,7 +181,7 @@ sudo chmod 757 /var/www/uploads
 
 ### Installation von Samba
 
-Um einfacher auf die Dateien zugreifen zu können, installieren wir noch Samba. Außerdem benötigen wir PHP für den Web-Server (bzw. die Scripte hier im Verzeichnis):
+Um einfacher auf die Dateien zugreifen zu können, installieren wir noch Samba. Außerdem benötigen wir PHP für den Web-Server (bzw. zur Ausführung der Scripte hier im Verzeichnis):
 
 `sudo apt install php samba`
 
