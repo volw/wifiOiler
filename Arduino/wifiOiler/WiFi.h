@@ -42,7 +42,7 @@ uint8_t readWifiData(void) {
         key = String(line.substring(0,pos));
         value = String(line.substring(pos+1));
         key.trim(); value.trim();
-        DEBUG_OUT.print("Add wifi to wifiMulti: ");
+        DEBUG_OUT.print(F(MSG_DBG_ADD_WIFI_TO_MULTIWIFI));
         DEBUG_OUT.println(key.c_str());
         GVwifiMulti.addAP(key.c_str(), value.c_str());
         counter++;
@@ -56,7 +56,7 @@ uint8_t readWifiData(void) {
 /*****************************************************************
  * setup WiFi
  * used, but not defined here:
- * -     myIP : IP-Adresse des Access Points
+ * -   GVmyIP : IP-Adresse des Access Points
  * - GVoilerConf.apn : SSID von diesem Hotspot
  * - GVoilerConf.app : Passwort, um sich mit diesem Hotspot zu verbinden.
  * Versucht, mit einem bekanntem Wifi Netz zu verbinden - ist keins da oder
@@ -65,14 +65,14 @@ uint8_t readWifiData(void) {
 bool setupWiFi(void) {
   bool connected = false;
   
-  DEBUG_OUT.println(F("Versuche, mit bekanntem Wifi Netz zu verbinden..."));
+  DEBUG_OUT.println(F(MSG_DBG_START_SEARCHING_WIFI));
   WiFi.disconnect();  // angeblich werden vorher gemerkte Zugangsdaten damit gelöscht...
 
   // Daten konfigurierter Netze in LittleFS: /wifi.ini
   if (readWifiData() > 0)
   {
     WiFi.mode(WIFI_STA);   // Only station Mode
-    DEBUG_OUT.print(F("Connecting Wifi "));
+    DEBUG_OUT.print(F("[setupWiFi] Connecting Wifi "));
     GVmyDisplay.PrintMessage("Suche WLAN");
 
     byte count = 0;
@@ -82,17 +82,15 @@ bool setupWiFi(void) {
       GVmyDisplay.MessageAdd(".");
       count++;
     }
+    DEBUG_OUT.println();
   
     if (GVwifiMulti.run() == WL_CONNECTED) {
       GVmyDisplay.PrintMessage("Connected:");
       GVmyDisplay.MessageAdd(WiFi.SSID());
       GVmyDisplay.MessageAdd("\n");
       GVmyDisplay.MessageAdd(WiFi.localIP().toString(), 1500);
-      
-      DEBUG_OUT.print(F("\nWiFi connected to '"));
-      DEBUG_OUT.print(WiFi.SSID());
-      DEBUG_OUT.print(F("' - IP address: "));
-      DEBUG_OUT.println(WiFi.localIP());
+
+      DEBUG_OUT.printf(MSG_DBG_CONNECT_SUCCESS, WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
       //GVmyLedx.start LED_WIFI_CONNECT_SUCCESS;
       GVmyDisplay.PrintWlanState(WIFI_WLAN);
       connected = true;
@@ -100,13 +98,13 @@ bool setupWiFi(void) {
     else 
     {
       GVmyDisplay.MessageAdd("\nFailed!",1500);
-      DEBUG_OUT.println(F("\nnot connected to any WiFi"));
+      DEBUG_OUT.println(F(MSG_DBG_WIFI_NOT_CONNECTED));
       //GVmyLedx.start LED_WIFI_CONNECT_FAILED;
       WiFi.disconnect();
     }
     GVwifiMulti.cleanAPlist();
   }
-  else DEBUG_OUT.println(F("Keine WiFi Konfiguration(en) gefunden"));
+  else DEBUG_OUT.println(F(MSG_DBG_NO_WIFI_CONFIGS_FOUND));
 
   if (!connected)
   {
@@ -114,23 +112,19 @@ bool setupWiFi(void) {
     GVmyDisplay.MessageAdd(GVoilerConf.apn, 1500);
     WiFi.mode(WIFI_AP);   // only Access Point
     WiFi.softAPConfig(myIP, myIP, IPAddress(255, 255, 255, 0));
-    DEBUG_OUT.print(F("Setting up access point '"));
-    DEBUG_OUT.print(GVoilerConf.apn);
-    DEBUG_OUT.print(F("' - password '"));
-    DEBUG_OUT.print(GVoilerConf.app);
-    DEBUG_OUT.println("'");
+    DEBUG_OUT.printf(MSG_DBG_START_ACCCESS_POINT, GVoilerConf.apn.c_str(), GVoilerConf.app.c_str());
     
     if (WiFi.softAP(GVoilerConf.apn, GVoilerConf.app))
     {
       delay(500); // Without delay I've seen the IP address blank
-      DEBUG_OUT.print(F("My IP address: "));
+      DEBUG_OUT.print(F(MSG_DBG_ACCESS_POINT_IP));
       DEBUG_OUT.println(WiFi.softAPIP());
       GVmyDisplay.PrintWlanState(WIFI_ACCESSPOINT);
       connected = true;
     }
     else 
     {
-      DEBUG_OUT.println(F("Failed setting up access point!!"));
+      DEBUG_OUT.println(F(MSG_DBG_ACCESS_POINT_FAILED));
       GVmyDisplay.PrintWlanState(WIFI_INACTIVE);
     }
   }
@@ -142,15 +136,11 @@ bool setupWiFi(void) {
  *****************************************************************/
 void setupMDNS(void) {
   if (!MDNS.begin(GVoilerConf.apn)) {
-    DEBUG_OUT.println(F("Error setting up mDNS responder!..."));
-    while(1) delay(1000); // trigger watch dog
+    DEBUG_OUT.println(F(MSG_DBG_MDNS_ERROR));
+    while(1); // trigger watch dog
   }
   else 
-  {
-    DEBUG_OUT.print(F("mDNS responder started, please connect to \"http://"));
-    DEBUG_OUT.print(GVoilerConf.apn);
-    DEBUG_OUT.println(F(".local\""));
-  }
+    DEBUG_OUT.printf(MSG_DBG_MDNS_STARTED, GVoilerConf.apn.c_str());
 }
 
 /*****************************************************************
@@ -160,7 +150,7 @@ void toggleWiFi(void)
 {
   if (GVwifiSleeping)
   {
-    DEBUG_OUT.println(F("starting WiFi ..."));
+    DEBUG_OUT.println(F(MSG_DBG_STARTING_WIFI));
     WiFi.forceSleepWake(); // Wifi on
     delay(100);
 
@@ -186,7 +176,7 @@ void toggleWiFi(void)
   }
   else
   {
-    DEBUG_OUT.println(F("stopping WiFi..."));
+    DEBUG_OUT.println(F(MSG_DBG_STOPPING_WIFI));
     MDNS.close();
     WiFi.disconnect();
     delay(100);

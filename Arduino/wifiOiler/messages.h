@@ -34,3 +34,27 @@
 #define MSG_DBG_HANDLEFILEUPLOAD_URI      "[handleFileUpload] GVwebServer.uri() != /edit"
 #define MSG_DBG_HANDLEFILEUPLOAD_NAME     "[handleFileUpload] Name: " // followed by (upload) filename
 #define MSG_DBG_HANDLEFILEUPLOAD_SIZE     "[handleFileUpload] Size: " // followed by total (upload) file size
+
+// GPS.h
+#define MSG_DBG_SETUP_GPS_INIT            "[setupGPS] Initializing GPS module..."
+#define MSG_DBG_GPS_CONFIG_FILE_NOT_EXIST "[setupGPS] ERROR: GPS Config file not found, check configuration: "	// followed by name of config file (see configuration)
+#define MSG_DBG_GPS_NO_CONFIG_FILE        "[setupGPS] no GPS configuration file given"
+#define MSG_DBG_GPS_SWITCH_OFF_PUMP       "[checkGPSdata] Dauerpumpen wird ausgeschaltet..."
+#define MSG_DBG_GPS_DATE_TIME             "[createDateFilename] date/time: " // followed by recently created track file name
+#define MSG_DBG_MOVEMENT_MOTO_MOVING      "[checkMovement] Info: Vehicle started moving."
+#define MSG_DBG_MOVEMENT_MOTO_STOPPED     "[checkMovement] Info: Vehicle STOPPED!"
+
+// WiFi.h
+#define MSG_DBG_ADD_WIFI_TO_MULTIWIFI     "[readWifiData] Add wifi to wifiMulti: " // followed by SSID from file "/wifi.ini"
+#define MSG_DBG_START_SEARCHING_WIFI      "[setupWiFi] suche bekanntes WLAN..."
+#define MSG_DBG_WIFI_NOT_CONNECTED        "[setupWiFi] not connected to any WiFi"
+#define MSG_DBG_NO_WIFI_CONFIGS_FOUND     "[setupWiFi] Keine WiFi Konfiguration(en) gefunden"
+#define MSG_DBG_CONNECT_SUCCESS           "[setupWiFi] connected to '%s', IP:%s\n"  // printf(), SSID, local IP
+#define MSG_DBG_START_ACCCESS_POINT       "[setupWiFi] Setting up access point '%s' - password '%s'\n"	// printf()
+#define MSG_DBG_ACCESS_POINT_IP           "[setupWiFi] My IP address: " // followed by Access Point IP
+#define MSG_DBG_ACCESS_POINT_FAILED       "[setupWiFi] Failed setting up access point!!"
+#define MSG_DBG_MDNS_ERROR                "[setupMDNS] Error setting up mDNS responder!..."
+#define MSG_DBG_MDNS_STARTED              "[setupMDNS] mDNS responder started, please connect to 'http://%s.local'\n"
+#define MSG_DBG_STARTING_WIFI             "[toggleWiFi] starting WiFi ..."
+#define MSG_DBG_STOPPING_WIFI             "[toggleWiFi] stopping WiFi..."
+

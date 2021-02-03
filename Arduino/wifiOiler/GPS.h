@@ -70,7 +70,7 @@ void setupGPS(void)
 {
   // GPS initialisieren:
   if (!GVmaintenanceMode) {
-    DEBUG_OUT.println(F("[setupGPS] Initializing GPS module..."));
+    DEBUG_OUT.println(F(MSG_DBG_SETUP_GPS_INIT));
     gpsSerial.begin(9600);  // einige GPS Module senden nur mit 4800 baud...
     delay(100);
     if (GVoilerConf.gcf.length() > 0)
@@ -78,17 +78,15 @@ void setupGPS(void)
       if (!GVoilerConf.gcf.startsWith("/")) GVoilerConf.gcf = "/" + GVoilerConf.gcf;
       if (_FILESYS.exists(GVoilerConf.gcf.c_str()))
       {
-        delay(100);
-        DEBUG_OUT.println(F("[setupGPS] calling configureGPS()"));
         configureGPS();
       }
       else
       {
-        DEBUG_OUT.print(F("[setupGPS] ERROR: GPS Config file not found, check configuration : "));
+        DEBUG_OUT.print(F(MSG_DBG_GPS_CONFIG_FILE_NOT_EXIST));
         DEBUG_OUT.println(GVoilerConf.gcf);
       }
     }
-    else DEBUG_OUT.println(F("[setupGPS] no GPS configuration file given"));
+    else DEBUG_OUT.println(F(MSG_DBG_GPS_NO_CONFIG_FILE));
   }
   
   // fuer Notlauffunktion vorbereiten
@@ -96,7 +94,7 @@ void setupGPS(void)
 }
 
 /************************************************
- * Jedes gelesen Zeichen vom GPS Modul wird hier
+ * Jedes gelesene Zeichen vom GPS Modul wird hier
  * durchgeschleust.
  * Rueckgabe true, wenn Satzende erreicht wurde.
  ************************************************/
@@ -142,12 +140,11 @@ void checkGPSdata() {
     }
   }
   
-  if ((GVlastGPScheck + 1000) < millis()) // nur 1/s aufrufen
+  if ((GVlastGPScheck + 1000) < millis()) // not more than once per second
   {
-    // Wenn überhaupt keine GGA-/RMC-Sätze empfangen wurden: Display Status aktualisieren
-    if ((GVlastGPSData + 3000) < millis()) //TODO: Konstante im Code
+    if ((GVlastGPSData + 3000) < millis())
     {
-      GVmyDisplay.PrintGpsState(GPS_NONE);
+      GVmyDisplay.PrintGpsState(GPS_NONE);  // update display when not GGA-/RMC-Records for more than 3s
     }
 
     // Wenn die letzte Koordinate zu alt, Karenzzeit abgelaufen und KEIN Wartungsmodus, dann simulieren:
@@ -171,7 +168,7 @@ void checkGPSdata() {
         GVoilCounter++;
         if (isMoving() && (GVoilCounter >= MAX_PUMP_ACTION_WHEN_MOVING))
         {
-          DEBUG_OUT.println(F("[checkGPSdata] Dauerpumpen wird ausgeschaltet..."));
+          DEBUG_OUT.println(F(MSG_DBG_GPS_SWITCH_OFF_PUMP));
           setNewMode(MODE_NORMAL);
           // GVoilCounter wird in setNewMode() gesetzt
         }
@@ -223,10 +220,8 @@ bool analyzeGPSInfo() {
   GVmyDisplay.PrintFixState(isUpdated);
   if (GVgpsNew.speed.isUpdated()) GVmyDisplay.PrintKmh(GVgpsNew.speed.kmph());
 
-  //DEBUG_OUT.println(F("[analyzeGPSInfo] <<<"));
   if (isUpdated)  // wahr, wenn aktuelle GPS-Daten vorliegen
   {
-    //DEBUG_OUT.println(F("[analyzeGPSInfo] gps updated (valid location, i.e. GVgpsNew.location.isUpdated())"));
     if (GVoldLat != 0 || GVoldLng != 0)  // alte Koordinate vorhanden?
     {
       distance = GVgpsNew.distanceBetween(GVoldLat, GVoldLng, GVgpsNew.location.lat(), GVgpsNew.location.lng());
@@ -289,7 +284,7 @@ bool createDateFilename(uint32_t date, uint32_t time) {
 
   time /= 10000;  // Sekunden und Millisekunden raus...
   GVgpsTrackFilename = String(buffer) + "-" + ((time < 1000) ? "0" + String(time) : String(time));
-  DEBUG_OUT.print("date & time: "); DEBUG_OUT.println(GVgpsTrackFilename);
+  DEBUG_OUT.print(F(MSG_DBG_GPS_DATE_TIME)); DEBUG_OUT.println(GVgpsTrackFilename);
   GVgpsTrackFilename = "/" + GVgpsTrackFilename + ".dat";
  
   return true;
@@ -299,10 +294,6 @@ bool createDateFilename(uint32_t date, uint32_t time) {
 /***********************************************
  * Check Movement
  * --------------
- * uint32_t GVlastMovementCheck
- * uint8_t  GVmovementCounter    Anzahl Movements (bei Bewegung ++ (max 30), bei Stillstand -- (min 0))
- * double   GVlastTotalDist      um real Movement zu checken
- * (double GVtotalDist : real gemessene gefahrene Distanz)
  * Jede Sekunde wird geprüft, ob sich die total gefahrene (nur per GPS gemessene) Strecke geändert hat.
  * Wenn das so ist, wird ein Zähler erhöht (bis max. MAX_MOVEMENT_COUNT, derzeit 30).
  * Ist dieser Zählerstand also 30, bedeutet dies, dass sich die Strecke 
@@ -327,13 +318,13 @@ void checkMovement()
     if (isMoving() && !GVlastMovingState)
     {
       GVlastMovingState = true;
-      DEBUG_OUT.println(F("[checkMovement] Info: Vehicle started moving."));
+      DEBUG_OUT.println(F(MSG_DBG_MOVEMENT_MOTO_MOVING));
       GVmyDisplay.PrintMoveState(true); //20200310i
     }
     if (isHalting() && GVlastMovingState)
     {
       GVlastMovingState = false;
-      DEBUG_OUT.println(F("[checkMovement] Info: Vehicle STOPPED!"));
+      DEBUG_OUT.println(F(MSG_DBG_MOVEMENT_MOTO_STOPPED));
       GVmyDisplay.PrintMoveState(false);
     }    
   }
