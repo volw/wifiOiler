@@ -16,9 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ****/
 
-#define HEADER_LENGTH 195
-const String boundary = "wifiOiler-dea88064e2e3320a";
-
 /*************************************************
  * Check, ob konfigurierter Upload-/Update server 
  * erreichbar ist.

@@ -16,12 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ****/
 
-const char PROGMEM * C_CONNECTTEST    = "Microsoft Connect Test";
-const char PROGMEM * C_HOTSPOT_DETECT = "<html><script type='text/javascript'>window['_gaUserPrefs']={ioo:function(){return true;}}</script><head><title>Success</title><style></style></head><body>Success</body></html>";
-const char PROGMEM * C_SERVE_INLINE   = "[GVwebServer.onNotFound] serve inline: ";
-const char PROGMEM * C_FILENOTFOUND   = "[GVwebServer.onNotFound] not found: ";
-const char PROGMEM * C_SERVEFILE      = "[GVwebServer.onNotFound] serve: ";
-
 /*****************************************************************
  * setup Web Server handler
  *****************************************************************/
@@ -135,7 +129,7 @@ bool handleFileRead(String path)
  * justBack == true : zurück per history.back() (default)
  * justBack == false: expliziter Aufruf des Hauptmenüs
  ******************************************************/ 
-void handleMessage(String message, bool justBack) // default=true
+void handleMessage(String message, bool justBack)
 {
   GVwebServer.setContentLength(CONTENT_LENGTH_UNKNOWN);
   GVwebServer.send( 200, TEXT_HTML, "");

@@ -25,7 +25,7 @@
 #define MSG_VERSION_MESSAGE_2             " on board "                 // followed by board type
 #define MSG_ATT_PUMP_DEACTIVATED          "ACHTUNG: Pumpe dauerhaft deaktiviert!!"
 
-// FSBrowser.h
+// FSBrowser
 #define MSG_HTML_TARGET_FILE_EXISTS       "Target file exists"
 #define MSG_HTML_SOURCE_FILE_NOT_EXISTS   "Source file does'nt exist"
 #define MSG_HTML_ERROR_RENAMING_FILE      "Could'nt rename file"
@@ -35,7 +35,7 @@
 #define MSG_DBG_HANDLEFILEUPLOAD_NAME     "[handleFileUpload] Name: " // followed by (upload) filename
 #define MSG_DBG_HANDLEFILEUPLOAD_SIZE     "[handleFileUpload] Size: " // followed by total (upload) file size
 
-// GPS.h
+// GPS
 #define MSG_DBG_SETUP_GPS_INIT            "[setupGPS] Initializing GPS module..."
 #define MSG_DBG_GPS_CONFIG_FILE_NOT_EXIST "[setupGPS] ERROR: GPS Config file not found, check configuration: "	// followed by name of config file (see configuration)
 #define MSG_DBG_GPS_NO_CONFIG_FILE        "[setupGPS] no GPS configuration file given"
@@ -44,7 +44,7 @@
 #define MSG_DBG_MOVEMENT_MOTO_MOVING      "[checkMovement] Info: Vehicle started moving."
 #define MSG_DBG_MOVEMENT_MOTO_STOPPED     "[checkMovement] Info: Vehicle STOPPED!"
 
-// WiFi.h
+// WiFi
 #define MSG_DBG_ADD_WIFI_TO_MULTIWIFI     "[readWifiData] Add wifi to wifiMulti: " // followed by SSID from file "/wifi.ini"
 #define MSG_DBG_START_SEARCHING_WIFI      "[setupWiFi] suche bekanntes WLAN..."
 #define MSG_DBG_WIFI_NOT_CONNECTED        "[setupWiFi] not connected to any WiFi"
@@ -58,3 +58,8 @@
 #define MSG_DBG_STARTING_WIFI             "[toggleWiFi] starting WiFi ..."
 #define MSG_DBG_STOPPING_WIFI             "[toggleWiFi] stopping WiFi..."
 
+// button
+#define MSG_DBG_BUTTON_PRESSED_ON_START   "[setupButton] Button pressed during start.."
+#define MSG_DBG_ENTER_MAINTENANCE_MODE    "[setupButton] enter maintenance mode.."
+#define MSG_DBG_BUTTON_LONG_PRESSED       "[checkButton] toggle WiFi requested..."
+#define MSG_DBG_BUTTON_SHORT_PRESSED      "[checkButton] next pump mode requested..."

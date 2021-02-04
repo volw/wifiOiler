@@ -16,30 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ****/
 
-//**** Update Oiler (upload files and restart on new binary ***************
-#define UPD_NOT_ACTIVE       0
-#define UPD_UPLOADING_FILES  1
-#define UPD_UPDATE_ENDED     2
-#define UPD_MUST_REBOOT      3
-#define UPD_REBOOT_NOW       4
-#define UPD_ERROR            5
-String   GVupdateMessage    = "";     // response string for web gui
-uint8_t  GVupdateResult     = UPD_NOT_ACTIVE;   // state of update (s. defines)
-uint32_t GVupdFileSizeTotal = 0;     // upload progress, total size (bytes) of current file
-uint32_t GVupdSizeUploaded  = 0;     // upload progress, uploaded number of bytes of current file
-bool     GVupdError         = false; // some error during uploading process (file possibly not complete)
-#define _UF_INITIAL  0
-#define _UF_UPLOADOK 1
-#define _UF_UPLOAD_ERROR 2
-struct updateFile {
-  String fileName;
-  uint8_t state;
-};
-std::vector<updateFile> GVupdateFiles;
-
-HTTPClient GVhttp;
-WiFiClient GVwifiClient = GVwebServer.client();
-
 /**************************************************************
  * check for new binary in file system (file name see <GVoilerConf.ffn>)
  * when found: update & restart

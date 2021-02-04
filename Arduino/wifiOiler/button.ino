@@ -29,9 +29,9 @@ void setupButton(void)
   {
     GVmaintenanceMode = true;
     GVmyDisplay.setMaintenanceMode(true);
-    DEBUG_OUT.println(F("[setupButton] Button pressed during start.."));
+    DEBUG_OUT.println(F(MSG_DBG_BUTTON_PRESSED_ON_START));
     GVmyLedx.start LED_START_BUTTON_PRESSED;
-    DEBUG_OUT.println(F("[setupButton] enter maintenance mode.."));
+    DEBUG_OUT.println(F(MSG_DBG_ENTER_MAINTENANCE_MODE));
     //GVmyLedx.printInfo(DEBUG_OUT);
     GVmyLedx.delay();
     while (digitalRead(BUTTON_PIN) == HIGH) yield();  // warten, bis Button losgelassen wird
@@ -39,7 +39,8 @@ void setupButton(void)
   } 
 
   //attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), ButtonISR, CHANGE);
-  // mit Interrupts keine saubere Umsetzung hinbekommen... (reine Abfrage ist viel genauer und prellt auch nicht so)
+  // mit Interrupts keine saubere Umsetzung hinbekommen... 
+  // (reine Abfrage ist viel genauer und prellt auch nicht so)
 }
 
 /**********************************************************************
@@ -64,12 +65,12 @@ void checkButton()
       {
         if (GVmillisPressed + BUTTON_LONG_DURATION < millis())
         {
-          DEBUG_OUT.print(F("toggle WiFi requested..."));
+          DEBUG_OUT.print(F(MSG_DBG_BUTTON_LONG_PRESSED));
           toggleWiFi();
         }
         else
         {
-          DEBUG_OUT.println(F("switching pump mode requested..."));
+          DEBUG_OUT.println(F(MSG_DBG_BUTTON_SHORT_PRESSED));
           if (!GVmyDisplay.Acknowledge())
             setNewMode((tPumpMode)(GVpumpMode + 1)); // check in setNewMode()    
         }

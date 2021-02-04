@@ -16,12 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ****/
 
-// häufiger verwendete Token (spart ein wenig Speicherplatz):
-const char PROGMEM * TEXT_PLAIN = "text/plain";
-const char PROGMEM * TEXT_HTML = "text/html";
-const char PROGMEM * BAD_PATH = "BAD PATH";
-const char PROGMEM * BAD_ARGS = "BAD ARGS";
-
 /**********************************************************************
  * if not enough space for track recording (less than MIN_MINUTES_FREE)
  * stop recording

@@ -19,11 +19,8 @@
 #ifndef _OILER_DISPLAY_H_
 #define _OILER_DISPLAY_H_
 
-#include "wifiOiler.h"
-// #include <arduino.h>
-
 #ifdef _DISPLAY_AVAILABLE_
-  #include <Adafruit_GFX.h>
+  // #include <Adafruit_GFX.h>
   #include "src/Adafruit_SSD1306/Adafruit_SSD1306.h"
 #endif
   

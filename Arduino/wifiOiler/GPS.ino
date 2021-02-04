@@ -16,53 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ****/
 
-// GVgpsNew.date.value()..........: uint32_t   4
-// GVgpsNew.time.value()..........: uint32_t   4
-// GVgpsNew.location.lat()........: double     8
-// GVgpsNew.location.lng()........: double     8
-// GVgpsNew.hdop.value()..........: float      4
-// GVgpsNew.speed.kmph()..........: float      4
-// GVgpsNew.altitude.meters().....: float      4
-// GVgpsNew.location.age()........: uint32_t   4
-// millis()-GVoldLocationAge......: uint32_t   4
-// dist...........................: float      4
-// GVmeterSincePump...............: float      4
-// getModeMeters(GVpumpMode)......: uint16_t   2
-// SUMME..........................:           54
-// also pro MB ca. 15 Stunden Fahrzeit
-
-// der Compiler berücksichtigt Hardware Optimierung
-// deshalb wird sizeof(gpsData) nicht 54 ausgeben, sondern 56 (8-byte boundary).
-// Ist man auf genaue Angaben angewiesen, muss das Attribut packed verwendet werden:
-// struct __attribute__((packed)) gpsData {...}
-// das geht u.a. allerdings auf die Performance, deshalb sorgen wir manuell für die Größe:
-#define GPS_RECORD_SIZE 54
-
-struct gpsData
-{
-  uint32_t datum;   // 4
-  uint32_t zeit;    // 4
-  double   loclat;  // 8
-  double   loclng;  // 8
-  float    hdop;    // 4
-  float    speed;   // 4 
-  float    alt;     // 4
-  uint32_t locage;  // 4
-  uint32_t oldage;  // 4
-  float    dist;    // 4
-  float    msp;     // 4 (Meter since pump)
-  uint16_t pmode;   // 2
-};                 // 54 Bytes
-
-union gpsUnion  // Struktur gpsData wird hier über das char array gelegt
-{
-  char buffer[GPS_RECORD_SIZE];
-  gpsData data;
-};
-
-gpsUnion GVgps; // global, no need to allocate each time
-const char PROGMEM * GPSLogFile = "/gpslog.txt";
-
 /******************************************
  * setupGPS()
  ******************************************/

@@ -16,9 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ****/
 
-const char PROGMEM * wifiFile = "/wifi.ini";
-const IPAddress myIP(192, 168, 4, 1);
-
 /*************************************
  * Lesen der WiFi Konfigurationsdaten
  *************************************/

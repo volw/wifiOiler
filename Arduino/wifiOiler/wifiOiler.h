@@ -116,17 +116,12 @@
 // VERSION: für Update Vorgang, Version wird auch auf Startseite des Ölers angezeigt.
 // _DISPLAY_AVAILABLE_: wenn undefiniert, wird etwas Speicherplatz (7 KB) gespart - ansonsten keine Auswirkung (auch wenn kein Display angeschl. ist)
 // _NO_PUMP_: nur während Entwicklung sinnvoll: Pumpe wird dauerhaft deaktiviert, damit's nicht ständig piept
-// _SPIFFS_: verwendetes Dateisystem ist SPIFFS, Dateien müssen neu hochgeladen werden
-// _LITTLEFS_: verwendetes Dateisystem ist LittleFS, Dateien müssen neu hochgeladen werden
 
 #define VERSION "4.2.011"
 #define _DISPLAY_AVAILABLE_
 //#define _NO_PUMP_
-//#define _SPIFFS_
-#define _LITTLEFS_
-#include "messages.h"
 
-#define DEBUG_OUT myLogger
+#define DEBUG_OUT GVmyLogger
 //#define DEBUG_OUT Serial
 
 //#define LED_BUILTIN 2
@@ -183,7 +178,7 @@ typedef PumpModes tPumpMode;
 
 // ********** für Button Handling:
 #define DEBOUNCE_MS 100UL
-// wie lange muss Button gedrückt werden, um als lang gedrückt erkannt zu werden (1,5s):
+// wie lange muss Button gedrückt werden, um als lang gedrückt erkannt zu werden:
 #define BUTTON_LONG_DURATION 1200
 
 // Überblick aller Blinksignale (hier einstellen):
@@ -216,8 +211,7 @@ typedef PumpModes tPumpMode;
 // wenn Button lange gedrückt wird, leuchtet die LED rot (bis wieder losgelassen wird)
 
 
-#define BUTTON_PIN  D6  // when D6 not "pulled down", start with connection between D6 and GND 
-                        // (otherwise oiler will start in maintenance mode)
+#define BUTTON_PIN  D6
 #define PUMP_PIN    D7
 
 // NodeMCU ESP8266 und nackter ESP-12F
@@ -246,84 +240,15 @@ typedef PumpModes tPumpMode;
   #warning "Achtung: Pumpe ist deaktiviert - s. wifiOiler.h, define _NO_PUMP_"
 #endif
 
-#ifdef _SPIFFS_
-  #ifdef _LITTLEFS_
-    #error "_SPIFFS_ und _LITTLEFS_ sind beide definiert (es darf nur einen geben, s. wifiOiler.h)"
-  #else
-    #define _FILESYS SPIFFS
-    #include <FS.h>
-  #endif
-#else
-  #ifdef _LITTLEFS_
-    #define _FILESYS LittleFS
-    #include <LittleFS.h>
-  #else
-    #pragma message "Dateisystem nicht spezifiziert, LittleFS wird angenommen"
-    #define LittleFS
-    #define _FILESYS LittleFS
-    #include <LittleFS.h>
-  #endif
-#endif
-
-// file system defines check:
-#ifndef _FILESYS
-  #error "Kein Dateisystem spezifiert. Siehe _FILESYS in wifiOiler.h"
-#endif
+#define _FILESYS LittleFS
+#include <LittleFS.h>
 
 //**************************************************************
-//***** forward declarations for all functions *****************
+//***** forward declarations ***********************************
 //**************************************************************
-bool     analyzeGPSInfo(void);
-void     checkButton(void);
-void     checkFilesystemSpace(void);
-bool     checkforUpdate(bool justCheck = false, bool reboot = true); // default (false, true)
-void     checkGPSdata(void);
-void     checkMovement(void);
-void     checkTank(void);
-void     checkWiFi(void);
-void     configureGPS(void);
-bool     createDateFilename(uint32_t date, uint32_t time);
-uint8_t  deleteUpdateFiles(void);
-bool     downloadFile(String subPath);
-bool     evalGPS(char data);
-String   getContentType(String fname);
-uint16_t getModeMeters(tPumpMode mode);
-String   getPumpModeStr(tPumpMode nMode);
-bool     getUpdateInfo(void);
-void     handleConfigPage(void);
-void     handleDebugInfo(void);
-void     handleFileCreate(void);
-void     handleFileDelete(void);
-void     handleFileList(void);
-bool     handleFileRead(String path);
-void     handleFileUpload(void);
-void     handleLEDTest(void);
-void     handleMessage(String message, bool justBack = true);
-void     handlePumpMode(void);
-void     handlePumpTest(void);
-void     handleReboot(void);
-void     handleUpdate(void);
-bool     handleUpdateFiles(void);
-void     handleUpload(void);
-void     handleVersion(void);
-bool     InitiatePump(void);
-bool     isFileThere(String fname);
-bool     isGGArecord(void);
-bool     isHalting(void);
-bool     isMoving(void);
-bool     isRMCrecord(void);
-bool     isServerAvailable(void);
-uint8_t  readWifiData(void);
-bool     renameUpdateFiles(void);
-bool     sendFile(String fname);
-void     setNewMode(tPumpMode newMode);
-void     setupButton(void);
-void     setupGPS(void);
-void     setupMDNS(void);
-void     setupWebServer(void);
-bool     setupWiFi(void);
-uint8_t  simMeters(void);
-void     toggleWiFi(void);
-void     writeGPSInfo(float dist);
+// we have to do some forward declarations because default
+// values for params are not working for 'normal' functions:
+void handleMessage(String message, bool justBack = true);
+bool checkforUpdate(bool justCheck = false, bool reboot = true);
 
 #endif

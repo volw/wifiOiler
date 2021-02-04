@@ -19,7 +19,9 @@
 #ifndef _configuration_h_
 #define _configuration_h_
 
-const String oilcounterfile = "/oiler.cnt";
+const char PROGMEM * C_OIL_COUNTER_FILE = "/oiler.cnt";
+const char PROGMEM * C_CONFIG_FILE      = "/oiler.ini";
+const char PROGMEM * C_CONFIG_TEMP_FILE = "/oiler.ini.new";
 
 class Configuration {
   public:
@@ -49,7 +51,7 @@ class Configuration {
     void read() { this->fworker(true); }
     void write() { this->fworker(false); }
     bool updateOilCounter(){
-      outFile = _FILESYS.open(oilcounterfile, "w");
+      outFile = _FILESYS.open(C_OIL_COUNTER_FILE, "w");
       if (outFile) {
         outFile.write((const uint8_t *)&this->use, sizeof(this->use));
     //    outFile.write(this->use >> 8);   // simple form
@@ -69,8 +71,8 @@ class Configuration {
       uint8_t pos;
       String key, value;
     
-      inFile = _FILESYS.open(F("/oiler.ini"), "r");
-      if (!readMode) outFile = _FILESYS.open(F("/oiler.new"), "w");
+      inFile = _FILESYS.open(C_CONFIG_FILE, "r");
+      if (!readMode) outFile = _FILESYS.open(C_CONFIG_TEMP_FILE, "w");
       while(inFile.available()) {
         //Lets read line by line from the file
         line = inFile.readStringUntil('\n');
@@ -183,8 +185,8 @@ class Configuration {
       
       if (!readMode) {
         outFile.close();
-        _FILESYS.remove(F("/oiler.ini"));
-        _FILESYS.rename(F("/oiler.new"), F("/oiler.ini"));
+        _FILESYS.remove(C_CONFIG_FILE);
+        _FILESYS.rename(C_CONFIG_TEMP_FILE, C_CONFIG_FILE);
         this->updateOilCounter();   // Spezialbehandlung für Oil Used Counter
       } else {
         this->readOilCounter();     // Spezialbehandlung für Oil Used Counter
@@ -193,7 +195,7 @@ class Configuration {
 
   	//****************** readOilCounter() ********************
     void readOilCounter(){
-      inFile = _FILESYS.open(oilcounterfile, "r");
+      inFile = _FILESYS.open(C_OIL_COUNTER_FILE, "r");
       inFile.read((uint8_t *)&this->use, sizeof(this->use));
       //this->use = inFile.read() * 256 + inFile.read();
       inFile.close();      
