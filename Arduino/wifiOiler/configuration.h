@@ -119,10 +119,6 @@ class Configuration {
               if (readMode) this->otk = value.toInt();
               else outFile.print("otk = " + String(this->otk)+'\n');
             }
-    //        else if (key.equals("use")) {
-    //          if (readMode) this->use = value.toInt();
-    //          else fout.print("use = " + String(this->use)+'\n');
-    //        }
             else if (key.equals(F("ffn"))) {
               if (readMode) this->ffn = String(value);
               else outFile.print("ffn = " + String(this->ffn)+'\n');
@@ -187,9 +183,9 @@ class Configuration {
         outFile.close();
         _FILESYS.remove(C_CONFIG_FILE);
         _FILESYS.rename(C_CONFIG_TEMP_FILE, C_CONFIG_FILE);
-        this->updateOilCounter();   // Spezialbehandlung für Oil Used Counter
+        if (key.equals(F("fbe"))) this->updateOilCounter();   // Spezialbehandlung für Oil Used Counter
       } else {
-        this->readOilCounter();     // Spezialbehandlung für Oil Used Counter
+        if (key.equals(F("fbe"))) this->readOilCounter();     // Spezialbehandlung für Oil Used Counter
       }
     }
 

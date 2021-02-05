@@ -115,7 +115,7 @@ bool handleFileRead(String path)
     }
     else 
     {
-      DEBUG_OUT.print(F("[handleFileRead] Fehler beim Download (open) der Datei: "));
+      DEBUG_OUT.print(F(MSG_DBG_WEB_FILE_READ_ERROR));
       DEBUG_OUT.println(path);
     }
     return true;
@@ -135,14 +135,14 @@ void handleMessage(String message, bool justBack)
   GVwebServer.send( 200, TEXT_HTML, "");
   //GVwebServer.sendContent(F("<!DOCTYPE html><html><head>"));
   GVwebServer.sendContent(F("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">"));
-  GVwebServer.sendContent(F("</head><body><script type=\"text/javascript\">"));
-  GVwebServer.sendContent(F("function msg(){alert(\""));
+  //GVwebServer.sendContent(F("</head><body><script type=\"text/javascript\">"));
+  GVwebServer.sendContent(F("</head><body><script>function msg(){alert(\""));
   GVwebServer.sendContent(message);
   if (justBack)
     GVwebServer.sendContent(F("\");history.back();}"));
   else
     GVwebServer.sendContent(F("\");window.location.replace('/');}"));
-  GVwebServer.sendContent(F("window.onload = msg; </script></body></html>"));
+  GVwebServer.sendContent(F("window.onload=msg;</script></body></html>"));
   GVwebServer.sendContent(""); // this tells web client that transfer is done
   GVwebServer.client().stop();
 }
@@ -152,7 +152,7 @@ void handleMessage(String message, bool justBack)
  ***************************************************/
 void handlePumpTest(void)
 {
-  InitiatePump();
+  TriggerPump();
   handleMessage(F("Pumpentest gestartet"));
 }
 

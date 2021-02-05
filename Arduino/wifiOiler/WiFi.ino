@@ -87,7 +87,7 @@ bool setupWiFi(void) {
       GVmyDisplay.MessageAdd("\n");
       GVmyDisplay.MessageAdd(WiFi.localIP().toString(), 1500);
 
-      DEBUG_OUT.printf(MSG_DBG_CONNECT_SUCCESS, WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
+      DEBUG_OUT.printf(PSTR(MSG_DBG_CONNECT_SUCCESS), WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
       //GVmyLedx.start LED_WIFI_CONNECT_SUCCESS;
       GVmyDisplay.PrintWlanState(WIFI_WLAN);
       connected = true;
@@ -109,7 +109,7 @@ bool setupWiFi(void) {
     GVmyDisplay.MessageAdd(GVoilerConf.apn, 1500);
     WiFi.mode(WIFI_AP);   // only Access Point
     WiFi.softAPConfig(myIP, myIP, IPAddress(255, 255, 255, 0));
-    DEBUG_OUT.printf(MSG_DBG_START_ACCCESS_POINT, GVoilerConf.apn.c_str(), GVoilerConf.app.c_str());
+    DEBUG_OUT.printf(PSTR(MSG_DBG_START_ACCCESS_POINT), GVoilerConf.apn.c_str(), GVoilerConf.app.c_str());
     
     if (WiFi.softAP(GVoilerConf.apn, GVoilerConf.app))
     {
@@ -137,7 +137,7 @@ void setupMDNS(void) {
     while(1); // trigger watch dog
   }
   else 
-    DEBUG_OUT.printf(MSG_DBG_MDNS_STARTED, GVoilerConf.apn.c_str());
+    DEBUG_OUT.printf(PSTR(MSG_DBG_MDNS_STARTED), GVoilerConf.apn.c_str());
 }
 
 /*****************************************************************

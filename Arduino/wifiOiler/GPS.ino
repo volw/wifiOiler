@@ -114,9 +114,9 @@ void checkGPSdata() {
     // aber nicht oefter als 1 mal pro Sekunde. Ausserdem funktioniert Dauerpumpen so auch im WartungsMode:
     if (GVpumpMode != MODE_OFF && GVmeterSincePump >= getModeMeters(GVpumpMode))
     {
-      //DEBUG_OUT.println(F("[checkGPSdata] calling InitiatePump()"));
+      //DEBUG_OUT.println(F("[checkGPSdata] calling TriggerPump()"));
       // Erst pumpen, dann Dauerpumpem nach x mal abschalten, wenn sich Moped bewegt...
-      if (InitiatePump() && GVpumpMode == MODE_PERMANENT)
+      if (TriggerPump() && GVpumpMode == MODE_PERMANENT)
       {
         GVoilCounter++;
         if (isMoving() && (GVoilCounter >= MAX_PUMP_ACTION_WHEN_MOVING))

@@ -186,7 +186,6 @@ void oilerDisplay::PrintMeter(float meter) {
 
   if (!this->MessageActive() && !this->AwaitAcknowledge()) {
     String meterstr = String(meter < 0 ? 0 : (uint16_t)meter);
-    //if (this->MaintenanceMode) meterstr = "MMode";
     
     this->ClearMeterBox();
     this->setCursor(MIDDLE_RIGHT_BOX_RIGHT - getTextWidth(meterstr), MIDDLE_PRINT_Y);
@@ -224,7 +223,7 @@ void oilerDisplay::setMaintenanceMode(bool mmode)
 void oilerDisplay::PrintGpsState(char state) {
 #ifdef _DISPLAY_AVAILABLE_
 
-  if (this->MaintenanceMode) state = GPS_MAINTENANCE; //20200310i im Wartungsmodus gibt's kein GPS
+  if (this->MaintenanceMode) state = GPS_MAINTENANCE; // im Wartungsmodus gibt's kein GPS
   
   if (this->GpsStateContent == state && !this->forceUpdate) return;
   

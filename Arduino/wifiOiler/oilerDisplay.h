@@ -97,12 +97,7 @@ class oilerDisplay {
 #endif    
   public:
     #ifdef _DISPLAY_AVAILABLE_
-    oilerDisplay() : Adafruit_SSD1306(OLED_RESET) {
-//      this->begin(SSD1306_SWITCHCAPVCC, SSD1306_I2C_ADDRESS);
-//      // immer Schriftgröße 2 und weiß
-//      this->setTextSize(2);
-//      this->setTextColor(WHITE);
-    }
+    oilerDisplay() : Adafruit_SSD1306(OLED_RESET) {}
     #endif
     void Init(void);   
     void Check(void);  // wenn nötig, Display aktualisieren
