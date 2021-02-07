@@ -353,7 +353,8 @@ void handleUpdate(void)
         GVwebServer.send( 200, TEXT_HTML, "NOUPDATE" );
         break;
       case UPD_UPLOADING_FILES:
-        GVwebServer.send( 200, TEXT_HTML, GVupdateMessage + "<br>( " + GVupdSizeUploaded + " / " + GVupdFileSizeTotal + " )<br>");
+        //send GVupdateMessage plus temporary progress (bar, % and totals):
+        GVwebServer.send( 200, TEXT_HTML, GVupdateMessage + "<br><progress max='"+GVupdFileSizeTotal+"' value='"+GVupdSizeUploaded+"'></progress>&nbsp;"+((GVupdSizeUploaded * 100) / GVupdFileSizeTotal)+"%<br>"+ GVupdSizeUploaded + " / " + GVupdFileSizeTotal);
         break;
       case UPD_UPDATE_ENDED:
         GVwebServer.send( 200, TEXT_HTML, "UPDATEOK:" + GVupdateMessage);
