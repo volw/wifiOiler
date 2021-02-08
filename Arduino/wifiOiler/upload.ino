@@ -72,12 +72,14 @@ bool sendFile(String fname) {
       DEBUG_OUT.println(F("[sendFile] Starte Übertragung der Datei..."));
       //sendContent(F("POST /upload.php HTTP/1.1"));
       GVwifiClient.println("POST " + GVoilerConf.url + " HTTP/1.1");
-      GVwifiClient.println("Host: " + GVoilerConf.uhn);
-      GVwifiClient.println(F("User-Agent: wifiOiler/0.1"));    // wird auf Serverseite abgefragt - ggf. dort anpassen
+      GVwifiClient.println("Host: " + GVoilerConf.uhn+":"+GVoilerConf.uhp);
+      GVwifiClient.print(F("User-Agent: wifiOiler/"));    // user agent wird auf Serverseite abgefragt - ggf. dort anpassen
+      GVwifiClient.println(VERSION);
       GVwifiClient.println(F("Accept: */*"));
       GVwifiClient.println("Content-Length:" + String(HEADER_LENGTH + GVoutFile.size()+fname.length()));
       GVwifiClient.println("Content-Type: multipart/form-data; boundary=" + boundary);
-      GVwifiClient.println("\r\n--" +  boundary);
+      GVwifiClient.println();
+      GVwifiClient.println("--" +  boundary);
       GVwifiClient.println("Content-Disposition: form-data; name=\"userfile\"; filename=\"" + fname + "\"");
       GVwifiClient.println(F("Content-Type: application/octet-stream\r\n"));
       DEBUG_OUT.println(F("[sendFile] >>> sending file >>>"));
