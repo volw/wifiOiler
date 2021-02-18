@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name wifiOilerLib)(type Legacy)(uri ${KIPRJMOD}/wifiOilerLib.lib)(options "")(descr ""))
+)

@@ -1,7 +1,6 @@
 # no test or temp folders: 
 **/test/
 **/temp/
-**/Schaltung/
 # no such files at all:
 *.exe
 *.bak
