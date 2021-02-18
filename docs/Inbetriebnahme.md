@@ -1,4 +1,4 @@
-# Inbetriebnahme
+# Inbetriebnahme und Einbau
 
 Um die Software zu kompilieren und auf die MCU (Micro Controller Unit, NICHT "Marvel Cinematic Universe") zu laden, sind folgende Schritte notwendig. Eventuell könnt ihr einige Schritte überspringen, je nachdem, ob ihr schon mal mit einem D1 Mini oder einem anderen Microcontroller gearbeitet habt, der auf einem ESP8266 (ursprünglich von der Firma espressif) basiert.
 
@@ -44,7 +44,7 @@ Den Treiber findet man z.B. hier beim [Hersteller](http://www.wch-ic.com/downloa
 
 Jetzt kann kompiliert werden: Sketch -> Überprüfen/Kompilieren. Sollte fehlerfrei durchlaufen, ansonsten Meldungen im unteren Teil der IDE beachten.
 
-Vor dem Hochladen der Dateien und des Programms, bitte die Datei **wifi.ini** im Unterverzeichnis **data** des Sketches anpassen und dort die eigenen WiFi/WLAN Daten eingeben. Der Sketch Ordner lässt sich einfach über die IDE Funktion "Sketch" -> "Sketch-Ordner anzeigen" öffnen.
+Vor dem Hochladen der Dateien und des Programms, bitte die Datei **wifi.ini** im Unterverzeichnis **data** des Sketches anpassen und dort die eigenen WiFi/WLAN Daten eingeben. Der Sketch Ordner lässt sich einfach über das Menü in der IDE öffnen: "Sketch" -> "Sketch-Ordner anzeigen".
 
 Nun die folgenden Schritte ausführen, um das LittleFS zu füllen und die Firmware, bzw. das Programm zu übertragen:
 
@@ -74,7 +74,7 @@ Nachdem der Sketch hochgeladen wurde, wird der Sketch zwar sofort gestartet, man
 > 5599:-------- Initialisierung beendet.
 > ```
 
-Mit der Software können nun die ersten Versuche gestartet werden. Dazu den Browser öffnen und mit "http://wifiOiler.local" verbinden. 
+Mit der Software können nun die ersten Ve1rsuche gestartet werden. Dazu den Browser öffnen und mit "http://wifiOiler.local" verbinden. 
 
 ## Platine
 
@@ -82,6 +82,58 @@ Tipps zur Erstellung der Platine sind im Dokument "ListeBauteile" zu finden. Wer
 
 - die Oberfläche der Platine sollte blank, sauber und korrosionsfrei sein. Wenn z.B. eine kupferbeschichtete Platine etwas länger liegt, bilden sich Ablagerungen, die die Annahme von Lötzinn erschweren. Ggf. mit einem Topfschwamm oder leicht schleifenden Mitteln bearbeiten (aber Vorsicht: man will ja nicht gleich das ganze Kupfer abschleifen!).
 - in gut belüfteten Räumen arbeiten. Auch wenn das Lötzinn heutzutage nicht mehr mit Blei versetzt ist (oder sein sollte), sind die entstehenden Dämpfe bestimmt nicht gesund.
-- als erstes die flachen Teile auflöten (in diesem Fall die Gleichrichterdioden und die Widerstände) und sich dann langsam "hocharbeiten". Zum Schluss die höchsten Teile, sollte in diesem Fall der Elko sein.
+- als erstes die flachen Teile auflöten (in diesem Fall die Gleichrichterdioden und die Widerstände) und sich dann langsam "hocharbeiten". Zum Schluss die höchsten Teile, sollte in diesem Fall der Elko sein. Ggf. können die Bauteile mit Klebeband fixiert werden, damit sie beim anlöten auch richtig sitzen.
 - Es muss kein teurer Lötkolben sein, geregelt wäre aber schön und die Lötspitze sollte nicht zu dick sein (also nicht der Breitmeißel für die Dachrinne).
 - Das GPS Modul kann auf zwei Arten angeschlossen werden, Chip-up oder Chip-down, je nachdem, wo die Antenne verbaut wird. Am besten klebt man sie mit doppelseitigem Klebeband auf die Rückseite des GPS-Moduls und verbaut dieses Chip-down, also so, dass der u-blox Chip auf dem GPS-Modul nach unten zeigt. Wenn dies so geplant ist, dann die zweite Steckbuchsenleiste für Chip-Up Installation weglassen (kollidiert sonst etwas mit dem Antennenanschluss).
+- Zum Schluss die betankte MCU (s.o. "Software kompilieren und hochladen") in die dafür vorgesehenen Buchsenleisten stecken (USB Buchse zur Anschlussleiste)
+
+Hier noch ein Foto eines Versuchsaufbaus (mit angeschlossenem Display):
+
+![Testaufbau](images\testaufbau.jpg)
+
+## Einbau Motorrad
+
+Jetzt geht es an den Einbau. Schon vorab sollte man sich überlegen, wo Platz für Pumpe, Öltank und Öler sein könnte. Danach richten sich u.U. die benötigten Kabel- und Schlauchlängen.
+
+#### Einbau Button und LED im Cockpit
+
+Für den Einbau könnte ein Ausbau des entsprechenden Cockpit-Teils notwendig, bzw. nützlich sein. Es müssen Löcher für den Einbau der LED Fassung und den Button geschaffen werden. Die LED in der Fassung ggf. mit einem Stück Platine kontern und anlöten. Da die vorgeschlagenen Kabel, bzw. die Litzen im Kabel sehr dünn sind, ist das Befestigen der LED etwas fummelig. Für den Button können evtl. auch kleine Stecker nützlich sein. Bei einer frei schwebenden Verlötung können mechanische Belastungen die dünnen LED Anschlüsse schnell brechen lassen. Die großzügige Verwendung von Klebeband schützt so eine Installation enorm ;-). Das Verbindungskabel zum Öler "schlabberfrei" verlegen.
+
+#### Öltank
+
+Den Öltank so anbringen, dass die Öl-führenden Auslässe im Öl liegen und der Entlüftungsstutzen eben nicht. Eine etwas besser zugängliche Stelle ist nützlich (z.B. unter der Sitzbank, wenn möglich). Der Entlüftungsschlauch sollte höher enden, als die Einbauposition des Tanks. Trotzdem ist ein Ventil für den Entlüftungsschlauch sinnvoll. So kann mit Sicherheit vermieden werden, dass durch den Entlüftungsschlauch austretendes Öl die Karre einsaut. Das Befüllen des Tanks sollte schon vor dem endgültigen Einbau erfolgen. Zum Be- oder auch Nachfüllen eignet sich eine Einmalspritze ganz gut (in jeder Apotheke erhältlich). Vorsicht: mit der Spritze kann gut ein Überdruck im Tank erzeugt werden - und das Öl kommt zurück, sobald es die Gelegenheit hat.
+
+Welches Öl man verwendet, ist Geschmacks- und Glaubenssache. Persönlich verwende ich gutes Sägekettenöl. Viskosität und Haftung ist gut und es kostet nicht so viel.
+
+#### Pumpe
+
+Die Pumpe am besten in der Nähe des Tanks installieren, um die Länge der ölgefüllten Schläuche zu verringern. Nur sicherstellen, dass die Schläuche nicht geknickt werden.
+
+#### Auslassdüse
+
+Die Verlegung des Schlauchs von der Pumpe zum Auslass unbedingt **sicher** gestalten. Der Schlauch hat ohne eine sichere Befestigung nichts in der Nähe von beweglichen Teilen zu suchen. Manchmal besteht die Möglichkeit, den Schlauch **durch** die Schwinge direkt bis zum Kettenrad zu verlegen - dort ist er natürlich gut aufgehoben. Ansonsten helfen kleb- oder schraubbare Kabelführungen, Schlauchschellen, Kabelbinder, etc.. Die Schläuche selber müssen natürlich Öl-beständig sein. Der Schlauch zum Auslass sollte etwas steifer ausfallen (Pneumatik Schlauch, Durchmesser s. Auslass Ölpumpe). 
+
+Die Auslassdüse so anbringen, dass sie direkt am Kettenrad kurz über der Kette endet, und zwar so, dass das austretende Öl per Fliehkraft an/in der Kette landet (am besten also mittig unten "bei 6 Uhr"). Die angeschrägte Austrittsöffnung dabei nach außen drehen, damit beim rückwärts rangieren nicht so schnell Dreck in die Düse geschoben wird.
+
+Sitzt der Ausgangsschlauch, diesen oben an der Pumpe nochmal lösen und mit Öl füllen, bis es unten raustropft (etwas unterstellen). Nicht zu viel Luft im Schlauch lassen.
+
+#### Öler
+
+ACHTUNG: hier wird mit Strom hantiert - bitte unbedingt Sicherheitshinweise eures Fahrzeugs beachten. Die hier beschriebene Vorgehensweise geschieht auf eigene Gefahr. Es wird selbstverständlich keine Haftung in jeglicher Art übernommen. Diese Anleitung ist nur ein Vorschlag.
+
+Der Stromanschluss des Ölers wird an Zündung plus abgenommen (oft vorne und hinten vorhanden, ggf. Schaltplan konsultieren, Sicherung zwischenschalten). Das Gehäuse des Ölers muss nicht unbedingt angeschraubt werden - ein Regen- und Spritzwasser geschütztes Plätzchen ist aber sinnvoll. Zur Vorsicht kann der Öler z.B. auch in einen Gefrierbeutel gesteckt/gewickelt werden, da (den Einsatz des vorgeschlagenen Spannungswandlers vorausgesetzt) im Betrieb so gut wie keine Hitze entsteht. Zusätzlich schützt etwas Schaumstoff gegen zu heftige Erschütterungen. Vor dem Einbau sollte aber unbedingt die Erreichbarkeit über WLAN sichergestellt werden. Die erstmalige Programmierung **muss im ausgebauten Zustand** erfolgen (s.o.).
+
+Der Empfang des GPS Moduls ist mit der verwendeten Keramik Aktivantenne recht ordentlich. Unter dem Sozius verbaut, dauert es bis zum ersten Fixpunkt wenige (bis max. ca. 30) Sekunden.
+
+#### Einschalten und Test
+
+Ist alles an Ort und Stelle, kann nun die Zündung eingeschaltet werden. Die LED im Cockpit sollte grün für einige Sekunden leuchten und dann entweder mehrmals kurz grün blinken (mit konfiguriertem WLAN verbunden) oder erst dreimal kurz rot, dann dreimal kurz grün blinken (Access Point erstellt).
+
+Ist jetzt z.B. das Handy mit dem gleichen WLAN verbunden, kann per Browser gleich auf den Öler zugegriffen werden. Wurde der Name des Ölers in der Konfigurationsdatei "oiler.ini" nicht geändert, dann lautet die Adresse "http://wifioiler.local".
+
+Wurde eine Access Point erstellt, dann erst mit diesem verbinden und ebenfalls o.g. Adresse verwenden. Damit sollte man im Hauptmenü des Ölers landen und kann nun einen LED- oder Pumpentest auslösen.
+
+#### Entlüften
+
+Zum Schluss die Pumpe auf Dauerbetrieb stellen, bis unten Öl aus dem Auslass kommt.
+
