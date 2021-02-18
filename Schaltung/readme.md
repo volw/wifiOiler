@@ -1,6 +1,6 @@
 # Schaltung
 
-![Schaltung wifiOiler v4.2 D1-mini](../docs/images/Schaltung wifiOiler v4.2 D1-mini.png)
+![Schaltung wifiOiler v4.2 D1-mini](../docs/images/Schaltung_wifiOiler_v4.2_D1-mini.png)
 
 Abstände und Leiterbahnen wurden großzügig ausgelegt, um Fräsen und Löten zu erleichtern.
 
