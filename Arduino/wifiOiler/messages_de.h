@@ -26,6 +26,9 @@
 #define MSG_ATT_PUMP_DEACTIVATED          "ACHTUNG: Pumpe dauerhaft deaktiviert!!"
 
 // FSBrowser
+#define MSG_DBG_FS_FREE_SPACE_INFO        "[checkFilesystemSpace] LittleFS free: %d bytes = %d GPS records (%dh:%02d)\n" // freespace, gpsrec, gpsmin/60, gpsmin%60
+#define MSG_DBG_RECORDING_STOPPED         "[checkFilesystemSpace] track Aufzeichnung gestoppt"
+#define MSG_DBG_RECORDING_CONTINUED       "[checkFilesystemSpace] track Aufzeichnung fortgesetzt"
 #define MSG_HTML_TARGET_FILE_EXISTS       "Zieldatei existiert bereits"
 #define MSG_HTML_SOURCE_FILE_NOT_EXISTS   "Quelldatei existiert nicht"
 #define MSG_HTML_ERROR_RENAMING_FILE      "FEHLER: Datei konnte nicht umbenannt werden"
@@ -46,8 +49,9 @@
 
 // WiFi
 #define MSG_DBG_ADD_WIFI_TO_MULTIWIFI     "[readWifiData] folgendes WLAN wird gesucht: " // followed by SSID from file "/wifi.ini"
-#define MSG_DBG_START_SEARCHING_WIFI      "[setupWiFi] suche bekanntes WLAN..."
-#define MSG_DBG_WIFI_NOT_CONNECTED        "[setupWiFi] keine WLAN Verbindung"
+#define MSG_DBG_START_SEARCHING_WIFI      "[setupWiFi] suche WLAN.."
+#define MSG_DBG_TRY_CONNECT_WIFI          "[setupWiFi] versuche, mit bekanntem WLAN zu verbinden.."
+#define MSG_DBG_WIFI_NOT_CONNECTED        "[setupWiFi] Keine WLAN Verbindung"
 #define MSG_DBG_NO_WIFI_CONFIGS_FOUND     "[setupWiFi] Keine WLAN Konfiguration(en) gefunden"
 #define MSG_DBG_CONNECT_SUCCESS           "[setupWiFi] verbunden mit '%s', IP:%s\n"  // printf(), SSID, local IP
 #define MSG_DBG_START_ACCCESS_POINT       "[setupWiFi] Erstelle WLAN Access Point '%s' - Kennwort: '%s'\n"	// printf()

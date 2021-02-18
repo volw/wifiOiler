@@ -75,6 +75,7 @@
  * 4.2.009: code completely restructured
  * 4.2.010: ota update optimized
  * 4.2.011: reboot routine renewed, new reboot.htm
+ * 4.2.012: free space calculation fixed (automatic re-start of track recording added)
  * 
  * wishlist (x = erledigt)
  * --------
@@ -117,7 +118,7 @@
 // _DISPLAY_AVAILABLE_: wenn undefiniert, wird etwas Speicherplatz (7 KB) gespart - ansonsten keine Auswirkung (auch wenn kein Display angeschl. ist)
 // _NO_PUMP_: nur während Entwicklung sinnvoll: Pumpe wird dauerhaft deaktiviert, damit's nicht ständig piept
 
-#define VERSION "4.2.011"
+#define VERSION "4.2.012"
 #define _DISPLAY_AVAILABLE_
 //#define _NO_PUMP_
 

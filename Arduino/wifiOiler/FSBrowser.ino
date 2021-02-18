@@ -22,32 +22,26 @@
  **********************************************************************/
 void checkFilesystemSpace(void)
 {
-  if (GVcurrentfpw > 0) {  // only check, if recording still active
-    // wenn nur noch Platz für weniger als MIN_MINUTES_FREE, dann tracking deaktivieren
+  if (GVoilerConf.fpw > 0){  // also nur, wenn aufgezeichnet werden SOLLTE
     FSInfo fs_info;
     if (_FILESYS.info(fs_info)) {
       uint32_t freespace = fs_info.totalBytes - (uint32_t)(fs_info.usedBytes * 1.05);
       uint32_t gpsrec = freespace / GPS_RECORD_SIZE;    // Platz für (gpsrec) GPS Records
-      uint32_t gpsmin = (gpsrec * GVoilerConf.fpw) / 60;     // Umrechnung in Minuten
-      uint16_t gpshours = gpsmin / 60;
-  
-      // diese Abfrage unbedingt VOR gpsmin "Reduzierung"
-      if (GVoilerConf.fpw > 0) {
-        GVcurrentfpw = gpsmin < MIN_MINUTES_FREE ? 0 : GVoilerConf.fpw;
+      uint32_t gpsmin = ((gpsrec * GVoilerConf.fpw) / 60) - MIN_MINUTES_FREE;     // Umrechnung in Gesamt-Minuten
+
+      DEBUG_OUT.printf(PSTR(MSG_DBG_FS_FREE_SPACE_INFO), freespace, gpsrec, gpsmin/60, gpsmin%60);
+      
+      if (GVcurrentfpw > 0 && gpsmin < MIN_MINUTES_FREE) {  // Aufzeichnung aktiv aber zu wenig Platz?
+        GVcurrentfpw = 0;                                   // Aufzeichnung deaktivieren
+        DEBUG_OUT.println(F(MSG_DBG_RECORDING_STOPPED));
       }
-      else GVcurrentfpw = 0;  // to be sure... (Aufzeichnung deaktiviert)
-      
-      gpsmin = gpsmin % 60;
-  
-      String out = String(gpsmin);
-      if (out.length() < 2) out = '0' + out;
-      out = "LittleFS free: " + String(freespace) + " bytes = " + String(gpsrec) + " GPS records (" + String(gpshours) + ":" + out + ")";
-      
-      DEBUG_OUT.println(out);
-  
+      else if (GVcurrentfpw <= 0 && gpsmin >= MIN_MINUTES_FREE) {
+        GVcurrentfpw = GVoilerConf.fpw;
+        DEBUG_OUT.println(F(MSG_DBG_RECORDING_CONTINUED));
+      }
       GVlastFScheck = millis();
     }
-  } //else DEBUG_OUT.println(F("[checkFilesystemSpace] no check / tracking allready inactive"));
+  }
 }
 
 /****************************************************

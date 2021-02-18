@@ -340,8 +340,8 @@ void writeGPSInfo(float dist) {
     GVlastGPSwrite = millis();
     GVcumDist = 0;
 
-    // alle MIN_MINUTES_FREE nachsehen, ob noch Platz im Filesystem ist - sonst Aufzeichnung einstellen
-    if (((millis() - GVlastFScheck) / 60000) > MIN_MINUTES_FREE) 
+    // alle MIN_MINUTES_FREE-1 nachsehen, ob noch Platz im Filesystem ist - sonst Aufzeichnung einstellen
+    if (((millis() - GVlastFScheck) / 60000) > MIN_MINUTES_FREE-1) 
     {
       checkFilesystemSpace();
     }

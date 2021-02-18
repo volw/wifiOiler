@@ -1,6 +1,7 @@
 DNSServer GVdnsServer;
 ESP8266WebServer GVwebServer(80);
 ESP8266WiFiMulti GVwifiMulti;
+
 File GVoutFile, GVfsUploadFile;
 Configuration GVoilerConf;
 

@@ -52,10 +52,6 @@ uint8_t readWifiData(void) {
 
 /*****************************************************************
  * setup WiFi
- * used, but not defined here:
- * -   GVmyIP : IP-Adresse des Access Points
- * - GVoilerConf.apn : SSID von diesem Hotspot
- * - GVoilerConf.app : Passwort, um sich mit diesem Hotspot zu verbinden.
  * Versucht, mit einem bekanntem Wifi Netz zu verbinden - ist keins da oder
  * schlägt die Verbindung fehl, wird ein Access point errichtet...
  */
@@ -69,11 +65,11 @@ bool setupWiFi(void) {
   if (readWifiData() > 0)
   {
     WiFi.mode(WIFI_STA);   // Only station Mode
-    DEBUG_OUT.print(F("[setupWiFi] Connecting Wifi "));
+    DEBUG_OUT.print(F(MSG_DBG_TRY_CONNECT_WIFI));
     GVmyDisplay.PrintMessage("Suche WLAN");
 
     byte count = 0;
-    while ((GVwifiMulti.run() != WL_CONNECTED) && (count < 10)) {
+    while ((GVwifiMulti.run() != WL_CONNECTED) && (count < 16)) { // try 8s to connect (normally 2-3 is enough)
       delay(500);
       DEBUG_OUT.print(".");
       GVmyDisplay.MessageAdd(".");
@@ -88,7 +84,7 @@ bool setupWiFi(void) {
       GVmyDisplay.MessageAdd(WiFi.localIP().toString(), 1500);
 
       DEBUG_OUT.printf(PSTR(MSG_DBG_CONNECT_SUCCESS), WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
-      //GVmyLedx.start LED_WIFI_CONNECT_SUCCESS;
+      GVmyLedx.start LED_WIFI_CONNECT_SUCCESS;
       GVmyDisplay.PrintWlanState(WIFI_WLAN);
       connected = true;
     } 
@@ -96,7 +92,6 @@ bool setupWiFi(void) {
     {
       GVmyDisplay.MessageAdd("\nFailed!",1500);
       DEBUG_OUT.println(F(MSG_DBG_WIFI_NOT_CONNECTED));
-      //GVmyLedx.start LED_WIFI_CONNECT_FAILED;
       WiFi.disconnect();
     }
     GVwifiMulti.cleanAPlist();
@@ -117,12 +112,17 @@ bool setupWiFi(void) {
       DEBUG_OUT.print(F(MSG_DBG_ACCESS_POINT_IP));
       DEBUG_OUT.println(WiFi.softAPIP());
       GVmyDisplay.PrintWlanState(WIFI_ACCESSPOINT);
+      GVmyLedx.add LED_WIFI_CONNECT_FAILED;
+      GVmyLedx.add LED_WIFI_CONNECT_SUCCESS;
+      GVmyLedx.start();
       connected = true;
     }
     else 
     {
       DEBUG_OUT.println(F(MSG_DBG_ACCESS_POINT_FAILED));
       GVmyDisplay.PrintWlanState(WIFI_INACTIVE);
+      GVmyLedx.start LED_WIFI_CONNECT_FAILED;
+      WiFi.disconnect();
     }
   }
   return connected;
@@ -162,12 +162,8 @@ void toggleWiFi(void)
   
       setupMDNS();
       delay(100);
-      GVmyLedx.start LED_WIFI_CONNECT_SUCCESS;
       GVwifiSleeping = false;
       GVswitchOnMillis = millis();
-    } else {
-      GVmyLedx.start LED_WIFI_CONNECT_FAILED;
-      //TODO: error handling, possibly undefined wifi state if !wifiConnected
     }
     GVmyLedx.delay();
   }
@@ -187,14 +183,15 @@ void toggleWiFi(void)
 /***********************************************
  * checkWiFi: WiFi wird ausgeschaltet, wenn sich
  * die Kiste bewegt.
+ * nur aufgerufen in main loop, wenn WiFi off!
  ***********************************************/
 void checkWiFi(void)
 {
-  if ((GVlastWiFiCheck + 3000) < millis()) {
-    if ((GVoilerConf.wts * 1000) < millis() && isMoving() && ((GVswitchOnMillis + 30000) < millis())) 
+  if ((GVoilerConf.wts * 1000) < millis() && (GVlastWiFiCheck + 10000) < millis()) {
+    if (isMoving() && ((GVswitchOnMillis + 30000) < millis())) 
       toggleWiFi(); // WiFi ggf. ausschalten
-    else 
-      if (!GVmyLedx.isActive() && !GVmaintenanceMode) GVmyLedx.start LED_SHOW_WIFI_ON;  // nur nicht GVmaintenanceMode, sonst zu viel Geblinke...
+    else if (!GVmyLedx.isActive() && !GVmaintenanceMode) 
+      GVmyLedx.start LED_SHOW_WIFI_ON;  // nur nicht GVmaintenanceMode, sonst zu viel Geblinke...
     GVlastWiFiCheck = millis();
   }  
 }

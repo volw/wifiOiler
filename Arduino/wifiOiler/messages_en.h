@@ -26,6 +26,9 @@
 #define MSG_ATT_PUMP_DEACTIVATED          "WARNING: Pump deactivated by define!!"
 
 // FSBrowser
+#define MSG_DBG_FS_FREE_SPACE_INFO        "[checkFilesystemSpace] LittleFS free: %d bytes = %d GPS records (%dh:%02d)\n" // freespace, gpsrec, gpsmin/60, gpsmin%60
+#define MSG_DBG_RECORDING_STOPPED         "[checkFilesystemSpace] track recording stopped"
+#define MSG_DBG_RECORDING_CONTINUED       "[checkFilesystemSpace] track recording continued"
 #define MSG_HTML_TARGET_FILE_EXISTS       "Target file exists"
 #define MSG_HTML_SOURCE_FILE_NOT_EXISTS   "Source file does'nt exist"
 #define MSG_HTML_ERROR_RENAMING_FILE      "Could'nt rename file"
@@ -46,7 +49,8 @@
 
 // WiFi
 #define MSG_DBG_ADD_WIFI_TO_MULTIWIFI     "[readWifiData] Add wifi to wifiMulti: " // followed by SSID from file "/wifi.ini"
-#define MSG_DBG_START_SEARCHING_WIFI      "[setupWiFi] looking for known WLAN..."
+#define MSG_DBG_START_SEARCHING_WIFI      "[setupWiFi] looking for WLAN.."
+#define MSG_DBG_TRY_CONNECT_WIFI          "[setupWiFi] try to connect to configured WLAN.."
 #define MSG_DBG_WIFI_NOT_CONNECTED        "[setupWiFi] not connected to any WiFi"
 #define MSG_DBG_NO_WIFI_CONFIGS_FOUND     "[setupWiFi] no WiFi configuration(s) found in 'wifi.ini'"
 #define MSG_DBG_CONNECT_SUCCESS           "[setupWiFi] connected to '%s', IP:%s\n"  // printf(), SSID, local IP
