@@ -89,7 +89,7 @@ Tipps zur Erstellung der Platine sind im Dokument "ListeBauteile" zu finden. Wer
 
 Hier noch ein Foto eines Versuchsaufbaus (mit angeschlossenem Display):
 
-![Testaufbau](images\testaufbau.jpg)
+![Testaufbau](images/testaufbau.jpg)
 
 ## Einbau Motorrad
 
