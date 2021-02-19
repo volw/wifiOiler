@@ -24,7 +24,8 @@
 
   #define SCREEN_WIDTH 128
   #define SCREEN_HEIGHT 64
-  #define SSD1306_I2C_ADDRESS 0x3C
+  #define SSD1306_I2C_ADDRESS 0x3C  // could be 0x3D
+  #define OLED_RESET -1   // Reset pin # (or -1 if sharing Arduino reset pin)
   
   #define TOP_PRINT_Y 4
   #define TOP_LINE_TOP 1
@@ -78,7 +79,6 @@
   #define BOTTOM_BOX_5_RIGHT 126
   #define BOTTOM_BOX_5_WIDTH (BOTTOM_BOX_5_RIGHT - BOTTOM_BOX_5_LEFT + 1)
   
-  #define OLED_RESET 2
   #define KMH_BUFFER_LENGTH 4
   #define METER_BUFFER_LENGTH 6
 #endif
