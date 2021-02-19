@@ -4,7 +4,7 @@
 
 Vorne im Cockpit fand sich schnell ein Plätzchen für den Button und die LED (sorry, etwas unscharf):
 
-![ATSD06_cockpit](D:\Volkhard\_Projects\wifiOiler\_git_\wifiOiler\EinbauBeispiele\pics\ATSD06_cockpit.jpg)
+![ATSD06_cockpit](pics/ATSD06_cockpit.jpg)
 
 Für die Montage musste allerdings das halbe Fahrzeug auseinandergebaut werden. Anleitungen gibt's aus der Juhutube.
 
