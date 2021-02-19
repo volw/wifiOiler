@@ -20,11 +20,12 @@
 #define _OILER_DISPLAY_H_
 
 #ifdef _DISPLAY_AVAILABLE_
-  // #include <Adafruit_GFX.h>
-  #include "src/Adafruit_SSD1306/Adafruit_SSD1306.h"
-#endif
+  #include <Adafruit_SSD1306.h>
+
+  #define SCREEN_WIDTH 128
+  #define SCREEN_HEIGHT 64
+  #define SSD1306_I2C_ADDRESS 0x3C
   
-#ifdef _DISPLAY_AVAILABLE_
   #define TOP_PRINT_Y 4
   #define TOP_LINE_TOP 1
   #define TOP_LINE_BOTTOM 20
@@ -97,7 +98,7 @@ class oilerDisplay {
 #endif    
   public:
     #ifdef _DISPLAY_AVAILABLE_
-    oilerDisplay() : Adafruit_SSD1306(OLED_RESET) {}
+    oilerDisplay() : Adafruit_SSD1306(SCREEN_WIDTH,SCREEN_HEIGHT,&Wire,OLED_RESET) {}
     #endif
     void Init(void);   
     void Check(void);  // wenn nötig, Display aktualisieren
