@@ -25,9 +25,9 @@ Um ein LittleFS Dateisystem auf der MCU einzurichten und zu nutzen, bzw. Dateien
 
 Um die Öler Software erfolgreich zu kompilieren, benötigen wir noch einige Bibliotheken:
 
-- Adafruit GFX Library: in der Arduino IDE über das Menü "Werkzeuge" -> "Bibliotheken verwalten" suchen nach "adafruit_gfx" und diese installieren. Erscheint eine Meldung, dass noch andere abhängige Bibliotheken existieren ("Would you like to install also all the missing dependencies?)", bitte "Install all" wählen.
+- Adafruit SSD1306 Library (für die Ansteuerung des Displays): in der Arduino IDE über das Menü "Werkzeuge" -> "Bibliotheken verwalten", nach "adafruit ssd1306" suchen und diese installieren. Erscheint eine Meldung, dass noch andere abhängige Bibliotheken existieren ("Would you like to install also all the missing dependencies?)", bitte "Install all" wählen. 
 - TinyGPS++ Library: diese Lib ist aktuell nicht über die Bibliotheksverwaltung installierbar. Herunterladen kann man sie von der [github Seite von Mikal Hart](https://github.com/mikalhart/TinyGPSPlus) Habt ihr die Zip-Datei heruntergeladen, extrahiert ihr den enthaltenen Ordner in das "portable\sketchbook\libraries" Verzeichnis. Danach müsste das nach unserem Beispiel so aussehen: "F:\apps\arduino-1.8.13\portabe\sketchbook\libraries\TinyGPSPlus-master" (das "-master", welches von github angehängt wird und den branch bezeichnet, bitte entfernen).
-- Wird die IDE nun beendet und wieder gestartet, können im Menü unter "Datei" -> "Beispiel" -> "TinyGPS++" einige Beispiel Sketches gefunden werden.
+- Wird die IDE nun beendet und wieder gestartet, können im Menü unter "Datei" -> "Beispiele" -> "TinyGPS++" einige Beispiel Sketches gefunden werden.
 
 #### Software kompilieren und hochladen
 
