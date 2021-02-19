@@ -49,7 +49,7 @@ Die einzelnen Funktionen im File Browser:
 
 - #### Save
 
-  Sichern der Datei, die im oberen Rahmen des Eingabebereichs angezeigt wird. Gesichert wird der Inhalt, der im Eingabebereich angezeigt wird. [Save] funktioniert im Grunde wie ein Upload (LED und Displayanzeige wie beim Upload, s.o.)
+  Mit dieser Funktion wird grundsätzlich der Inhalt des Eingabebereichs unter dem Dateinamen gespeichert, der im oberen Rahmen des Eingabebereichs angezeigt wird. Existiert diese Datei, wird sie mit dem neuen Inhalt überschrieben. **[Save]** funktioniert dabei wie ein Upload (LED und Displayanzeige wie beim Upload, s.o.). Es wird keine Bestätigung angezeigt (außer im Display).
 
 - #### New File
 
