@@ -1,6 +1,6 @@
 # Schaltung
 
-Die Schaltung wurde zuletzt mit KiCad 5.1.9_1 bearbeitet.
+Die Schaltung wurde zuletzt mit KiCad 5.1.9_1 bearbeitet. Alle Symbole und Footprints wurden lokal verlinkt und sind in den Verzeichnissen enthalten (Symbole in wifiOilerLib.lib, Footprints in ProjectFootprints.pretty).
 
 ![Schaltung wifiOiler v4.2 D1-mini](../docs/images/Schaltung_wifiOiler_v4.2_D1-mini.png)
 
