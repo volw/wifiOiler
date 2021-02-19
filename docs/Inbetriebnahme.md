@@ -1,6 +1,6 @@
 # Inbetriebnahme und Einbau
 
-Um die Software zu kompilieren und auf die MCU (Micro Controller Unit, NICHT "Marvel Cinematic Universe") zu laden, sind folgende Schritte notwendig. Eventuell könnt ihr einige Schritte überspringen, je nachdem, ob ihr schon mal mit einem D1 Mini oder einem anderen Microcontroller gearbeitet habt, der auf einem ESP8266 (ursprünglich von der Firma espressif) basiert.
+Um die Software zu kompilieren und auf den "Wemos D1 mini" (s. Teileliste) oder allgemein SoC (System on a Chip) zu laden, sind folgende Schritte notwendig. Eventuell könnt ihr einige Schritte überspringen, je nachdem, ob ihr schon mal mit einem D1 Mini oder einem anderen Microcontroller gearbeitet habt, der auf einem ESP8266 (ursprünglich von der Firma espressif) basiert.
 
 ## Arduino Entwicklungsumgebung
 
@@ -10,12 +10,12 @@ Die Entwicklungsumgebung wird ab jetzt der Einfachheit halber IDE genannt. Hier 
 - den in der Zip-Datei enthaltenen Ordner an einen sicheren Platz kopieren, mein Beispiel: "F:\apps". Nach dem entpacken sollte es also einen Ordner "F:\apps\arduino-1.8.13" geben (bzw. mit einer höheren Versionsnummer).
 - In diesem Verzeichnis, neben den anderen bereits enthaltenen Ordnern, einen Ordner mit Namen "portable" anlegen. Nach unserem Beispiel also "F:\apps\arduino-1.8.13\portable". Damit wird der IDE gesagt, dass es sich um eine sogenannte portable Installation handelt. 
 - Die im Verzeichnis "F:\apps\arduino-1.8.13" enthaltene arduino.exe starten. Eventuell kommt eine Meldung der Windows Firewall, dass "einige Features dieser App blockiert wurden". Unter Pfad wird der Windows Java Interpreter angegeben, der mit der Arduino IDE gekommen ist (nach unserem Beispiel: "F:\apps\arduino-1.8.13\java\bin\javaw.exe"). Diese Meldung kann mit "Zugriff zulassen" beantwortet werden.
-- Um die Arduino IDE für die Programmierung von ESP8266 basierten MCUs vorzubereiten, starten wir in der IDE den Einstellungsdialog, im Menü zu finden unter "Datei" -> "Voreinstellungen". Im unteren Teil des Fensters findet sich ein Eingabefeld "Zusätzliche Boardverwalter-URLs:". Hier wird folgender Link eingetragen: https://arduino.esp8266.com/stable/package_esp8266com_index.json. Dann den Dialog mit "OK" bestätigen.
+- Um die Arduino IDE für die Programmierung von ESP8266 basierten SoCs vorzubereiten, starten wir in der IDE den Einstellungsdialog, im Menü zu finden unter "Datei" -> "Voreinstellungen". Im unteren Teil des Fensters findet sich ein Eingabefeld "Zusätzliche Boardverwalter-URLs:". Hier wird folgender Link eingetragen: https://arduino.esp8266.com/stable/package_esp8266com_index.json. Dann den Dialog mit "OK" bestätigen.
 - Dann die Boardverwaltung aufrufen, zu finden im Menü unter "Werkzeuge" -> "Board: ..." -> "Boardverwalter". Im oberen Eingabefeld "ESP8266" eingeben. Es sollte ein Treffer "esp8266" und darunter "by ESP8266 Community" angezeigt werden. Diesen Treffer anwählen, bzw. "Installieren" wählen. Die Installation kann ein wenig dauern. Wenn man danach einen Blick in das "portable" (s.o.) Verzeichnis wirft, sollten dort einige Unterverzeichnisse und Dateien zu finden sein, wie "sketchbook" oder "packages".
 
 #### LittleFS Uploader
 
-Um ein LittleFS Dateisystem auf der MCU einzurichten und zu nutzen, bzw. Dateien dorthin hochzuladen, kann ein Upload Tool in die Arduino IDE integriert werden. Es lädt auf Knopfdruck alle Dateien hoch, die sich im Unterverzeichnis "data" eines Sketches befinden.
+Um ein LittleFS Dateisystem auf dem SoC einzurichten und zu nutzen, bzw. Dateien dorthin hochzuladen, kann ein Upload Tool in die Arduino IDE integriert werden. Es lädt auf Knopfdruck alle Dateien hoch, die sich im Unterverzeichnis "data" eines Sketches befinden.
 
 - Im Verzeichnis "sketchbook" ein Unterverzeichnis mit Namen "tools" anlegen (nach unserem Beispiel: "F:\apps\arduino-1.8.13\sketchbook\tools").
 - Von der github Seite [LittleFS Upload Tool](https://github.com/earlephilhower/arduino-esp8266littlefs-plugin/releases) das aktuellste Release herunterladen und das in der Zip-Datei enthaltene Verzeichnis in das tools Verzeichnis kopieren. Das Ergebnis sollte nach unserem Beispiel etwa so aussehen: "F:\apps\arduino-1.8.13\portable\sketchbook\tools\ESP8266LittleFS\tool". In diesem Verzeichnis befindet sich das eigentliche tool "esp8266littlefs.jar" (Stand Februar 2021).
@@ -31,7 +31,7 @@ Um die Öler Software erfolgreich zu kompilieren, benötigen wir noch einige Bib
 
 #### Software kompilieren und hochladen
 
-Nun sind alle Voraussetzungen erfüllt und wir können die MCU mit einem Micro-USB Kabel anschließen. In der Arduino IDE sind nun folgende Werte festzulegen:
+Nun sind alle Voraussetzungen erfüllt und wir können den "Wemos D1 mini" mit einem Micro-USB Kabel anschließen. In der Arduino IDE sind nun folgende Werte festzulegen:
 
 - Werkzeuge -> Board -> ESP8266 Boards (...) -> LOLIN (WEMOS) D1 R2 & mini
 
@@ -51,7 +51,7 @@ Nun die folgenden Schritte ausführen, um das LittleFS zu füllen und die Firmwa
 - Werkzeuge -> ESP8266 LittleFS Data Upload (häufiger Fehler: serieller Monitor ist geöffnet)
 - Sketch -> Hochladen
 
-Nachdem der Sketch hochgeladen wurde, wird der Sketch zwar sofort gestartet, man sieht aber nicht so viel. Dazu nun den seriellen Monitor starten und unten auf 9600 Baud einstellen. Den seriellen Monitor findet man in der IDE über "Werkzeuge" -> "Serieller Monitor". Die MCU eventuell über den Reset Knopf neu starten. Die Ausgabe im seriellen Monitor sollte dann etwa so aussehen:
+Nachdem der Sketch hochgeladen wurde, wird der Sketch zwar sofort gestartet, man sieht aber nicht so viel. Dazu nun den seriellen Monitor starten und unten auf 9600 Baud einstellen. Den seriellen Monitor findet man in der IDE über "Werkzeuge" -> "Serieller Monitor". Den "Wemos D1 mini" eventuell über den Reset Knopf neu starten. Die Ausgabe im seriellen Monitor sollte dann etwa so aussehen:
 
 > ```
 > ⸮$N⸮h⸮HdCZ⸮⸮B`⸮⸮
@@ -85,7 +85,7 @@ Tipps zur Erstellung der Platine sind im Dokument "ListeBauteile" zu finden. Wer
 - als erstes die flachen Teile auflöten (in diesem Fall die Gleichrichterdioden und die Widerstände) und sich dann langsam "hocharbeiten". Zum Schluss die höchsten Teile, sollte in diesem Fall der Elko sein. Ggf. können die Bauteile mit Klebeband fixiert werden, damit sie beim anlöten auch richtig sitzen.
 - Es muss kein teurer Lötkolben sein, geregelt wäre aber schön und die Lötspitze sollte nicht zu dick sein (also nicht der Breitmeißel für die Dachrinne).
 - Das GPS Modul kann auf zwei Arten angeschlossen werden, Chip-up oder Chip-down, je nachdem, wo die Antenne verbaut wird. Am besten klebt man sie mit doppelseitigem Klebeband auf die Rückseite des GPS-Moduls und verbaut dieses Chip-down, also so, dass der u-blox Chip auf dem GPS-Modul nach unten zeigt. Wenn dies so geplant ist, dann die zweite Steckbuchsenleiste für Chip-Up Installation weglassen (kollidiert sonst etwas mit dem Antennenanschluss).
-- Zum Schluss die betankte MCU (s.o. "Software kompilieren und hochladen") in die dafür vorgesehenen Buchsenleisten stecken (USB Buchse zur Anschlussleiste)
+- Zum Schluss den betankten "Wemos D1 mini" (s.o. "Software kompilieren und hochladen") in die dafür vorgesehenen Buchsenleisten stecken (USB Buchse zur Anschlussleiste)
 
 Hier noch ein Foto eines Versuchsaufbaus (mit angeschlossenem Display):
 
