@@ -8,6 +8,6 @@ Abstände und Leiterbahnen wurden großzügig ausgelegt, um Fräsen und Löten z
 
 Noch ist eine Leiterbahn auf der zweiten Seite vorhanden, die aber auch noch eliminiert werden kann, wenn die Leiterbahnen, die zum Displayanschluss führen, etwas umgeroutet werden. Für eine Auftragsfertigung ist es fast egal, ob ein- oder zweiseitig, da viele Fertiger einseitige Platinen gar nicht mehr anbieten. Möchte man die Platine selber fräsen, sollte sie natürlich einseitig sein. Hier die Änderung, die dazu notwendig wäre (oben die aktuelle Ansicht, darunter die Änderung)
 
-<img src="../docs/images/PlatZweiseitig.jpg" alt="Platine zweiseitig" style="zoom:33%;" />
+<img src="../docs/images/PlatZweiseitig.jpg" alt="Platine zweiseitig" width="270" height="160" /> 
 
-<img src="../docs/images/PlatEinseitig.jpg" alt="Platine einseitig" style="zoom:33%;" />
+<img src="../docs/images/PlatEinseitig.jpg" alt="Platine einseitig" width="280" height="160" />
