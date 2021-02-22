@@ -33,9 +33,15 @@ Die meisten hier gelisteten Teile habe ich bei reichelt.de bezogen und verlinke 
 * Ggf. noch ein Ventil für den Entlüftungsschlauch am Tank. Durch heftige Schüttelbewegungen im Gelände kann eventuell durch den Entlüftungsschlauch Öl entweichen ([Beispiel](https://www.amazon.de/dp/B07CMRJ314/ref=pe_3044161_189395811_TE_SCE_3p_dp_1)).
 #### Anmerkungen
 * Die oben erwähnten Abstandsbolzen für die GPS-Modul Montage sind leider nicht wirtschaftlich zu beschaffen. Eigentlich kann man diese nur in Sortimentsboxen finden, die sich auch noch irgendwie viel zu teuer anfühlen (8-10,- Euro für eine Handvoll Plastik) und sehr wahrscheinlich nur teilweise gebraucht werden. Manchmal kann man solche Bolzen beim Auseinandernehmen von Elektroschrott finden. In der Größe M3 sind sie zwar etwas wuchtig, aber auch sehr stabil. M2 ist für die größeren Öffnungen im GPS-Modul schon fast zu klein. Kunststoff oder Messing ist Geschmacksache, man sollte aber daran denken, dass Messing leitfähig ist (noch besser als Zinn). Sehr passend sind hier M3 Varianten aus Kunststoff.
+
 * Bei der Wahl der Kondensatoren und der entsprechenden Schaltung rund um den Spannungswandler gibt es vielleicht Optimierungsbedarf. Ich habe damit zu wenig Ahnung/Erfahrung und habe mir Teile der Schaltung im Internet zusammengesucht. Eins ist aber sicher: die Schaltung verrichtet bei mir seit drei Jahren einwandfreie Dienste. Vorschläge zur Optimierung nehme ich aber gerne entgegen. Anfangs habe ich übrigens lineare Spannungswandler (wie den LF50CV) verwendet - die wurden mir aber zu heiß.
+
 * die 8er Stiftleiste durchzutrennen, um zwei 4er Leisten zu bekommen kann schon mal in die Hose gehen. Glatt in der Mitte zu brechen ist schon eine Herausforderung, besser ist schneiden, wobei das Material schon recht hart ist. Wenn man es wirklich sauber haben will, bestellt man sich 4er Leisten. Ich persönlich bestelle immer 16er und schneide sie zurecht.
+
 * Als GPS Modul verwende ich die älteren aber sehr bewährten Neo-6M Module von u-blox. Die 8er Reihe habe ich auch schon getestet (in der Grundkonfiguration) und bin damit auch sehr zufrieden. Sicherlich kann man noch mehr aus den neueren Modulen herausholen. Für eine genauere Analyse fehlte mir aber bis jetzt die Zeit. Für die Auswahl ist aber wichtig, was auf dem verbauten u-blox Chip steht und nicht in der Artikelbeschreibung. Schon mehrfach habe ich gehört, dass das billigste Suchergebnis bei z.B. ebay nicht unbedingt das war, was es versprach...
+
+  <img src="images/NEO-6M.jpg" alt="NEO-6M" height="250"/>
+
 * Das Display ist mehr eine Spielerei. Eigentlich würde ich das gerne mit Button und LED am Lenker verbauen, habe aber bis jetzt kein passendes Gehäuse kaufen/herstellen können. Während der Bauphase liefert es aber nützliche Informationen, wie z.B. den eingestellten Pumpenmodus und ob GPS empfangen wird.
 # Platine
 Um eine passende Platine zu erstellen, gibt es verschiedene Möglichkeiten. Folgende habe ich ausprobiert:
