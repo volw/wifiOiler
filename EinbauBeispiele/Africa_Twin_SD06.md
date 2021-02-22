@@ -6,7 +6,7 @@ Vorne im Cockpit fand sich schnell ein Plätzchen für den Button und die LED (s
 
 ![ATSD06_cockpit](pics/ATSD06_cockpit.jpg)
 
-Für die Montage musste allerdings das halbe Fahrzeug auseinandergebaut werden. Ohne hilfreiche Anleitungen, die auf youtube zu finden waren, wäre es kaum gegangen.
+Für die Montage musste allerdings das halbe Fahrzeug auseinandergebaut werden. Zum Glück gab es viele hilfreiche Anleitungen auf youtube (Seiten- und Frontverkleidung Ab- und Anbau).
 
 Öltank und Pumpe wurden unter dem Fahrersitz untergebracht, der Öler unterm Sozius. Stromabnahme hinten links (direkt ans Kabel gelötet - es soll aber auch Stecker geben...).
 
