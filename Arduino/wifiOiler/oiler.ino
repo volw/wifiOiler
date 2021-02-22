@@ -46,8 +46,11 @@ void setNewMode(tPumpMode newMode)
   
   GVmyDisplay.PrintModeStr(getPumpModeStr(GVpumpMode));
   //LED Response einleiten:
-  if (newMode == MODE_OFF) GVmyLedx.start LED_SWITCH_MODE_OFF;
-  else GVmyLedx.start LED_SWITCH_MODE_RESPONSE;
+  GVmyLedx.reset();
+  GVmyLedx.add (0, 800); // vorherige Pause
+  if (newMode == MODE_OFF) GVmyLedx.add LED_SWITCH_MODE_OFF;
+  else GVmyLedx.add LED_SWITCH_MODE_RESPONSE;
+  GVmyLedx.start();
 }
 
 /**************************************************
