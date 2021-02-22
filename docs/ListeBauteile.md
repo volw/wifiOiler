@@ -38,7 +38,7 @@ Die meisten hier gelisteten Teile habe ich bei reichelt.de bezogen und verlinke 
 
 * die 8er Stiftleiste durchzutrennen, um zwei 4er Leisten zu bekommen kann schon mal in die Hose gehen. Glatt in der Mitte zu brechen ist schon eine Herausforderung, besser ist schneiden, wobei das Material schon recht hart ist. Wenn man es wirklich sauber haben will, bestellt man sich 4er Leisten. Ich persönlich bestelle immer 16er und schneide sie zurecht.
 
-* Als GPS Modul verwende ich die älteren aber sehr bewährten Neo-6M Module von u-blox. Die 8er Reihe habe ich auch schon getestet (in der Grundkonfiguration) und bin damit auch sehr zufrieden. Sicherlich kann man noch mehr aus den neueren Modulen herausholen. Für eine genauere Analyse fehlte mir aber bis jetzt die Zeit. Für die Auswahl ist aber wichtig, was auf dem verbauten u-blox Chip steht und nicht in der Artikelbeschreibung. Schon mehrfach habe ich gehört, dass das billigste Suchergebnis bei z.B. ebay nicht unbedingt das war, was es versprach...
+* Als GPS Modul verwende ich die älteren aber sehr bewährten Neo-6M Module von u-blox. Die 8er Reihe habe ich auch schon getestet (in der Grundkonfiguration) und bin damit auch sehr zufrieden. Sicherlich kann man noch mehr aus den neueren Modulen herausholen. Für eine genauere Analyse fehlte mir aber bis jetzt die Zeit. Für die Auswahl ist aber wichtig, was auf dem verbauten u-blox Chip steht und nicht in der Artikelbeschreibung. Schon mehrfach habe ich gehört, dass das billigste Suchergebnis nicht unbedingt das war, was es versprach...
 
   <img src="images/NEO-6M.jpg" alt="NEO-6M" height="250"/>
 
