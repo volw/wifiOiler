@@ -1,60 +1,60 @@
 # Einstellungen
-Hier werden die Einstellungen des Ölers beschrieben, die über die Web-Oberfläche geändert werden können. 
+Hier werden die Einstellungen des Ã–lers beschrieben, die Ã¼ber die Web-OberflÃ¤che geÃ¤ndert werden kÃ¶nnen. 
 Die Einstellungen werden in der Datei **oiler.ini** in lesbarer Form gespeichert. 
 Die Datei kann auch mit einem Editor bearbeitet werden, bevor sie hochgeladen wird. 
-Geänderte Einstellungen, die über die Web Oberfläche geändert wurden, sind nach dem Speichern sofort aktiv. 
-Dies gilt nicht für die Logging Einstellungen, die GPS-Konfigurationsdatei und die Einstellung für automatischen WiFi-Start. 
-Um diese Einstellungen zu aktivieren, muss der Öler durchgestartet werden. 
-Um geänderte Einstellungen zu aktivieren, die über den integrierten Editor geändert (oder mit der Upload-Funktion hochgeladen) wurden, muss der Öler neu gestartet werden.
-<br>Folgende Einstellungen können angepasst werden:
+GeÃ¤nderte Einstellungen, die Ã¼ber die Web OberflÃ¤che geÃ¤ndert wurden, sind nach dem Speichern sofort aktiv. 
+Dies gilt nicht fÃ¼r die Logging Einstellungen, die GPS-Konfigurationsdatei und die Einstellung fÃ¼r automatischen WiFi-Start. 
+Um diese Einstellungen zu aktivieren, muss der Ã–ler durchgestartet werden. 
+Um geÃ¤nderte Einstellungen zu aktivieren, die Ã¼ber den integrierten Editor geÃ¤ndert (oder mit der Upload-Funktion hochgeladen) wurden, muss der Ã–ler neu gestartet werden.
+<br>Folgende Einstellungen kÃ¶nnen angepasst werden:
 ## Wartezeit Simulation
-Dieser Wert in Sekunden gibt an, ab wann das Notfallprogramm aktiv werden soll, wenn kein GPS Signal empfangen wird. Bei einem Wert von z.B. 180 wird 3 Minuten nach dem Start des Ölers (wenn bis dahin kein gültiges GPS Signal empfangen werden konnte) eine bestimmte Geschwindigkeit angenommen. Diese simulierte Geschwindigkeit wird durch den Wert **Meter/s bei Simulation** bestimmt. Beispielrechnung: wenn der Wert **Normal Mode Meter** 6000 beträgt und **Meter/s bei Simulation** 15, dann wird alle 400 Sekunden (3:40 min) gepumpt.
+Dieser Wert in Sekunden gibt an, ab wann das Notfallprogramm aktiv werden soll, wenn kein GPS Signal empfangen wird. Bei einem Wert von z.B. 180 wird 3 Minuten nach dem Start des Ã–lers (wenn bis dahin kein gÃ¼ltiges GPS Signal empfangen werden konnte) eine bestimmte Geschwindigkeit angenommen. Diese simulierte Geschwindigkeit wird durch den Wert **Meter/s bei Simulation** bestimmt. Beispielrechnung: wenn der Wert **Normal Mode Meter** 6000 betrÃ¤gt und **Meter/s bei Simulation** 15, dann wird alle 400 Sekunden (3:40 min) gepumpt.
 ## Normal Mode Meter
-Dieser Wert gibt in Metern an, nach welcher Strecke die Pumpe im Normalbetrieb aktiviert werden soll. Ein Wert von 6000 gibt also an, dass alle 6 km Öl an die Kette gegeben werden soll (Menge wird bestimmt durch **Anzahl Pumpaktionen pro Ölvorgang**).
+Dieser Wert gibt in Metern an, nach welcher Strecke die Pumpe im Normalbetrieb aktiviert werden soll. Ein Wert von 6000 gibt also an, dass alle 6 km Ã–l an die Kette gegeben werden soll (Menge wird bestimmt durch **Anzahl Pumpaktionen pro Ã–lvorgang**).
 ## Rain Mode Meter
-Wert in Metern, nach welcher Strecke auf nasser Straße die Kette etwas Öl bekommen soll.
+Wert in Metern, nach welcher Strecke auf nasser StraÃŸe die Kette etwas Ã–l bekommen soll.
 ## Offroad Mode Meter
-Wert in Metern, nach welcher Strecke im Offroad-Betrieb die Kette geölt werden soll.
+Wert in Metern, nach welcher Strecke im Offroad-Betrieb die Kette geÃ¶lt werden soll.
 ## Meter/s bei Simulation
-Wird kein GPS Signal empfangen, wird nach einer festgelegten Zeit (s. **Wartezeit Simulation**) eine gewisse Geschwindigkeit angenommen, die durch diesen Wert bestimmt wird. Diese Simulation (oder Notfallprogramm) sorgt dafür, dass die Kette auch geölt wird, wenn aus irgendwelchen Gründen kein GPS Signal empfangen werden kann. Ein Wert von 15 z.B. (also 15 Meter pro Sekunde) simuliert eine Geschwindigkeit von 54 km/h (wird hinter dem Eingabefeld angezeigt). Oder anders gerechnet: im Modus Normal bei **Normal Mode Meter** von 6000 wird (6000 / 15 = 400) alle 400 Sekunden (also alle 3:40 Minuten) geölt.
-## Anzahl Pumpaktionen pro Ölvorgang
-Dieser Wert gibt an, wie oft die Pumpe pro Ölvorgang aktiviert werden soll. Bei der Dellorto Pumpe hat sich z.B. ein Wert von 3 bewährt (sonst kommt kaum was raus).
+Wird kein GPS Signal empfangen, wird nach einer festgelegten Zeit (s. **Wartezeit Simulation**) eine gewisse Geschwindigkeit angenommen, die durch diesen Wert bestimmt wird. Diese Simulation (oder Notfallprogramm) sorgt dafÃ¼r, dass die Kette auch geÃ¶lt wird, wenn aus irgendwelchen GrÃ¼nden kein GPS Signal empfangen werden kann. Ein Wert von 15 z.B. (also 15 Meter pro Sekunde) simuliert eine Geschwindigkeit von 54 km/h (wird hinter dem Eingabefeld angezeigt). Oder anders gerechnet: im Modus Normal bei **Normal Mode Meter** von 6000 wird (6000 / 15 = 400) alle 400 Sekunden (also alle 3:40 Minuten) geÃ¶lt.
+## Anzahl Pumpaktionen pro Ã–lvorgang
+Dieser Wert gibt an, wie oft die Pumpe pro Ã–lvorgang aktiviert werden soll. Bei der Dellorto Pumpe hat sich z.B. ein Wert von 3 bewÃ¤hrt (sonst kommt kaum was raus).
 ## GPS Low-Filter (cm)
 Wert in cm, ab wann eine Bewegung als solche registriert werden soll. Hintergrund: das Signal vom GPS Modul 'streut' etwas, auch wenn die Karre nicht bewegt wird. Um diese Streuung rauszufiltern, ist dieser Wert gedacht. 500 (also 5 Meter) ist ein guter Wert.
-## Öltank Kapazität
-Anzahl an Pumpaktionen, bis der Tank leer ist. Dieser Wert ist leider nicht so gut zu schätzen. Bei jeder Pumpaktion wird auf jeden Fall die Anzahl Pumpvorgänge von diesem Wert abgezogen. Ist das Ergebnis unter 0, wird bei Start des Ölers ein LED Signal ausgegeben (mehrmaliges rot-grünes Blinken). Dies ist als Aufforderung zu verstehen, mal den Füllstand des Öltanks zu prüfen. Siehe auch **...davon verbraucht**.
+## Ã–ltank KapazitÃ¤t
+Anzahl an Pumpaktionen, bis der Tank leer ist. Dieser Wert ist leider nicht so gut zu schÃ¤tzen. Bei jeder Pumpaktion wird auf jeden Fall die Anzahl PumpvorgÃ¤nge von diesem Wert abgezogen. Ist das Ergebnis unter 0, wird bei Start des Ã–lers ein LED Signal ausgegeben (mehrmaliges rot-grÃ¼nes Blinken). Dies ist als Aufforderung zu verstehen, mal den FÃ¼llstand des Ã–ltanks zu prÃ¼fen. Siehe auch **...davon verbraucht**.
 ## ...davon verbraucht
-In diesem Feld werden alle Pumpaktionen seit dem letzten **reset** (s. Button neben dem Eingabenfeld) gezählt. Dies ist zusammen mit dem Wert **Öltank Kapazität** (s.o.) dafür gedacht, einen leer gelaufenen Öltank rechtzeitig zu erkennen. Überschreitet der Zähler den Wert **Öltank Kapazität** wird beim Start des Ölers ein LED Signal ausgegeben (mehrmaliges rot-grünes Blinken). Sieht man dieses Signal, sollte also der Füllgrad des Öltanks überprüft werden. Wurde der Öltank aufgefüllt, sollte dieser Zähler hier in den Einstellungen mit dem Button **reset** wieder auf 0 gesetzt werden.
+In diesem Feld werden alle Pumpaktionen seit dem letzten **reset** (s. Button neben dem Eingabenfeld) gezÃ¤hlt. Dies ist zusammen mit dem Wert **Ã–ltank KapazitÃ¤t** (s.o.) dafÃ¼r gedacht, einen leer gelaufenen Ã–ltank rechtzeitig zu erkennen. Ãœberschreitet der ZÃ¤hler den Wert **Ã–ltank KapazitÃ¤t** wird beim Start des Ã–lers ein LED Signal ausgegeben (mehrmaliges rot-grÃ¼nes Blinken). Sieht man dieses Signal, sollte also der FÃ¼llgrad des Ã–ltanks Ã¼berprÃ¼ft werden. Wurde der Ã–ltank aufgefÃ¼llt, sollte dieser ZÃ¤hler hier in den Einstellungen mit dem Button **reset** wieder auf 0 gesetzt werden.
 ## Name neuer Firmware Datei
-Findet der Öler beim Start eine Datei mit diesem Namen, wird automatisch ein Update mit dieser Firmware Datei durchgeführt. Auch nachdem eine Datei manuell hochgeladen wurde, wird diese Prüfung (und ggf. ein Update) durchgeführt.
+Findet der Ã–ler beim Start eine Datei mit diesem Namen, wird automatisch ein Update mit dieser Firmware Datei durchgefÃ¼hrt. Auch nachdem eine Datei manuell hochgeladen wurde, wird diese PrÃ¼fung (und ggf. ein Update) durchgefÃ¼hrt.
 ## Sek. zw. GPS Trackpoints
-Dieser Wert gibt an, wie oft bei einer Streckenaufzeichnung ein Wegpunkt geschrieben werden soll. Einerseits möchte man die Strecke so genau wie möglich aufzeichnen - auf der anderen Seite ist der Speicherplatz halt begrenzt.
-<br>Eigentlich ist es nicht unbedingt sinnvoll, jede Sekunde einen Wegpunkt aufzuzeichnen. Dadurch wird die Genauigkeit der aufgezeichneten Strecke auch nicht höher. Je schneller man fährt, um so gerader wird die Strecke wohl sein und nur bei vielen kleinen Kurven wäre eine höhere Genauigkeit wünschenswert (aber da fährt man im Allgemeinen auch keine 150).
-<br>Ein Wert von 3 (also alle 3 Sekunden einen Wegpunkt schreiben) hat sich bewährt. Damit kann man ca. 46 Stunden Fahrt aufzeichnen. Ist der Speicherplatz vollständig belegt, wird die Aufzeichung automatisch gestoppt.
-<br>Sollen die Touren überhaupt nicht aufgezeichnet werden, hier eine 0 einsetzen.
+Dieser Wert gibt an, wie oft bei einer Streckenaufzeichnung ein Wegpunkt geschrieben werden soll. Einerseits mÃ¶chte man die Strecke so genau wie mÃ¶glich aufzeichnen - auf der anderen Seite ist der Speicherplatz halt begrenzt.
+<br>Eigentlich ist es nicht unbedingt sinnvoll, jede Sekunde einen Wegpunkt aufzuzeichnen. Dadurch wird die Genauigkeit der aufgezeichneten Strecke auch nicht hÃ¶her. Je schneller man fÃ¤hrt, um so gerader wird die Strecke wohl sein und nur bei vielen kleinen Kurven wÃ¤re eine hÃ¶here Genauigkeit wÃ¼nschenswert (aber da fÃ¤hrt man im Allgemeinen auch keine 150).
+<br>Ein Wert von 3 (also alle 3 Sekunden einen Wegpunkt schreiben) hat sich bewÃ¤hrt. Damit kann man ca. 46 Stunden Fahrt aufzeichnen. Ist der Speicherplatz vollstÃ¤ndig belegt, wird die Aufzeichung automatisch gestoppt.
+<br>Sollen die Touren Ã¼berhaupt nicht aufgezeichnet werden, hier eine 0 einsetzen.
 ## eigener Host/Access Point Name
-Name des Ölers und gleichzeitig des Access Points. Meldet sich der Öler in einem bekannten WLAN Netz an, ist das der Host Name, unter dem der Öler erreichbar ist, also z.B. **http://wifiOiler.local**. Kann der Öler sich an keinem WLAN anmelden, wird ein eigener Access Point/Hotspot mit diesem Namen erstellt. Auch hier wird nach erfolgter Anmeldung eine Verbindung über **http://<name>.local** hergestellt.
+Name des Ã–lers und gleichzeitig des Access Points. Meldet sich der Ã–ler in einem bekannten WLAN Netz an, ist das der Host Name, unter dem der Ã–ler erreichbar ist, also z.B. **http://wifiOiler.local**. Kann der Ã–ler sich an keinem WLAN anmelden, wird ein eigener Access Point/Hotspot mit diesem Namen erstellt. Auch hier wird nach erfolgter Anmeldung eine Verbindung Ã¼ber **http://<name>.local** hergestellt.
 ## Access Point Passwort
 Passwort zur Verbindung mit Access Point.
 ## Upload Host Name
-Host Name der Oilerbase, muss aus dem Internet erreichbar sein oder sich im gleichen Netz befinden. Siehe Dokumentation zur [Oilerbase](Oilerbase.md).
+Host Name der Oilerbase, muss aus dem Internet erreichbar sein oder sich im gleichen Netz befinden. Siehe Dokumentation zur [Oilerbase](../OilerBase/readme.md).
 ## Upload Host Port
-Port zum Upload der Track Dateien. Siehe Dokumentation zur [Oilerbase](Oilerbase.md).
+Port zum Upload der Track Dateien. Siehe Dokumentation zur [Oilerbase](../OilerBase/readme.md).
 ## Upload Host URL
-URL für Upload der Track Dateien. Siehe Dokumentation zur [Oilerbase](Oilerbase.md).
+URL fÃ¼r Upload der Track Dateien. Siehe Dokumentation zur [Oilerbase](../OilerBase/readme.md).
 ## Logging to file?
-Der Öler gibt während des Betriebs einige Diagnosemeldungen aus. Diese können zu Analysezwecken in eine Datei geschrieben werden. Es empfiehlt sich, dies nur kurzzeitig zu machen, da das interne Dateisystem schnell volllaufen kann. Im Regelfall steht hier also **Nein**.
+Der Ã–ler gibt wÃ¤hrend des Betriebs einige Diagnosemeldungen aus. Diese kÃ¶nnen zu Analysezwecken in eine Datei geschrieben werden. Es empfiehlt sich, dies nur kurzzeitig zu machen, da das interne Dateisystem schnell volllaufen kann. Im Regelfall steht hier also **Nein**.
 ## Logging to Serial?
-Die Diagnosemeldungen des Ölers können während der Laufzeit über die serielle Schnittstelle ausgegeben werden. Dies ist ganz nützlich, um sie mit dem Arduino Serial Monitor mitzulesen, wenn man in der Bauphase ist oder die ersten Testläufe im nicht eingebauten Zustand macht. Ist der Öler erst mal eingebaut und sozusagen im Dauerbetrieb, sollte hier ein **Nein** stehen (auch wenn's den Öler nicht sonderlich stört, macht sich das in der Performance und ggf. im Stromverbrauch etwas bemerkbar).
+Die Diagnosemeldungen des Ã–lers kÃ¶nnen wÃ¤hrend der Laufzeit Ã¼ber die serielle Schnittstelle ausgegeben werden. Dies ist ganz nÃ¼tzlich, um sie mit dem Arduino Serial Monitor mitzulesen, wenn man in der Bauphase ist oder die ersten TestlÃ¤ufe im nicht eingebauten Zustand macht. Ist der Ã–ler erst mal eingebaut und sozusagen im Dauerbetrieb, sollte hier ein **Nein** stehen (auch wenn's den Ã–ler nicht sonderlich stÃ¶rt, macht sich das in der Performance und ggf. im Stromverbrauch etwas bemerkbar).
 ## GPS Logging to File?
-Die empfangenen GPS Daten können ebenfalls in eine Datei geschrieben werden (gpslog.txt). Zur kurzzeitigen Analsyse ganz nützlich - auf keinen Fall für längere Zeit auf **Ja** stehen lassen. Das Dateisystem ist ruckzuck voll, da pro Sekunde mindestens zwei Sätze geschrieben werden. Also nicht stundenlang aktiviert lassen!!
+Die empfangenen GPS Daten kÃ¶nnen ebenfalls in eine Datei geschrieben werden (gpslog.txt). Zur kurzzeitigen Analsyse ganz nÃ¼tzlich - auf keinen Fall fÃ¼r lÃ¤ngere Zeit auf **Ja** stehen lassen. Das Dateisystem ist ruckzuck voll, da pro Sekunde mindestens zwei SÃ¤tze geschrieben werden. Also nicht stundenlang aktiviert lassen!!
 ## WiFi automatisch starten?
-Gibt an, ob beim Starten des Ölers das WLAN automatisch aktiviert werden soll. Es kann auch nachträglich über den Button aktiviert werden (langer Buttondruck).
+Gibt an, ob beim Starten des Ã–lers das WLAN automatisch aktiviert werden soll. Es kann auch nachtrÃ¤glich Ã¼ber den Button aktiviert werden (langer Buttondruck).
 ## GPS config file
-Diese Funktion ist noch nicht vollständig implementiert. Die hier angegebene Datei soll Konfigurationsbefehle für das GPS-Modul enthalten, die beim Start des Ölers an das GPS-Modul gesendet werden sollen. Wie gesagt - noch nicht fertig.
+Diese Funktion ist noch nicht vollstÃ¤ndig implementiert. Die hier angegebene Datei soll Konfigurationsbefehle fÃ¼r das GPS-Modul enthalten, die beim Start des Ã–lers an das GPS-Modul gesendet werden sollen. Wie gesagt - noch nicht fertig.
 <a name="fsbrowser"></a>
 ## FS Browser & Editor
-Es werden verschiedene Browser / einfache Explorer für das integrierte Dateisystem des ESP8266 mitgeliefert, die auch einen Editor zum Bearbeiten der Dateien mitbringen. Diese Browser belegen unterschiedlich viel Speicherplatz auf dem internen Dateisystem, was sich auf die Aufzeichnungszeit auswirkt. Mit dem einfachsten Browser (und löscht man die anderen) hat man ca. 2 Stunden mehr Zeit, um Touren aufzuzeichnen. Man kann sich, wie gesagt, für einen entscheiden, diesen in der Konfiguration hinterlegen und dann die anderen löschen. Diese sind initial vorhanden:
-* "/littlefsb.htm": der Kleinste und Einfachste von allen, benötigt keine Verbindung zum Internet.
-* "/cmedit.htm": wie littlefsb.htm, als Editor wurde der Open Source Editor "CodeMirror" eingebaut. Benötigt zwar keine Verbindung zum Internet, belegt aber auch den meisten Speicherplatz.
-* "/aceedit.htm": nach dem FSBrowser Beispiel von Hristo Gochkov. Hat alles, was man sich denken kann, benötigt aber eine aktive Internet Verbindung, da einige Scripte nachgeladen werden. Benutzt den Editor "ace".
+Es werden verschiedene Browser / einfache Explorer fÃ¼r das integrierte Dateisystem des ESP8266 mitgeliefert, die auch einen Editor zum Bearbeiten der Dateien mitbringen. Diese Browser belegen unterschiedlich viel Speicherplatz auf dem internen Dateisystem, was sich auf die Aufzeichnungszeit auswirkt. Mit dem einfachsten Browser (und lÃ¶scht man die anderen) hat man ca. 2 Stunden mehr Zeit, um Touren aufzuzeichnen. Man kann sich, wie gesagt, fÃ¼r einen entscheiden, diesen in der Konfiguration hinterlegen und dann die anderen lÃ¶schen. Diese sind initial vorhanden:
+* "/littlefsb.htm": der Kleinste und Einfachste von allen, benÃ¶tigt keine Verbindung zum Internet.
+* "/cmedit.htm": wie littlefsb.htm, als Editor wurde der Open Source Editor "CodeMirror" eingebaut. BenÃ¶tigt zwar keine Verbindung zum Internet, belegt aber auch den meisten Speicherplatz.
+* "/aceedit.htm": nach dem FSBrowser Beispiel von Hristo Gochkov. Hat alles, was man sich denken kann, benÃ¶tigt aber eine aktive Internet Verbindung, da einige Scripte nachgeladen werden. Benutzt den Editor "ace".
