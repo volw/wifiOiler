@@ -6,11 +6,11 @@ Vorne im Cockpit fand sich schnell ein Plätzchen für den Button und die LED (s
 
 ![ATSD06_cockpit](pics/ATSD06_cockpit.jpg)
 
-Für die Montage musste allerdings das halbe Fahrzeug auseinandergebaut werden. Anleitungen gibt's aus der Juhutube.
+Für die Montage musste allerdings das halbe Fahrzeug auseinandergebaut werden. Ohne hilfreiche Anleitungen, die auf youtube zu finden waren, wäre es kaum gegangen.
 
-Öltank und Pumpe befinden sich unter dem Fahrersitz, der Öler unterm Sozius. Stromabnahme hinten links (direkt ans Kabel gelötet - es soll aber auch Stecker geben...).
+Öltank und Pumpe wurden unter dem Fahrersitz untergebracht, der Öler unterm Sozius. Stromabnahme hinten links (direkt ans Kabel gelötet - es soll aber auch Stecker geben...).
 
-Der Auslassschlauch wurde durch die Schwinge gezogen (hier ein Foto vom vorderen Eingang):
+Der Ölschlauch von der Pumpe zum Auslass wurde durch die Schwinge gezogen (hier ein Foto vom vorderen Eingang):
 
 <img src="pics/ATSD06_Schwinge-vorn.jpg" alt="ATSD06_Schwinge-vorn" style="zoom:25%;" />
 
