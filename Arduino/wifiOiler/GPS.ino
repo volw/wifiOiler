@@ -128,6 +128,7 @@ void checkGPSdata() {
       }
     }
   }
+  else if (GVpumpMode == MODE_PERMANENT) TriggerPump(); // nicht warten - active-check in TriggerPump()
 }
 
 /*************************************************************
