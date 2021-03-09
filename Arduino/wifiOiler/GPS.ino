@@ -26,20 +26,6 @@ void setupGPS(void)
     DEBUG_OUT.println(F(MSG_DBG_SETUP_GPS_INIT));
     gpsSerial.begin(9600);  // einige GPS Module senden nur mit 4800 baud...
     delay(100);
-    if (GVoilerConf.gcf.length() > 0)
-    {
-      if (!GVoilerConf.gcf.startsWith("/")) GVoilerConf.gcf = "/" + GVoilerConf.gcf;
-      if (_FILESYS.exists(GVoilerConf.gcf.c_str()))
-      {
-        configureGPS();
-      }
-      else
-      {
-        DEBUG_OUT.print(F(MSG_DBG_GPS_CONFIG_FILE_NOT_EXIST));
-        DEBUG_OUT.println(GVoilerConf.gcf);
-      }
-    }
-    else DEBUG_OUT.println(F(MSG_DBG_GPS_NO_CONFIG_FILE));
   }
   
   // fuer Notlauffunktion vorbereiten
