@@ -148,12 +148,23 @@ void handleMessage(String message, bool justBack)
 }
 
 /***************************************************
+ * wait some ms and five webserver time to respond
+ * only necessary if not returning to main loop
+ ***************************************************/
+void handleClient(uint32_t waitms=500)
+{
+  uint32_t wait = millis();
+  while (wait + waitms > millis()) GVwebServer.handleClient();
+}
+
+/***************************************************
  * webHandler: Test Pumpe
  ***************************************************/
 void handlePumpTest(void)
 {
+  GVwebServer.send( 200, TEXT_HTML, "OK" );
+  handleClient();
   TriggerPump();
-  handleMessage(F("Pumpentest gestartet"));
 }
 
 /***************************************************
@@ -161,11 +172,14 @@ void handlePumpTest(void)
  ***************************************************/
 void handleLEDTest(void)
 {
+  GVwebServer.send( 200, TEXT_HTML, "OK" );
+  handleClient();
+
   GVmyLedx.add LED_TEST_GRUEN;
   GVmyLedx.add (0, 300);
   GVmyLedx.add LED_TEST_ROT;
   GVmyLedx.start();
-  handleMessage(F("LED Test gestartet (erst gruen, dann rot)"));
+  //handleMessage(F("LED Test gestartet (erst gruen, dann rot)"));
 }
 
 /***************************************************
@@ -186,12 +200,10 @@ void handleReboot(void)
     GVmyDisplay.PrintMessage("Reboot...");
     //handleMessage(F("rebooting..."));
     GVwebServer.send( 200, TEXT_HTML, "OK" );
-    GVwebServer.handleClient();
-    
-    //uint32_t wait = millis();
-    //while (wait + 1000 > millis()) GVwebServer.handleClient();
+    handleClient();
+
     ESP.restart();
-  } else handleFileRead("/reboot.htm");
+  } GVwebServer.send( 400, TEXT_HTML, BAD_ARGS );
 }
 
 /***************************************************
@@ -208,7 +220,7 @@ void handlePumpMode(void) {
     else if (modestr.equalsIgnoreCase(getPumpModeStr(MODE_OFF))) setNewMode(MODE_OFF);
     else
     {
-      return GVwebServer.send(200, TEXT_PLAIN, "UNKNOWN");
+      return GVwebServer.send(400, TEXT_PLAIN, "UNKNOWN");
     }
     return GVwebServer.send(200, TEXT_PLAIN, "OK");
   }
