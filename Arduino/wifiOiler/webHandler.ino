@@ -231,38 +231,12 @@ void handlePumpMode(void) {
 }
 
 /***********************************************************
- * Liefern aller Config Daten für die entsprechende Web-Page
- * oder
- * parsen der zurückgegebenen Config Werte und speichern
+ * Ggf. Speichern der übergebenen Werte
+ * Rückgabe der aktuellen Konfiguration as json
  ***********************************************************/
 void handleConfigPage(void) {
-  if (GVwebServer.args() == 0)
+  if (GVwebServer.args() > 0)
   {
-    // sending config values as json string:
-    String output = "{\"wts\":\"" + String(GVoilerConf.wts) + "\"";
-    output += ",\"nmm\":\"" + String(GVoilerConf.nmm) + "\"";
-    output += ",\"rmm\":\"" + String(GVoilerConf.rmm) + "\"";
-    output += ",\"omm\":\"" + String(GVoilerConf.omm) + "\"";
-    output += ",\"sim\":\"" + String(GVoilerConf.sim) + "\"";
-    output += ",\"pac\":\"" + String(GVoilerConf.pac) + "\"";
-    output += ",\"glf\":\"" + String(GVoilerConf.glf) + "\"";
-    output += ",\"otk\":\"" + String(GVoilerConf.otk) + "\"";
-    output += ",\"use\":\"" + String(GVoilerConf.use) + "\"";
-    output += ",\"ffn\":\"" + String(GVoilerConf.ffn) + "\"";
-    output += ",\"fpw\":\"" + String(GVoilerConf.fpw) + "\"";
-    output += ",\"apn\":\"" + String(GVoilerConf.apn) + "\"";
-    output += ",\"app\":\"" + String(GVoilerConf.app) + "\"";
-    output += ",\"uhn\":\"" + String(GVoilerConf.uhn) + "\"";
-    output += ",\"uhp\":\"" + String(GVoilerConf.uhp) + "\"";
-    output += ",\"url\":\"" + String(GVoilerConf.url) + "\"";
-    output += ",\"lgf\":\"" + String(GVoilerConf.lgf) + "\"";
-    output += ",\"lgs\":\"" + String(GVoilerConf.lgs) + "\"";
-    output += ",\"gdl\":\"" + String(GVoilerConf.gdl) + "\"";
-    output += ",\"wso\":\"" + String(GVoilerConf.wso) + "\"";
-    output += ",\"gcf\":\"" + String(GVoilerConf.gcf) + "\"";
-    output += ",\"fbe\":\"" + String(GVoilerConf.fbe) + "\"}";
-    GVwebServer.send(200, F("text/json"), output);
-  } else {
     // Konfiguration aus den Argumenten lesen
     if (GVwebServer.hasArg(F("wts"))) GVoilerConf.wts = GVwebServer.arg(F("wts")).toInt();   // Wartezeit Simulation (s)
     if (GVwebServer.hasArg(F("nmm"))) GVoilerConf.nmm = GVwebServer.arg(F("nmm")).toInt();   // Normal Mode Meters
@@ -288,8 +262,32 @@ void handleConfigPage(void) {
     if (GVwebServer.hasArg(F("fbe"))) GVoilerConf.fbe = GVwebServer.arg(F("fbe"));           // File Browser & Editor
     GVoilerConf.write();
     checkFilesystemSpace(); // GVcurrentfpw wird dort ggf. korrigiert
-    handleMessage(F("Konfiguration gesichert."), false);
   }
+
+  // sending config values as json string:
+  String output = "{\"wts\":\"" + String(GVoilerConf.wts) + "\"";
+  output += ",\"nmm\":\"" + String(GVoilerConf.nmm) + "\"";
+  output += ",\"rmm\":\"" + String(GVoilerConf.rmm) + "\"";
+  output += ",\"omm\":\"" + String(GVoilerConf.omm) + "\"";
+  output += ",\"sim\":\"" + String(GVoilerConf.sim) + "\"";
+  output += ",\"pac\":\"" + String(GVoilerConf.pac) + "\"";
+  output += ",\"glf\":\"" + String(GVoilerConf.glf) + "\"";
+  output += ",\"otk\":\"" + String(GVoilerConf.otk) + "\"";
+  output += ",\"use\":\"" + String(GVoilerConf.use) + "\"";
+  output += ",\"ffn\":\"" + String(GVoilerConf.ffn) + "\"";
+  output += ",\"fpw\":\"" + String(GVoilerConf.fpw) + "\"";
+  output += ",\"apn\":\"" + String(GVoilerConf.apn) + "\"";
+  output += ",\"app\":\"" + String(GVoilerConf.app) + "\"";
+  output += ",\"uhn\":\"" + String(GVoilerConf.uhn) + "\"";
+  output += ",\"uhp\":\"" + String(GVoilerConf.uhp) + "\"";
+  output += ",\"url\":\"" + String(GVoilerConf.url) + "\"";
+  output += ",\"lgf\":\"" + String(GVoilerConf.lgf) + "\"";
+  output += ",\"lgs\":\"" + String(GVoilerConf.lgs) + "\"";
+  output += ",\"gdl\":\"" + String(GVoilerConf.gdl) + "\"";
+  output += ",\"wso\":\"" + String(GVoilerConf.wso) + "\"";
+  output += ",\"gcf\":\"" + String(GVoilerConf.gcf) + "\"";
+  output += ",\"fbe\":\"" + String(GVoilerConf.fbe) + "\"}";
+  GVwebServer.send(200, F("text/json"), output);
 }
 
 /***************************************************
