@@ -16,6 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ****/
 
+// general
+#define MSG_GLOBAL_YES "Ja"
+#define MSG_GLOBAL_NO  "Nein"
+
 // wifiOiler.ino
 #define MSG_ERROR_INITIALISING_FILESYSTEM "Fehler bei Initialisierung des Dateisystems!"
 #define MSG_ERROR_INITIALISING_LOGGER     "Fehler bei Initialisierung des (LittleFS) Logger!"
