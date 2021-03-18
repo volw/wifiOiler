@@ -66,10 +66,10 @@ void handleFileList() {
     #ifdef _SPIFFS_
       //im SPIFFS FS wird Dateiname mit leitendem "/" zurückgegeben (dir.filename())
       //im LittleFS NICHT!
-      output += "{\"type\":\"file\",\"name\":\""+dir.fileName().substring(1)+"\"}";
+      output += "{\"type\":\"file\",\"name\":\""+dir.fileName().substring(1)+"\",\"size\":"+dir.fileSize()+"}";
     #else      
       //LittleFS:
-      output += "{\"type\":\"file\",\"name\":\""+dir.fileName()+"\"}";
+      output += "{\"type\":\"file\",\"name\":\""+dir.fileName()+"\",\"size\":"+dir.fileSize()+"}";
     #endif
   }
   output += "]";
@@ -133,7 +133,7 @@ void handleFileDelete() {
   _FILESYS.remove(path);
 
   checkFilesystemSpace();
-  GVwebServer.send(200, TEXT_PLAIN, "");
+  GVwebServer.send(200, TEXT_PLAIN, "OK");
   path = String();
 }
 
