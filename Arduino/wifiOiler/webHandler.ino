@@ -22,7 +22,7 @@
 void setupWebServer(void) {
   //list directory
   GVwebServer.on(F("/list"), HTTP_GET, handleFileList);
-  GVwebServer.on(F("/info"), HTTP_GET, handleDebugInfo);
+  GVwebServer.on(F("/info"), HTTP_GET, handleRunTimeInfo);
   GVwebServer.on(F("/pumptest"), HTTP_GET, handlePumpTest);
   GVwebServer.on(F("/ledtest"), HTTP_GET, handleLEDTest);
   GVwebServer.on(F("/config"), HTTP_GET, handleConfigPage);
@@ -148,12 +148,23 @@ void handleMessage(String message, bool justBack)
 }
 
 /***************************************************
+ * wait some ms and five webserver time to respond
+ * only necessary if not returning to main loop
+ ***************************************************/
+void handleClient(uint32_t waitms=500)
+{
+  uint32_t wait = millis();
+  while (wait + waitms > millis()) GVwebServer.handleClient();
+}
+
+/***************************************************
  * webHandler: Test Pumpe
  ***************************************************/
 void handlePumpTest(void)
 {
+  GVwebServer.send( 200, TEXT_HTML, "OK" );
+  handleClient();
   TriggerPump();
-  handleMessage(F("Pumpentest gestartet"));
 }
 
 /***************************************************
@@ -161,11 +172,14 @@ void handlePumpTest(void)
  ***************************************************/
 void handleLEDTest(void)
 {
+  GVwebServer.send( 200, TEXT_HTML, "OK" );
+  handleClient();
+
   GVmyLedx.add LED_TEST_GRUEN;
   GVmyLedx.add (0, 300);
   GVmyLedx.add LED_TEST_ROT;
   GVmyLedx.start();
-  handleMessage(F("LED Test gestartet (erst gruen, dann rot)"));
+  //handleMessage(F("LED Test gestartet (erst gruen, dann rot)"));
 }
 
 /***************************************************
@@ -185,13 +199,11 @@ void handleReboot(void)
     GVmyLedx.on(LED_ROT);
     GVmyDisplay.PrintMessage("Reboot...");
     //handleMessage(F("rebooting..."));
-    GVwebServer.send( 200, TEXT_HTML, "OK" );
-    GVwebServer.handleClient();
-    
-    //uint32_t wait = millis();
-    //while (wait + 1000 > millis()) GVwebServer.handleClient();
+    //GVwebServer.send( 200, TEXT_HTML, "OK" );
+    //handleClient();
+
     ESP.restart();
-  } else handleFileRead("/reboot.htm");
+  } GVwebServer.send( 400, TEXT_HTML, BAD_ARGS );
 }
 
 /***************************************************
@@ -208,9 +220,9 @@ void handlePumpMode(void) {
     else if (modestr.equalsIgnoreCase(getPumpModeStr(MODE_OFF))) setNewMode(MODE_OFF);
     else
     {
-      return GVwebServer.send(200, TEXT_PLAIN, "UNKNOWN");
+      return GVwebServer.send(400, TEXT_PLAIN, "UNKNOWN");
     }
-    return GVwebServer.send(200, TEXT_PLAIN, "OK");
+    GVwebServer.send(200, TEXT_PLAIN, getPumpModeStr(GVpumpMode));
   }
   else // return current pumpmode
   {
@@ -219,38 +231,12 @@ void handlePumpMode(void) {
 }
 
 /***********************************************************
- * Liefern aller Config Daten für die entsprechende Web-Page
- * oder
- * parsen der zurückgegebenen Config Werte und speichern
+ * Ggf. Speichern der übergebenen Werte
+ * Rückgabe der aktuellen Konfiguration as json
  ***********************************************************/
 void handleConfigPage(void) {
-  if (GVwebServer.args() == 0)
+  if (GVwebServer.args() > 0)
   {
-    // sending config values as json string:
-    String output = "{\"wts\":\"" + String(GVoilerConf.wts) + "\"";
-    output += ",\"nmm\":\"" + String(GVoilerConf.nmm) + "\"";
-    output += ",\"rmm\":\"" + String(GVoilerConf.rmm) + "\"";
-    output += ",\"omm\":\"" + String(GVoilerConf.omm) + "\"";
-    output += ",\"sim\":\"" + String(GVoilerConf.sim) + "\"";
-    output += ",\"pac\":\"" + String(GVoilerConf.pac) + "\"";
-    output += ",\"glf\":\"" + String(GVoilerConf.glf) + "\"";
-    output += ",\"otk\":\"" + String(GVoilerConf.otk) + "\"";
-    output += ",\"use\":\"" + String(GVoilerConf.use) + "\"";
-    output += ",\"ffn\":\"" + String(GVoilerConf.ffn) + "\"";
-    output += ",\"fpw\":\"" + String(GVoilerConf.fpw) + "\"";
-    output += ",\"apn\":\"" + String(GVoilerConf.apn) + "\"";
-    output += ",\"app\":\"" + String(GVoilerConf.app) + "\"";
-    output += ",\"uhn\":\"" + String(GVoilerConf.uhn) + "\"";
-    output += ",\"uhp\":\"" + String(GVoilerConf.uhp) + "\"";
-    output += ",\"url\":\"" + String(GVoilerConf.url) + "\"";
-    output += ",\"lgf\":\"" + String(GVoilerConf.lgf) + "\"";
-    output += ",\"lgs\":\"" + String(GVoilerConf.lgs) + "\"";
-    output += ",\"gdl\":\"" + String(GVoilerConf.gdl) + "\"";
-    output += ",\"wso\":\"" + String(GVoilerConf.wso) + "\"";
-    output += ",\"gcf\":\"" + String(GVoilerConf.gcf) + "\"";
-    output += ",\"fbe\":\"" + String(GVoilerConf.fbe) + "\"}";
-    GVwebServer.send(200, F("text/json"), output);
-  } else {
     // Konfiguration aus den Argumenten lesen
     if (GVwebServer.hasArg(F("wts"))) GVoilerConf.wts = GVwebServer.arg(F("wts")).toInt();   // Wartezeit Simulation (s)
     if (GVwebServer.hasArg(F("nmm"))) GVoilerConf.nmm = GVwebServer.arg(F("nmm")).toInt();   // Normal Mode Meters
@@ -276,18 +262,39 @@ void handleConfigPage(void) {
     if (GVwebServer.hasArg(F("fbe"))) GVoilerConf.fbe = GVwebServer.arg(F("fbe"));           // File Browser & Editor
     GVoilerConf.write();
     checkFilesystemSpace(); // GVcurrentfpw wird dort ggf. korrigiert
-    handleMessage(F("Konfiguration gesichert."), false);
   }
+
+  // sending config values as json string:
+  String output = "{\"wts\":\"" + String(GVoilerConf.wts) + "\"";
+  output += ",\"nmm\":\"" + String(GVoilerConf.nmm) + "\"";
+  output += ",\"rmm\":\"" + String(GVoilerConf.rmm) + "\"";
+  output += ",\"omm\":\"" + String(GVoilerConf.omm) + "\"";
+  output += ",\"sim\":\"" + String(GVoilerConf.sim) + "\"";
+  output += ",\"pac\":\"" + String(GVoilerConf.pac) + "\"";
+  output += ",\"glf\":\"" + String(GVoilerConf.glf) + "\"";
+  output += ",\"otk\":\"" + String(GVoilerConf.otk) + "\"";
+  output += ",\"use\":\"" + String(GVoilerConf.use) + "\"";
+  output += ",\"ffn\":\"" + String(GVoilerConf.ffn) + "\"";
+  output += ",\"fpw\":\"" + String(GVoilerConf.fpw) + "\"";
+  output += ",\"apn\":\"" + String(GVoilerConf.apn) + "\"";
+  output += ",\"app\":\"" + String(GVoilerConf.app) + "\"";
+  output += ",\"uhn\":\"" + String(GVoilerConf.uhn) + "\"";
+  output += ",\"uhp\":\"" + String(GVoilerConf.uhp) + "\"";
+  output += ",\"url\":\"" + String(GVoilerConf.url) + "\"";
+  output += ",\"lgf\":\"" + String(GVoilerConf.lgf) + "\"";
+  output += ",\"lgs\":\"" + String(GVoilerConf.lgs) + "\"";
+  output += ",\"gdl\":\"" + String(GVoilerConf.gdl) + "\"";
+  output += ",\"wso\":\"" + String(GVoilerConf.wso) + "\"";
+  output += ",\"gcf\":\"" + String(GVoilerConf.gcf) + "\"";
+  output += ",\"fbe\":\"" + String(GVoilerConf.fbe) + "\"}";
+  GVwebServer.send(200, F("text/json"), output);
 }
 
 /***************************************************
  * webHandler:
  * Ausgabe von runtime Infos
  ***************************************************/
-void handleDebugInfo(void) {
-  GVwebServer.setContentLength(CONTENT_LENGTH_UNKNOWN);
-  GVwebServer.send ( 200, TEXT_HTML, F("<pre>Debug Info:\n"));
-
+void handleRunTimeInfo(void) {
   // runtime info:
   long laufzeit = millis();
   int temp = (laufzeit/3600000);  // Stunden
@@ -297,82 +304,53 @@ void handleDebugInfo(void) {
   temp = (laufzeit/1000) % 60;
   sZeit += ":" + (temp < 10 ? "0" + String(temp) : String(temp));
 
-  GVwebServer.sendContent(F("\n  runtime info:\n"));
-  GVwebServer.sendContent("    Laufzeit........:" + sZeit + "\n");
-  GVwebServer.sendContent("    Free RAM........:" + String(ESP.getFreeHeap()) + "\n");
-  GVwebServer.sendContent("    charsProcessed..:" + String(GVgpsNew.charsProcessed()) + "\n");
-  GVwebServer.sendContent("    sentencesWithFix:" + String(GVgpsNew.sentencesWithFix()) + "\n");
-  GVwebServer.sendContent("    failedChecksum..:" + String(GVgpsNew.failedChecksum()) + "\n");
-  GVwebServer.sendContent("    passedChecksum..:" + String(GVgpsNew.passedChecksum()) + "\n");
-  GVwebServer.sendContent("    GVmeterSincePump:" + String(GVmeterSincePump) + "\n");
-  #ifdef _NO_PUMP_
-    GVwebServer.sendContent(F("    pumpMode........:DEAKTIVIERT!\n"));
+  String output = "{\"ve\":\"" + String(VERSION) + "\"";  // version
+  output += ",\"rt\":\"" + sZeit + "\"";          // runtime
+  #ifdef _DISPLAY_AVAILABLE_  
+    output += ",\"da\":\"Ja\"";                   // display available
   #else
-    GVwebServer.sendContent("    pumpMode........:" + getPumpModeStr(GVpumpMode) + "\n");
-  #endif
-  GVwebServer.sendContent("    - Filename......:" + String(GVgpsTrackFilename) + "\n");
-  GVwebServer.sendContent("    - GPS records...:" + String(GVtotalGPSwrite) + "\n");
-  GVwebServer.sendContent("    - write errors..:" + String(GVtotalWriteErrors) + "\n");
-  GVwebServer.sendContent("    Total GPS Meters:" + String(GVtotalDist) + "\n");
-  GVwebServer.sendContent("   GVmovementCounter:" + String(GVmovementCounter) + " (max " + String(MAX_MOVEMENT_COUNT) + ")\n");
-  GVwebServer.sendContent("    Total pump count:" + String(GVtotalPumpCount) + "\n");
-  GVwebServer.sendContent("    maintenance mode:" + String(GVmaintenanceMode ? "Ja\n" : "Nein\n"));
-  GVwebServer.sendContent("    Wifi connected..:" + WiFi.SSID() + "\n");
-  GVwebServer.sendContent("    IP Adress.......:" + WiFi.localIP().toString() + "\n");
-
-  // Einstellungen:
-  GVwebServer.sendContent(F("  Konfiguration:\n"));
-  GVwebServer.sendContent("    Version............. = " + String(VERSION) + "\n");
-#ifdef _DISPLAY_AVAILABLE_  
-  GVwebServer.sendContent(F("    Display............. = Ja\n"));
-#else  
-  GVwebServer.sendContent(F("    Display............. = Nein\n"));
-#endif  
-  GVwebServer.sendContent("    Simulation wait time = " + String(GVoilerConf.wts) + "\n");
-  GVwebServer.sendContent("    Normal Mode Meter... = " + String(GVoilerConf.nmm) + "\n");
-  GVwebServer.sendContent("    Regen Mode Meter.... = " + String(GVoilerConf.rmm) + "\n");
-  GVwebServer.sendContent("    Offroad Mode Meter.. = " + String(GVoilerConf.omm) + "\n");
-  GVwebServer.sendContent("    Simulation Meter.... = " + String(GVoilerConf.sim) + "\n");
-  GVwebServer.sendContent("    GPS Low Filter (cm). = " + String(GVoilerConf.glf) + "\n");
-  GVwebServer.sendContent("    Pump action count... = " + String(GVoilerConf.pac) + "\n");
-  GVwebServer.sendContent("    Tank Kapazit&auml;t...... = " + String(GVoilerConf.otk) + "\n");
-  GVwebServer.sendContent("    ...davon verbraucht. = " + String(GVoilerConf.use) + "\n");
-  GVwebServer.sendContent("    firmware filename... = \"" + String(GVoilerConf.ffn) + "\"\n");
-  GVwebServer.sendContent("    (default f.this MCU) = \"" + String(UPDATE_FILE) + "\"\n");
-  GVwebServer.sendContent("    Abstand GPS writes s = " + String(GVoilerConf.fpw) + "\n");
-  GVwebServer.sendContent("    AP- und Hostname.... = \"" + String(GVoilerConf.apn) + "\"\n");
-  GVwebServer.sendContent("    AP Passwort......... = \"" + String(GVoilerConf.app) + "\"\n");
-  GVwebServer.sendContent("    Upload Host Name.... = \"" + String(GVoilerConf.uhn) + "\"\n");
-  GVwebServer.sendContent("    Upload Host Port.... = " + String(GVoilerConf.uhp) + "\n");
-  GVwebServer.sendContent("    Upload Host URL..... = \"" + String(GVoilerConf.url) + "\"\n");
-  GVwebServer.sendContent("    Logging to file..... = " + String(GVoilerConf.lgf == 1 ? "ja" : "nein") + "\n");
-  GVwebServer.sendContent("    Logging to Serial... = " + String(GVoilerConf.lgs == 1 ? "ja" : "nein") + "\n");
-  GVwebServer.sendContent("    GPS Logging to file. = " + String(GVoilerConf.gdl == 1 ? "ja" : "nein") + "\n");
-  GVwebServer.sendContent("    WiFi bei Start an... = " + String(GVoilerConf.wso == 1 ? "ja" : "nein") + "\n");
-  GVwebServer.sendContent("    GPS config file..... = \"" + String(GVoilerConf.gcf) + "\"\n");
-  GVwebServer.sendContent("    FS browser & editor. = \"" + String(GVoilerConf.fbe) + "\"\n");
-
-  // Inhalt LittleFS:
-  GVwebServer.sendContent(F("\n  LittleFS Dateien:\n<table>"));
-  Dir dir = _FILESYS.openDir("/");
-  while (dir.next()) {
-    GVwebServer.sendContent("<tr><td>" + dir.fileName() + "</td><td align=right>" + String(dir.fileSize()) + "</td></tr>");
-  }
-  GVwebServer.sendContent(F("</table>\n"));
+    output += ",\"da\":\"Nein\"";
+  #endif    
 
   FSInfo fs_info;
+  uint32_t freespace = 0, gpsrec = 0, gpsmin = 0;
   if (_FILESYS.info(fs_info)) {
-    uint32_t freespace = fs_info.totalBytes - (uint32_t)(fs_info.usedBytes * 1.05);
-    GVwebServer.sendContent("  Free space (in bytes) : " + String(freespace) + "\n");
-    uint32_t gpsrec = freespace / GPS_RECORD_SIZE;    // Platz für (gpsrec) GPS Records
-    GVwebServer.sendContent("  genug fuer GPS records: " + String(gpsrec) + "\n");
+    freespace = fs_info.totalBytes - (uint32_t)(fs_info.usedBytes * 1.05);
+    gpsrec = freespace / GPS_RECORD_SIZE;    // Platz für (gpsrec) GPS Records
     if (GVoilerConf.fpw > 0) {
-      uint32_t gpsmin = (gpsrec * GVoilerConf.fpw) / 60;     // Umrechnung in Minuten
-      GVwebServer.sendContent("  reicht f&uuml;r " + String(gpsmin / 60) + " Stunden und "+String(gpsmin % 60)+" Minuten\n");
+      gpsmin = (gpsrec * GVoilerConf.fpw) / 60;     // Umrechnung in Minuten
+      sZeit = String(gpsmin / 60) + ":";
+      temp = gpsmin % 60;
+      sZeit += temp < 10 ? "0"+ String(temp) : String(temp);
     }
-    GVwebServer.sendContent("  track recording aktuell aktiv: " + String(GVcurrentfpw == 0 ? "Nein" : "Ja") + "\n</pre>");
   }
-  
-  GVwebServer.sendContent("");  // this tells web client that transfer is done
-  GVwebServer.client().stop();  // ??
+
+  // sending config values as json string:
+  output += ",\"fr\":" + String(ESP.getFreeHeap());                   // free ram
+  output += ",\"cr\":" + String(GVgpsNew.charsProcessed());           // gps characters processed
+  output += ",\"gf\":" + String(GVgpsNew.sentencesWithFix());         // gps sentences with fix
+  output += ",\"pc\":" + String(GVgpsNew.passedChecksum());           // gps sentences with correct checksum
+  output += ",\"fc\":" + String(GVgpsNew.failedChecksum());           // gps sentences with failed checksum
+  output += ",\"mp\":" + String(GVmeterSincePump);                    // total gps meters since start
+  #ifdef _NO_PUMP_
+    output += ",\"pm\":\"" + getPumpModeStr(GVpumpMode) + "\"";       // current pump mode
+  #else
+    output += ",\"pm\":\"DEAKTIVIERT!\"";
+  #endif
+  output += ",\"ra\":\"" + String(GVcurrentfpw == 0 ? "Nein" : "Ja") + "\""; // track recording active
+  output += ",\"tf\":\"" + String(GVgpsTrackFilename) + "\"";         // track file name
+  output += ",\"rw\":" + String(GVtotalGPSwrite);                     // no of gps records written
+  output += ",\"rs\":" + String(GPS_RECORD_SIZE);                     // size of gps record
+  output += ",\"we\":" + String(GVtotalWriteErrors);                  // count of gps record write errors
+  output += ",\"gm\":" + String(GVtotalDist);                         // total gps meters since start
+  output += ",\"mc\":" + String(GVmovementCounter);                   // current state of movement counter
+  output += ",\"xc\":" + String(MAX_MOVEMENT_COUNT);                  // max movement counter
+  output += ",\"tc\":" + String(GVtotalPumpCount);                    // no of pump actions since start
+  output += ",\"mm\":\"" + String(GVmaintenanceMode ? "Ja" : "Nein") + "\"";  // maintenance mode active
+  output += ",\"wc\":\"" + WiFi.SSID() + "\"";                        // connected wifi (ssid)
+  output += ",\"ip\":\"" + WiFi.localIP().toString() + "\"";          // current ip adress
+  output += ",\"fs\":" + String(freespace);                           // free space in file system (bytes)
+  output += ",\"rl\":" + String(gpsrec);                              // left space/capacity for x gps records
+  output += ",\"tl\":\"" + sZeit + "\"}";                             // left time for track recording
+  GVwebServer.send(200, F("text/json"), output);
 }

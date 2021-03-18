@@ -2,6 +2,8 @@
 
 Um die Software zu kompilieren und auf den "Wemos D1 mini" (s. Teileliste) oder allgemein SoC (System on a Chip) zu laden, sind folgende Schritte notwendig. Eventuell könnt ihr einige Schritte überspringen, je nachdem, ob ihr schon mal mit einem D1 Mini oder einem anderen Microcontroller gearbeitet habt, der auf einem ESP8266 (ursprünglich von der Firma espressif) basiert.
 
+Alle hier beschriebenen Tätigkeiten sind Vorschläge, die je nach Installation auch mal anders ausfallen können. An dieser Stelle sei nochmal erwähnt, dass keine Gewährleistung für irgendwelche Schäden übernommen werden. Alle Tätigkeiten geschehen auf eigenes Risiko.
+
 ## Arduino Entwicklungsumgebung
 
 Die Entwicklungsumgebung wird ab jetzt der Einfachheit halber IDE genannt. Hier wird die Installation und Inbetriebnahme der portablen Version beschrieben. Benutzt man die für Windows vorgesehene Installationsversion sind ggf. andere Verzeichnisse wichtig, die hier nicht beschrieben werden.
@@ -80,11 +82,12 @@ Mit der Software können nun die ersten Ve1rsuche gestartet werden. Dazu den Bro
 
 Tipps zur Erstellung der Platine sind im Dokument "ListeBauteile" zu finden. Wer noch nicht so oft gelötet hat, hier einige Tipps:
 
-- die Oberfläche der Platine sollte blank, sauber und korrosionsfrei sein. Wenn z.B. eine kupferbeschichtete Platine etwas länger liegt, bilden sich Ablagerungen, die die Annahme von Lötzinn erschweren. Ggf. mit einem Topfschwamm oder leicht schleifenden Mitteln bearbeiten (aber Vorsicht: man will ja nicht gleich das ganze Kupfer abschleifen!).
-- in gut belüfteten Räumen arbeiten. Auch wenn das Lötzinn heutzutage nicht mehr mit Blei versetzt ist (oder sein sollte), sind die entstehenden Dämpfe bestimmt nicht gesund.
-- als erstes die flachen Teile auflöten (in diesem Fall die Gleichrichterdioden und die Widerstände) und sich dann langsam "hocharbeiten". Zum Schluss die höchsten Teile, sollte in diesem Fall der Elko sein. Ggf. können die Bauteile mit Klebeband fixiert werden, damit sie beim anlöten auch richtig sitzen.
+- die Oberfläche der Platine sollte blank, sauber und korrosionsfrei sein. Wenn z.B. eine kupferbeschichtete Platine etwas länger liegt, bilden sich Ablagerungen, die die Annahme von Lötzinn erschweren. Ggf. mit einem Topfschwamm oder leicht schleifenden Mitteln bearbeiten (aber Vorsicht: nicht gleich das ganze Kupfer abschleifen!), ggf. mit Aceton reinigen.
+- in gut belüfteten Räumen arbeiten. Auch wenn das Lötzinn (Lot) heutzutage nicht mehr mit Blei versetzt ist (oder sein sollte), sind die entstehenden Dämpfe bestimmt nicht gesund.
+- als erstes die flachen Teile auflöten (in diesem Fall die Gleichrichterdioden und die Widerstände) und sich dann langsam "hocharbeiten". Zum Schluss die höchsten Teile, sollte in diesem Fall der Elko sein. Ggf. können die Bauteile während des Lötens mit Klebeband fixiert werden, damit sie beim anlöten auch richtig sitzen.
 - Es muss kein teurer Lötkolben sein, geregelt wäre aber schön und die Lötspitze sollte nicht zu dick sein (also nicht der Breitmeißel für die Dachrinne).
-- Das GPS Modul kann auf zwei Arten angeschlossen werden, Chip-up oder Chip-down, je nachdem, wo die Antenne verbaut wird. Am besten klebt man sie mit doppelseitigem Klebeband auf die Rückseite des GPS-Moduls und verbaut dieses Chip-down, also so, dass der u-blox Chip auf dem GPS-Modul nach unten zeigt. Wenn dies so geplant ist, dann die zweite Steckbuchsenleiste für Chip-Up Installation weglassen (kollidiert sonst etwas mit dem Antennenanschluss).
+- Nicht zu dickes Lötzinn verwenden. Dünneres kann besser dosiert werden. Bei diesen Bauteilen verwende ich Lot mit einem Durchmesser von 0,8-1mm.
+- Das GPS Modul kann auf zwei Arten angeschlossen werden, Chip-up oder Chip-down, je nachdem, wo die Antenne verbaut wird. Am besten klebt man sie mit doppelseitigem Klebeband auf die Rückseite des GPS-Moduls und verbaut dieses Chip-down, also so, dass der u-blox Chip auf dem GPS-Modul nach unten zeigt. Wenn dies so geplant ist, dann die zweite Steckbuchsenleiste für Chip-Up Installation weglassen (kollidiert sonst etwas mit dem Antennenanschluss). Die beiden Anschlüsse sind an der Beschriftung auf dem Schaltplan/Platine zu erkennen.
 - Zum Schluss den betankten "Wemos D1 mini" (s.o. "Software kompilieren und hochladen") in die dafür vorgesehenen Buchsenleisten stecken (USB Buchse zur Anschlussleiste)
 
 Hier noch ein Foto eines Versuchsaufbaus (mit angeschlossenem Display):
@@ -97,7 +100,7 @@ Jetzt geht es an den Einbau. Schon vorab sollte man sich überlegen, wo Platz f�
 
 #### Einbau Button und LED im Cockpit
 
-Für den Einbau könnte ein Ausbau des entsprechenden Cockpit-Teils notwendig, bzw. nützlich sein. Es müssen Löcher für den Einbau der LED Fassung und den Button geschaffen werden. Die LED in der Fassung ggf. mit einem Stück Platine kontern und anlöten. Da die vorgeschlagenen Kabel, bzw. die Litzen im Kabel sehr dünn sind, ist das Befestigen der LED etwas fummelig. Für den Button können evtl. auch kleine Stecker nützlich sein. Bei einer frei schwebenden Verlötung können mechanische Belastungen die dünnen LED Anschlüsse schnell brechen lassen. Die großzügige Verwendung von Klebeband schützt so eine Installation enorm ;-). Das Verbindungskabel zum Öler "schlabberfrei" verlegen.
+Für den Einbau könnte ein Ausbau des entsprechenden Cockpit-Teils notwendig, bzw. nützlich sein. Es müssen Löcher für den Einbau der LED Fassung und den Button geschaffen werden. Die LED in der Fassung ggf. mit einem Stück Platine kontern und anlöten. Da die vorgeschlagenen Kabel, bzw. die Litzen im Kabel sehr dünn sind, ist das Befestigen der LED etwas fummelig. Für den Button können evtl. auch kleine Stecker nützlich sein. Bei einer frei schwebenden Verlötung können mechanische Belastungen die dünnen LED Anschlüsse schnell brechen lassen. Die großzügige Verwendung von Klebeband schützt so eine Installation enorm ;-). Das Verbindungskabel zum Öler "schlabberfrei" verlegen, damit es nicht in bewegliche Teile gerät (ggf. mit Kabelbindern befestigen).
 
 #### Öltank
 
