@@ -199,8 +199,8 @@ void handleReboot(void)
     GVmyLedx.on(LED_ROT);
     GVmyDisplay.PrintMessage("Reboot...");
     //handleMessage(F("rebooting..."));
-    GVwebServer.send( 200, TEXT_HTML, "OK" );
-    handleClient();
+    //GVwebServer.send( 200, TEXT_HTML, "OK" );
+    //handleClient();
 
     ESP.restart();
   } GVwebServer.send( 400, TEXT_HTML, BAD_ARGS );

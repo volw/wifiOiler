@@ -133,7 +133,7 @@ void handleFileDelete() {
   _FILESYS.remove(path);
 
   checkFilesystemSpace();
-  GVwebServer.send(200, TEXT_PLAIN, "");
+  GVwebServer.send(200, TEXT_PLAIN, "OK");
   path = String();
 }
 
