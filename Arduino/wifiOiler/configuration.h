@@ -45,7 +45,6 @@ class Configuration {
     bool     lgs = true;              // Serial logging activated
     bool     gdl = false;             // GPS Debug logging to file (/gpsLog.txt)
     bool     wso = true;              // WiFi beim Starten automatisch an (true) oder aus (false)?
-    String   gcf = "/Neo-M8.ini";     // GPS Device Config File
     String   fbe = "/littlefsb.htm";  // (file browser) editor
 
     void read() { this->fworker(true); }
@@ -162,10 +161,6 @@ class Configuration {
             else if (key.equals(F("wso"))) {
               if (readMode) this->wso = (value.toInt() == 1);
               else outFile.print("wso = " + String(this->wso ? "1" : "0")+'\n');
-            }
-            else if (key.equals(F("gcf"))) {
-              if (readMode) this->gcf = String(value);
-              else outFile.print("gcf = " + String(this->gcf)+'\n');
             }
             else if (key.equals(F("fbe"))) {
               if (readMode) this->fbe = String(value);
