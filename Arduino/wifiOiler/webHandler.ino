@@ -258,7 +258,6 @@ void handleConfigPage(void) {
     if (GVwebServer.hasArg(F("lgs"))) GVoilerConf.lgs = GVwebServer.arg(F("lgs"))=="1";      // Bool: logging to Serial
     if (GVwebServer.hasArg(F("gdl"))) GVoilerConf.gdl = GVwebServer.arg(F("gdl"))=="1";      // Bool: GPS logging
     if (GVwebServer.hasArg(F("wso"))) GVoilerConf.wso = GVwebServer.arg(F("wso"))=="1";      // Bool: autom. WiFi-Start
-    if (GVwebServer.hasArg(F("gcf"))) GVoilerConf.gcf = GVwebServer.arg(F("gcf"));           // GPS config file
     if (GVwebServer.hasArg(F("fbe"))) GVoilerConf.fbe = GVwebServer.arg(F("fbe"));           // File Browser & Editor
     GVoilerConf.write();
     checkFilesystemSpace(); // GVcurrentfpw wird dort ggf. korrigiert
@@ -285,7 +284,6 @@ void handleConfigPage(void) {
   output += ",\"lgs\":\"" + String(GVoilerConf.lgs) + "\"";
   output += ",\"gdl\":\"" + String(GVoilerConf.gdl) + "\"";
   output += ",\"wso\":\"" + String(GVoilerConf.wso) + "\"";
-  output += ",\"gcf\":\"" + String(GVoilerConf.gcf) + "\"";
   output += ",\"fbe\":\"" + String(GVoilerConf.fbe) + "\"}";
   GVwebServer.send(200, F("text/json"), output);
 }
