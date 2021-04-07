@@ -8,6 +8,21 @@ include 'global.php';
 
 function main() {
   global $USER_AGENT, $uploaddir;
+  
+	/* DEBUG
+	foreach (getallheaders() as $name => $value) {
+    mylog("Header: $name: $value");
+	}    	
+	foreach ($_POST as $name => $value) {
+    mylog("POST: $name: $value");
+	}
+	foreach ($_FILES['userfile'] as $name => $value) {
+    mylog("File: $name: $value");
+	}
+	mylog("-------------------------");
+	mylog(file_get_contents('php://input'));
+	*/
+
   if (!startsWith($_SERVER['HTTP_USER_AGENT'], $USER_AGENT)) {
     mylog("Zugriff mit nicht autorisiertem Client");
     // 401: unauthorized
@@ -20,6 +35,7 @@ function main() {
       $fileexists = file_exists($uploadfile);
     } else {
       mylog("No filename given (may be unauthorized use)");
+			
     	http_response_code(404);
       return;
     }

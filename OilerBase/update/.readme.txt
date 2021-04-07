@@ -1,12 +1,9 @@
-Verzeichnisstruktur sieht so aus:
+Verzeichnisstruktur:
 
 /var/www/update/<BoardType>/<version>
-Aktuelle Oiler Version (im Moppped): 1.51
 
-Beispiele:
-	/var/www/update/NodeMCU/1.32
-	/var/www/update/WemosMini/1.26
-
-Im Programm werden derzeit zwei versch. Boards unterstuetzt:
-"NodeMCU" und "WemosMini" (Wemos D1 mini)
-s. #define BOARD_TYPE in wifiOiler.h
+BoardType (possible board types):
+	WemosMini
+	
+Beispiel:
+	/var/www/update/WemosMini/4.2.014
