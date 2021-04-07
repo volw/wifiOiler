@@ -331,9 +331,9 @@ void handleRunTimeInfo(void) {
   output += ",\"fc\":" + String(GVgpsNew.failedChecksum());           // gps sentences with failed checksum
   output += ",\"mp\":" + String(GVmeterSincePump);                    // total gps meters since start
   #ifdef _NO_PUMP_
-    output += ",\"pm\":\"" + getPumpModeStr(GVpumpMode) + "\"";       // current pump mode
-  #else
     output += ",\"pm\":\"DEAKTIVIERT!\"";
+  #else
+    output += ",\"pm\":\"" + getPumpModeStr(GVpumpMode) + "\"";       // current pump mode
   #endif
   output += ",\"ra\":\"" + String(GVcurrentfpw == 0 ? "Nein" : "Ja") + "\""; // track recording active
   output += ",\"tf\":\"" + String(GVgpsTrackFilename) + "\"";         // track file name
