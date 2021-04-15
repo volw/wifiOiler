@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ****/
+#define BUFFER_SIZE 512
 
 /**************************************************************
  * check for new binary in file system (file name see <GVoilerConf.ffn>)
@@ -88,7 +89,7 @@ bool checkforUpdate(bool justCheck, bool reboot) {
 bool getUpdateInfo(void)
 {
   GVupdateFiles.clear();  // empty vector
-  String url = "http://" + GVoilerConf.uhn + "/update.php?board="+BOARD_TYPE+"&version="+VERSION;
+  String url = getOilerbaseURL() + "?board="+BOARD_TYPE+"&version="+VERSION;
   String result = "";
 
   //GVhttp.setUserAgent(F(HTTP_USER_AGENT));
@@ -135,7 +136,7 @@ bool getUpdateInfo(void)
 bool downloadFile(String subPath)
 {
   bool result = false;
-  String url = "http://" + GVoilerConf.uhn + ":" + GVoilerConf.uhp + "/update.php?file="+subPath;
+  String url = getOilerbaseURL() + "?file="+subPath;
   int nPos = subPath.lastIndexOf("/");
   //save file to temp. name (to be sure, that complete update has been uploaded):
   String fname = subPath.substring(nPos)+"$";
@@ -153,14 +154,14 @@ bool downloadFile(String subPath)
     if (httpCode == HTTP_CODE_OK) {
 
       // get length of document (is -1 when Server sends no Content-Length header)
-      uint32_t len = GVhttp.getSize();
-      GVupdFileSizeTotal = len;
+      int32_t fileLen = GVhttp.getSize();
+      GVupdFileSizeTotal = fileLen;
       GVupdSizeUploaded = 0;
 
       //DEBUG_OUT.printf("[downloadFile] file size is %d\n", GVupdFileSizeTotal);
 
       // create buffer for read
-      uint8_t buff[512] = { 0 };
+      uint8_t buff[BUFFER_SIZE] = { 0 };
 
       // get tcp stream
       WiFiClient * stream = GVhttp.getStreamPtr();
@@ -169,10 +170,11 @@ bool downloadFile(String subPath)
       if (GVoutFile)
       {
         // read all data from server
-        while (GVhttp.connected() && (len > 0 || len == -1)) {
+        while (GVhttp.connected() && (fileLen > 0 || fileLen == -1)) {
           
           // get available data size
           size_t size = stream->available();
+          //DEBUG_OUT.printf("[downloadFile] stream size available: %d\n", size);
           if(size) {
             GVmyLedx.on(LED_GRUEN);
             // read up to (buffersize) byte
@@ -180,8 +182,8 @@ bool downloadFile(String subPath)
             GVoutFile.write(buff, c);
             GVmyLedx.off();
             GVupdSizeUploaded += c;
-            if(len > 0) {
-              len -= c;
+            if(fileLen > 0) {
+              fileLen -= c;
             }
           }
           GVwebServer.handleClient(); // allow action while loading...

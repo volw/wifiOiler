@@ -40,7 +40,7 @@ class Configuration {
     String   app = "alteoile";        // Passwort eigener Access Point
     String   uhn = "volw.no-ip.biz";  // Upload Server
     uint16_t uhp = 80;                // Port des Upload Servers
-    String   url = "/upload.php";     // Upload URL
+    String   url = "/oilerbase.php";  // php file of oilerbase
     bool     lgf = true;              // file logging activated
     bool     lgs = true;              // Serial logging activated
     bool     gdl = false;             // GPS Debug logging to file (/gpsLog.txt)

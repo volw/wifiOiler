@@ -50,7 +50,7 @@ bool isServerAvailable(void) {
  *************************************************/ 
 bool isFileThere(String fname) {
   //GVhttp.setUserAgent(F(HTTP_USER_AGENT));
-  GVhttp.begin(GVwifiClient ,"http://"+GVoilerConf.uhn+":"+GVoilerConf.uhp+"/fileexists.php?filename="+fname);
+  GVhttp.begin(GVwifiClient ,getOilerbaseURL() + "?filename="+fname);
   int httpCode = GVhttp.GET();
   DEBUG_OUT.print(F("[isFileThere] httpCode = "));
   DEBUG_OUT.println(httpCode);
@@ -70,7 +70,6 @@ bool sendFile(String fname) {
   if (GVoutFile) {
     if (GVwifiClient.connect(GVoilerConf.uhn, GVoilerConf.uhp)) {
       DEBUG_OUT.println(F("[sendFile] Starte Übertragung der Datei..."));
-      //sendContent(F("POST /upload.php HTTP/1.1"));
       GVwifiClient.println("POST " + GVoilerConf.url + " HTTP/1.1");
       GVwifiClient.println("Host: " + GVoilerConf.uhn+":"+GVoilerConf.uhp);
       GVwifiClient.print(F("User-Agent: wifiOiler/"));    // user agent wird auf Serverseite abgefragt - ggf. dort anpassen
