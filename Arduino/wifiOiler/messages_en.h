@@ -43,7 +43,7 @@
 #define MSG_DBG_HANDLEFILEUPLOAD_SIZE     "[handleFileUpload] Size: " // followed by total (upload) file size
 
 // GPS
-#define MSG_DBG_SETUP_GPS_INIT            "[setupGPS] Initializing GPS module..."
+#define MSG_DBG_SETUP_GPS_INIT            "[setupGPS] Starting GPS module..."
 #define MSG_DBG_GPS_SWITCH_OFF_PUMP       "[checkGPSdata] Continuous pumping is switched off..."
 #define MSG_DBG_GPS_DATE_TIME             "[createDateFilename] date/time: " // followed by recently created track file name
 #define MSG_DBG_MOVEMENT_MOTO_MOVING      "[checkMovement] Info: Vehicle starts to move"

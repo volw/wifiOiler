@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ****/
-#define BUFFER_SIZE 512
+#define BUFFER_SIZE 1024    // adjust, if not enough RAM at runtime
 
 /**************************************************************
  * check for new binary in file system (file name see <GVoilerConf.ffn>)
