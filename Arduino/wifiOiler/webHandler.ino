@@ -65,6 +65,9 @@ void setupWebServer(void) {
   GVwebServer.begin();
 }
 
+String getOilerbaseURL() {
+  return ("http://" + GVoilerConf.uhn + ":" + GVoilerConf.uhp + GVoilerConf.url);
+}
 
 /*************************************************
  * Content type anhand Dateiendung identifizieren

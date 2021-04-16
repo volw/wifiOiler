@@ -50,10 +50,11 @@ bool isServerAvailable(void) {
  *************************************************/ 
 bool isFileThere(String fname) {
   //GVhttp.setUserAgent(F(HTTP_USER_AGENT));
-  GVhttp.begin(GVwifiClient ,"http://"+GVoilerConf.uhn+":"+GVoilerConf.uhp+"/fileexists.php?filename="+fname);
+  GVhttp.begin(GVwifiClient ,getOilerbaseURL() + "?filename="+fname);
   int httpCode = GVhttp.GET();
-  DEBUG_OUT.print(F("[isFileThere] httpCode = "));
-  DEBUG_OUT.println(httpCode);
+  DEBUG_OUT.printf(PSTR("[isFileThere] httpCode = %d"), httpCode);
+  //DEBUG_OUT.print(F("[isFileThere] httpCode = "));
+  //DEBUG_OUT.print(httpCode);
   GVhttp.end();
   return (httpCode == 200);   // 200, wenn Datei vorhanden
 }
@@ -70,7 +71,6 @@ bool sendFile(String fname) {
   if (GVoutFile) {
     if (GVwifiClient.connect(GVoilerConf.uhn, GVoilerConf.uhp)) {
       DEBUG_OUT.println(F("[sendFile] Starte Übertragung der Datei..."));
-      //sendContent(F("POST /upload.php HTTP/1.1"));
       GVwifiClient.println("POST " + GVoilerConf.url + " HTTP/1.1");
       GVwifiClient.println("Host: " + GVoilerConf.uhn+":"+GVoilerConf.uhp);
       GVwifiClient.print(F("User-Agent: wifiOiler/"));    // user agent wird auf Serverseite abgefragt - ggf. dort anpassen
@@ -190,14 +190,14 @@ void handleUpload(void)
           {
             GVmyLedx.start LED_TRACK_UPLOAD_SUCCESS;
             uploadOK++;
-            DEBUG_OUT.println(F("OK"));
+            DEBUG_OUT.println(F("..OK"));
             uploadResponse += F("OK\n"); GVwebServer.handleClient();
           }
           else 
           {
             GVmyLedx.start LED_TRACK_UPLOAD_FAILED;
             uploadFailed++;
-            DEBUG_OUT.println(F("FAILED"));
+            DEBUG_OUT.println(F("..FAILED"));
             uploadResponse += F("FAILED\n"); GVwebServer.handleClient();
           }
           GVmyLedx.delay();

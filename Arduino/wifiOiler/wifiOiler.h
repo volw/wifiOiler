@@ -23,7 +23,7 @@
 // _DISPLAY_AVAILABLE_: wenn undefiniert, wird etwas Speicherplatz (7 KB) gespart - ansonsten keine Auswirkung (auch wenn kein Display angeschl. ist)
 // _NO_PUMP_: nur während Entwicklung sinnvoll: Pumpe wird dauerhaft deaktiviert, damit's nicht ständig piept
 
-#define VERSION "4.2.015"
+#define VERSION "4.2.016"
 #define _DISPLAY_AVAILABLE_
 //#define _NO_PUMP_
 
@@ -32,8 +32,8 @@
 
 //#define LED_BUILTIN 2
 
-// wird der HTTP_USER_AGENT geändert (Sonderzeichen vermeiden!), dann sollte auch in der 'global.php' (oilerbase)
-// die Variable $USER_AGENT entsprechend angepasst werden (s. oilerbase/html/global.php)
+// wird der HTTP_USER_AGENT geändert (Sonderzeichen vermeiden!), dann sollte auch in der 'oilerbase.php' (oilerbase)
+// die Variable USER_AGENT entsprechend angepasst werden (s. oilerbase/html/oilerbase.php)
 #define HTTP_USER_AGENT "wifiOiler"
 
 //max. Zeichen pro GPS Record
@@ -125,7 +125,7 @@ typedef PumpModes tPumpMode;
   #define LED_ROT          D5   // weiße Litze vom Cockpit-Kabel
   #define LED_GRUEN        D0   // gelbe Litze vom Cockpit-Kabel
   #pragma message "Info: compiling for NodeMCU/ESP12F..."
-  #define BOARD_TYPE       "NodeMCU"
+  #define BOARD_TYPE       "NodeMCU"  // case sensitive; used to build directory name on oilerbase
   #define UPDATE_FILE      "/wifiOiler.ino.nodemcu.bin"  
 #endif
 
@@ -134,7 +134,7 @@ typedef PumpModes tPumpMode;
   #define LED_ROT          D5 // alt D7
   #define LED_GRUEN        D0 // alt D8
   #pragma message  "Info: compiling for Wemos D1 mini..."
-  #define BOARD_TYPE       "WemosMini"
+  #define BOARD_TYPE       "WemosMini"  // case sensitive; used to build directory name on oilerbase
   #define UPDATE_FILE      "/wifiOiler.ino.d1_mini.bin"  
 #endif
 

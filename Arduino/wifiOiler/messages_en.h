@@ -43,7 +43,7 @@
 #define MSG_DBG_HANDLEFILEUPLOAD_SIZE     "[handleFileUpload] Size: " // followed by total (upload) file size
 
 // GPS
-#define MSG_DBG_SETUP_GPS_INIT            "[setupGPS] Initializing GPS module..."
+#define MSG_DBG_SETUP_GPS_INIT            "[setupGPS] Starting GPS module..."
 #define MSG_DBG_GPS_CONFIG_FILE_NOT_EXIST "[setupGPS] ERROR: GPS Config file not found, check configuration: "	// followed by name of config file (see configuration)
 #define MSG_DBG_GPS_NO_CONFIG_FILE        "[setupGPS] no GPS configuration file given"
 #define MSG_DBG_GPS_SWITCH_OFF_PUMP       "[checkGPSdata] Continuous pumping is switched off..."
