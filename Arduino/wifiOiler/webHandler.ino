@@ -63,6 +63,7 @@ void setupWebServer(void) {
     DEBUG_OUT.println(GVwebServer.uri());
   });
   GVwebServer.begin();
+  GVhttp.setAuthorization(GVoilerConf.bac.c_str());   // wenn keine Auth. vom Server gefordert wird, geht das trotzdem...
 }
 
 String getOilerbaseURL() {
@@ -257,6 +258,7 @@ void handleConfigPage(void) {
     if (GVwebServer.hasArg(F("uhn"))) GVoilerConf.uhn = GVwebServer.arg(F("uhn"));           // Upload Host Name
     if (GVwebServer.hasArg(F("uhp"))) GVoilerConf.uhp = GVwebServer.arg(F("uhp")).toInt();   // Upload Host Port
     if (GVwebServer.hasArg(F("url"))) GVoilerConf.url = GVwebServer.arg(F("url"));           // Upload Host URL
+    if (GVwebServer.hasArg(F("bac"))) GVoilerConf.bac = GVwebServer.arg(F("bac"));           // Basic Authentication Credentials "user:password"
     if (GVwebServer.hasArg(F("lgf"))) GVoilerConf.lgf = GVwebServer.arg(F("lgf"))=="1";      // Bool: logging to file
     if (GVwebServer.hasArg(F("lgs"))) GVoilerConf.lgs = GVwebServer.arg(F("lgs"))=="1";      // Bool: logging to Serial
     if (GVwebServer.hasArg(F("gdl"))) GVoilerConf.gdl = GVwebServer.arg(F("gdl"))=="1";      // Bool: GPS logging
@@ -283,6 +285,7 @@ void handleConfigPage(void) {
   output += ",\"uhn\":\"" + String(GVoilerConf.uhn) + "\"";
   output += ",\"uhp\":\"" + String(GVoilerConf.uhp) + "\"";
   output += ",\"url\":\"" + String(GVoilerConf.url) + "\"";
+  output += ",\"bac\":\"" + String(GVoilerConf.bac) + "\"";
   output += ",\"lgf\":\"" + String(GVoilerConf.lgf) + "\"";
   output += ",\"lgs\":\"" + String(GVoilerConf.lgs) + "\"";
   output += ",\"gdl\":\"" + String(GVoilerConf.gdl) + "\"";

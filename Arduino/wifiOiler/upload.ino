@@ -73,10 +73,15 @@ bool sendFile(String fname) {
       DEBUG_OUT.println(F("[sendFile] Starte Übertragung der Datei..."));
       GVwifiClient.println("POST " + GVoilerConf.url + " HTTP/1.1");
       GVwifiClient.println("Host: " + GVoilerConf.uhn+":"+GVoilerConf.uhp);
-      GVwifiClient.print(F("User-Agent: wifiOiler/"));    // user agent wird auf Serverseite abgefragt - ggf. dort anpassen
-      GVwifiClient.println(VERSION);
+      GVwifiClient.printf(PSTR("User-Agent: %s/%s"), HTTP_USER_AGENT, VERSION);    // user agent wird auf Serverseite abgefragt - ggf. dort anpassen
       GVwifiClient.println(F("Accept: */*"));
-      GVwifiClient.println("Content-Length:" + String(HEADER_LENGTH + GVoutFile.size()+fname.length()));
+      if (GVoilerConf.bac != "") {
+        // adding authorization header for basic authentication (s. #define in wifiOiler.h for auth. string)
+        GVwifiClient.printf(PSTR("Authorization: Basic %s\n"), GVoilerConf.bac.c_str());
+        GVwifiClient.printf(PSTR("Content-Length:%d\n"), 22 + GVoilerConf.bac.length() + HEADER_LENGTH + GVoutFile.size() + fname.length());
+      } else {
+        GVwifiClient.printf(PSTR("Content-Length:%d\n"), HEADER_LENGTH + GVoutFile.size() + fname.length());
+      }
       GVwifiClient.println("Content-Type: multipart/form-data; boundary=" + boundary);
       GVwifiClient.println();
       GVwifiClient.println("--" +  boundary);

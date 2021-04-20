@@ -41,6 +41,7 @@ class Configuration {
     String   uhn = "volw.no-ip.biz";  // Upload Server
     uint16_t uhp = 80;                // Port des Upload Servers
     String   url = "/oilerbase.php";  // php file of oilerbase
+    String   bac = "";                // base64 encoded "user:password", empty if no auth. needed
     bool     lgf = true;              // file logging activated
     bool     lgs = true;              // Serial logging activated
     bool     gdl = false;             // GPS Debug logging to file (/gpsLog.txt)
@@ -81,7 +82,7 @@ class Configuration {
            line.trim();
         }
            
-        if ((line.length() > 5) && !line.startsWith("//")) {
+        if ((line.length() > 3) && !line.startsWith("//")) {
           if ((pos = line.indexOf("=")) > 0) {
             key = String(line.substring(0,pos));
             value = String(line.substring(pos+1));
@@ -145,6 +146,10 @@ class Configuration {
             else if (key.equals(F("url"))) {
               if (readMode) this->url = String(value);
               else outFile.print("url = " + String(this->url)+'\n');
+            }
+            else if (key.equals(F("bac"))) {
+              if (readMode) this->bac = String(value);
+              else outFile.print("bac = " + String(this->bac)+'\n');
             }
             else if (key.equals(F("lgf"))) {
               if (readMode) this->lgf = (value.toInt() == 1);
