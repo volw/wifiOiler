@@ -21,7 +21,7 @@
  * erreichbar ist.
  *************************************************/ 
 bool isServerAvailable(void) {
-  String cURL = "http://"+GVoilerConf.uhn+":"+String(GVoilerConf.uhp);
+  String cURL = getOilerbaseURL();
   GVhttp.begin(GVwifiClient, cURL);
   int httpCode = GVhttp.GET();
   GVhttp.end();

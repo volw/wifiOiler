@@ -149,19 +149,11 @@ function fileexists($filename) {
 // count($_FILES) > 0
 function upload() {	// get files from client
   $filecount = count($_FILES);
-  if ($filecount > 0) {
-    $uploadfile = UPLOAD_DIR . basename($_FILES['userfile']['name']);
-    $fileexists = file_exists($uploadfile);
-  } else {
-    mylog("No filename given (may be unauthorized use)");
-		
-  	http_response_code(404);
-    return;
-  }
+  $uploadfile = UPLOAD_DIR . basename($_FILES['userfile']['name']);
+  $fileexists = file_exists($uploadfile);
 
-  //echo "<pre>";
-  	mylog("upload file temp name/location: " . $_FILES['userfile']['tmp_name']);
-  	mylog("... target name of file: " . $uploadfile);
+  mylog("upload file temp name/location: " . $_FILES['userfile']['tmp_name']);
+  mylog("... target name of file: " . $uploadfile);
   if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
     if ($fileexists) {
       mylog("Erfolgreicher Upload, existierende Datei wurde überschrieben: '{$uploadfile}'");
@@ -175,12 +167,10 @@ function upload() {	// get files from client
   }
 }
 
-//if (!startsWith($_SERVER['HTTP_USER_AGENT'], USER_AGENT)) {
-if (false) {
-   mylog("Zugriff mit nicht autorisiertem Client: " . $_SERVER['HTTP_USER_AGENT']);
-   // 401: unauthorized oder 404: not found (more secure?)
-   http_response_code(404);
-   return;
+if (!startsWith($_SERVER['HTTP_USER_AGENT'], USER_AGENT)) {
+   mylog("No oiler agent: " . $_SERVER['HTTP_USER_AGENT']);
+   http_response_code(200);
+   echo "OK";
 } elseif (isset($_GET["board"]) && isset($_GET["version"])) {
 	updateinfo($_GET["board"], $_GET["version"]);
 } elseif (isset($_GET["file"])) {
@@ -189,9 +179,8 @@ if (false) {
 	fileexists($_GET["filename"]);
 } elseif (count($_FILES) > 0) {
 	upload();
-} else {
-	//http_response_code(404);
+} else {	// simple alive confirmation
 	http_response_code(200);
-	echo "alle ifs haben nicht gezogen...";
+	echo "OK";
 }
 ?>
