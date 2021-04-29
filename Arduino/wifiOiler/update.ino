@@ -314,7 +314,7 @@ void handleUpdate(void)
     GVupdateResult = UPD_NOT_ACTIVE;
   
     //erst mal sollte gecheckt werden, ob der Server überhaupt erreichbar ist...
-    DEBUG_OUT.printf(PSTR(MSG_DBG_UPD_CONNECT_INIT), GVoilerConf.uhn.c_str(), GVoilerConf.uhp);
+    DEBUG_OUT.printf(PSTR(MSG_DBG_UPD_CONNECT_INIT));
     if (!isServerAvailable())
     {
       return GVwebServer.send( 500, TEXT_HTML, MSG_HTTP_UPD_SERVER_CONNECT_ERROR);

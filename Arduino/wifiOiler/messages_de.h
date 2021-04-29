@@ -102,10 +102,25 @@
 #define MSG_DBG_OLD_FILE_RENAME_ERROR     "[renameUpdateFiles] FEHLER bei Umbenennung von '%s' in '%s.old'\n" // printf, source, target
 #define MSG_DBG_TMP_FILE_RENAME_ERROR     "[renameUpdateFiles] FEHLER bei Umbenennung von '%s$' in '%s'\n" // printf, source (tmp), target
 #define MSG_DBG_UPD_FILE_DELETE_INIT      "[deleteUpdateFiles] lösche "  // followed by name of file to delete
-#define MSG_DBG_UPD_CONNECT_INIT          "[handleUpdate] suche Server %s:%d\n"	// printf: server, port
-#define MSG_HTTP_UPD_SERVER_CONNECT_ERROR ("Update Server '"+GVoilerConf.uhn+":"+GVoilerConf.uhp+"' nicht erreichbar!")
+#define MSG_DBG_UPD_CONNECT_INIT          "[handleUpdate] suche Update Server\n"
+#define MSG_HTTP_UPD_SERVER_CONNECT_ERROR "Update Server nicht erreichbar!"
 #define MSG_DBG_GET_UPDATE_INFO           "[handleUpdate] lese Update Infomationen vom Server " // followed by server name
 #define MSG_HTTP_NO_UPDATE_AVAILABLE      "Server meldet: kein Update vorhanden!"
+
+// upload
+#define MSG_DBG_CHECK_URL_START           "[isServerAvailable] check URL (GET):%s\n"  // printf: complete url (server, port and url)
+#define MSG_DBG_CHECK_URL_SERVER_IP       "[isServerAvailable] IP-Adresse von '%s' ist %s\n"  // printf: server, ip
+#define MSG_DBG_CHECK_URL_ERROR           "[isServerAvailable] GET() failed, error: %s\n" // printf: error message from get()
+#define MSG_DBG_FILECHECK_RESULT          "[isFileThere] httpCode = %d\n" // printf: http-code returned
+#define MSG_DBG_SEND_FILE_START           "[sendFile] Starte Übertragung der Datei..."
+#define MSG_DBG_SEND_FILE_CONTENT         "[sendFile] >>> sending file content >>>"
+#define MSG_DBG_SEND_FILE_COMPLETED       "[sendFile] Übertragung beendet"
+#define MSG_DBG_SEND_FILE_CONNECT_ERROR   "[sendFile] Fehler beim Öffnen der Verbindung zu: '%s:%d'\n"  // printf: host name, port
+#define MSG_DBG_SEND_FILE_FOPEN_ERROR     "[sendFile] Fehler beim Öffnen der Datei: %s\n" 	// printf: file name
+#define MSG_DBG_TRACK_UPLOAD_START        "[handleUpload] searching track files:"
+#define MSG_DBG_TRACK_FILE_FOUND_YES      " is a track file - will upload..."  // before this the file name is printed
+#define MSG_DBG_TRACK_FILE_FOUND_NO       " is NO track file..."  // before this the file name is printed
+#define MSG_DBG_UPLOAD_SERVER_ERROR       "[handleUpload] Upload Server not available!"
 
 // webhandler
 #define MSG_DBG_WEB_FILE_READ_ERROR       "[handleFileRead] FEHLER beim Lesen der Datei " // followed by file name (path)

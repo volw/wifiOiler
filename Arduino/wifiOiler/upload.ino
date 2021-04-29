@@ -26,19 +26,14 @@ bool isServerAvailable(void) {
   int httpCode = GVhttp.GET();
   GVhttp.end();
   
-  DEBUG_OUT.print(F("[isServerAvailable] GET, URL:"));
-  DEBUG_OUT.println(cURL);
+  DEBUG_OUT.printf(PSTR(MSG_DBG_CHECK_URL_START), cURL.c_str());
   IPAddress remoteHostIP;
   if (WiFi.hostByName(GVoilerConf.uhn.c_str(), remoteHostIP, 5000))
   {
-    DEBUG_OUT.print(F("[isServerAvailable] IP-Adresse von '"));
-    DEBUG_OUT.print(GVoilerConf.uhn.c_str());
-    DEBUG_OUT.print(F("' ist "));
-    DEBUG_OUT.println(remoteHostIP.toString());
+    DEBUG_OUT.printf(PSTR(MSG_DBG_CHECK_URL_SERVER_IP), GVoilerConf.uhn.c_str(), remoteHostIP.toString().c_str());
   }
   if (httpCode <= 0){
-    DEBUG_OUT.print(F("[isServerAvailable] GET() failed, error: "));
-    DEBUG_OUT.println(GVhttp.errorToString(httpCode));
+    DEBUG_OUT.printf(PSTR(MSG_DBG_CHECK_URL_ERROR), GVhttp.errorToString(httpCode).c_str());
   }
   return (httpCode==200);
 }
@@ -52,9 +47,7 @@ bool isFileThere(String fname) {
   //GVhttp.setUserAgent(F(HTTP_USER_AGENT));
   GVhttp.begin(GVwifiClient ,getOilerbaseURL() + "?filename="+fname);
   int httpCode = GVhttp.GET();
-  DEBUG_OUT.printf(PSTR("[isFileThere] httpCode = %d"), httpCode);
-  //DEBUG_OUT.print(F("[isFileThere] httpCode = "));
-  //DEBUG_OUT.print(httpCode);
+  DEBUG_OUT.printf(PSTR(MSG_DBG_FILECHECK_RESULT), httpCode);
   GVhttp.end();
   return (httpCode == 200);   // 200, wenn Datei vorhanden
 }
@@ -70,7 +63,7 @@ bool sendFile(String fname) {
   GVoutFile = _FILESYS.open("/"+fname, "r");
   if (GVoutFile) {
     if (GVwifiClient.connect(GVoilerConf.uhn, GVoilerConf.uhp)) {
-      DEBUG_OUT.println(F("[sendFile] Starte Übertragung der Datei..."));
+      DEBUG_OUT.println(F(MSG_DBG_SEND_FILE_START));
       GVwifiClient.println("POST " + GVoilerConf.url + " HTTP/1.1");
       GVwifiClient.println("Host: " + GVoilerConf.uhn+":"+GVoilerConf.uhp);
       GVwifiClient.printf(PSTR("User-Agent: %s/%s"), HTTP_USER_AGENT, VERSION);    // user agent wird auf Serverseite abgefragt - ggf. dort anpassen
@@ -87,14 +80,14 @@ bool sendFile(String fname) {
       GVwifiClient.println("--" +  boundary);
       GVwifiClient.println("Content-Disposition: form-data; name=\"userfile\"; filename=\"" + fname + "\"");
       GVwifiClient.println(F("Content-Type: application/octet-stream\r\n"));
-      DEBUG_OUT.println(F("[sendFile] >>> sending file >>>"));
+      DEBUG_OUT.println(F(MSG_DBG_SEND_FILE_CONTENT));
       GVwifiClient.write(GVoutFile);
       GVwifiClient.println("\r\n--" + boundary + "--\r\n");
 
       // don't wait for any response - we check existance with get() Call...
       // while (GVwifiClient.available()) GVwifiClient.read();
       GVwifiClient.stop();
-      DEBUG_OUT.println(F("[sendFile] Übertragung beendet"));
+      DEBUG_OUT.println(F(MSG_DBG_SEND_FILE_COMPLETED));
       success = isFileThere(fname);
       if (success) {
         // Datei ist angekommen und kann gelöscht werden:
@@ -103,17 +96,13 @@ bool sendFile(String fname) {
     }
     else 
     {
-      DEBUG_OUT.print(F("Fehler beim Öffnen der Verbindung zu: "));
-      DEBUG_OUT.print(GVoilerConf.uhn);
-      DEBUG_OUT.print(":");
-      DEBUG_OUT.println(GVoilerConf.uhp);
+      DEBUG_OUT.printf(PSTR(MSG_DBG_SEND_FILE_CONNECT_ERROR), GVoilerConf.uhn.c_str(), GVoilerConf.uhp);
     }
     GVoutFile.close();
   }
   else 
   {
-    DEBUG_OUT.print(F("Fehler beim Öffnen der Datei: "));
-    DEBUG_OUT.println(fname);
+    DEBUG_OUT.printf(PSTR(MSG_DBG_SEND_FILE_FOPEN_ERROR), fname.c_str());
   }
   return success;
 }
@@ -172,7 +161,7 @@ void handleUpload(void)
       
       uint8_t uploadOK = 0;
       uint8_t uploadFailed = 0;
-      DEBUG_OUT.println(F("searching track files:"));
+      DEBUG_OUT.println(F(MSG_DBG_TRACK_UPLOAD_START));
       uploadResponse += F("searching track files...\n"); GVwebServer.handleClient();
       // Track file names: yyyymmdd-hhmm.dat
       Dir dir = _FILESYS.openDir("/20");
@@ -180,15 +169,9 @@ void handleUpload(void)
       while (dir.next()) {
         String fname = dir.fileName();
         DEBUG_OUT.print(fname);
-        #ifdef _SPIFFS_
-          //SPIFFS: beim SPIFFS ist die Länge 18 (nicht 17), da der leitende "/" mitgezählt wird.
-          if (fname.endsWith(".dat") && (fname.length() == 17))  // Track-File (incl. einleitendem "/")
-        #else
-          //LittleFS:
-          if (fname.endsWith(".dat") && (fname.length() == 17))
-        #endif
+        if (fname.endsWith(".dat") && (fname.length() == 17))
         {
-          DEBUG_OUT.print(F(" is a track file - will upload..."));
+          DEBUG_OUT.print(F(MSG_DBG_TRACK_FILE_FOUND_YES));
           uploadResponse += "...uploading " + fname + "..."; GVwebServer.handleClient();
           GVmyLedx.on(LED_GRUEN);
           if (sendFile(fname))
@@ -209,7 +192,7 @@ void handleUpload(void)
         }
         else
         {
-          DEBUG_OUT.println(F(" is NO track file..."));
+          DEBUG_OUT.println(F(MSG_DBG_TRACK_FILE_FOUND_NO));
         }
       }
       if ((uploadOK + uploadFailed) == 0)
@@ -224,6 +207,6 @@ void handleUpload(void)
         if (uploadOK > 0) checkFilesystemSpace();
       }
     }
-    else handleMessage(F("Upload Server not available!"));
+    else handleMessage(F(MSG_DBG_UPLOAD_SERVER_ERROR));
   }
 }
