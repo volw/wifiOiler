@@ -22,6 +22,7 @@
  *************************************************/ 
 bool isServerAvailable(void) {
   String cURL = getOilerbaseURL();
+//  String cURL = "http://oilerbase.fritz.box/oilerbase.php";
   GVhttp.begin(GVwifiClient, cURL);
   int httpCode = GVhttp.GET();
   GVhttp.end();
@@ -64,28 +65,31 @@ bool sendFile(String fname) {
   if (GVoutFile) {
     if (GVwifiClient.connect(GVoilerConf.uhn, GVoilerConf.uhp)) {
       DEBUG_OUT.println(F(MSG_DBG_SEND_FILE_START));
+      //------------------- Header -------------------------------------
       GVwifiClient.println("POST " + GVoilerConf.url + " HTTP/1.1");
       GVwifiClient.println("Host: " + GVoilerConf.uhn+":"+GVoilerConf.uhp);
-      GVwifiClient.printf(PSTR("User-Agent: %s/%s"), HTTP_USER_AGENT, VERSION);    // user agent wird auf Serverseite abgefragt - ggf. dort anpassen
       GVwifiClient.println(F("Accept: */*"));
+      GVwifiClient.printf(PSTR("User-Agent: %s/%s\r\n"), HTTP_USER_AGENT, VERSION);    // user agent wird auf Serverseite abgefragt - ggf. dort anpassen
       if (GVoilerConf.bac != "") {
         // adding authorization header for basic authentication (s. #define in wifiOiler.h for auth. string)
-        GVwifiClient.printf(PSTR("Authorization: Basic %s\n"), GVoilerConf.bac.c_str());
-        GVwifiClient.printf(PSTR("Content-Length:%d\n"), 22 + GVoilerConf.bac.length() + HEADER_LENGTH + GVoutFile.size() + fname.length());
-      } else {
-        GVwifiClient.printf(PSTR("Content-Length:%d\n"), HEADER_LENGTH + GVoutFile.size() + fname.length());
+        GVwifiClient.printf(PSTR("Authorization: Basic %s\r\n"), GVoilerConf.bac.c_str());
       }
+      GVwifiClient.printf(PSTR("Content-Length: %d\r\n"), HEADER_LENGTH + GVoutFile.size() );
       GVwifiClient.println("Content-Type: multipart/form-data; boundary=" + boundary);
       GVwifiClient.println();
-      GVwifiClient.println("--" +  boundary);
-      GVwifiClient.println("Content-Disposition: form-data; name=\"userfile\"; filename=\"" + fname + "\"");
-      GVwifiClient.println(F("Content-Type: application/octet-stream\r\n"));
-      DEBUG_OUT.println(F(MSG_DBG_SEND_FILE_CONTENT));
-      GVwifiClient.write(GVoutFile);
-      GVwifiClient.println("\r\n--" + boundary + "--\r\n");
+      //------------------- End of Header ------------------------------
+
+      /*  44 */ GVwifiClient.println("--" +  boundary);
+      /*  79 */ GVwifiClient.println("Content-Disposition: form-data; name=\"userfile\"; filename=\"" + fname + "\"");
+      /*  40 */ GVwifiClient.println("Content-Type: application/octet-stream");
+      /*   2 */ GVwifiClient.println();
+      /*  -- */ GVwifiClient.write(GVoutFile);
+      /*   2 */ GVwifiClient.println();
+      /*   2 */ GVwifiClient.println();
+      /*  46 */ GVwifiClient.println("--" + boundary + "--");
 
       // don't wait for any response - we check existance with get() Call...
-      // while (GVwifiClient.available()) GVwifiClient.read();
+      // while (GVwifiClient.available()) DEBUG_OUT.print(GVwifiClient.read());
       GVwifiClient.stop();
       DEBUG_OUT.println(F(MSG_DBG_SEND_FILE_COMPLETED));
       success = isFileThere(fname);

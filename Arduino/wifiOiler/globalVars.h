@@ -140,8 +140,8 @@ HTTPClient GVhttp;
 WiFiClient GVwifiClient = GVwebServer.client();
 
 // for track file upload
-#define HEADER_LENGTH 195
-const String boundary = "wifiOiler-dea88064e2e3320a";
+#define HEADER_LENGTH 215
+const String boundary = "------------------------15c028380c8415a6"; // Länge 40
 
 const char PROGMEM * C_CONNECTTEST    = "Microsoft Connect Test";
 const char PROGMEM * C_HOTSPOT_DETECT = "<html><script type='text/javascript'>window['_gaUserPrefs']={ioo:function(){return true;}}</script><head><title>Success</title><style></style></head><body>Success</body></html>";
