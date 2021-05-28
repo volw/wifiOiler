@@ -26,7 +26,7 @@ bool checkforUpdate(bool justCheck, bool reboot) {
 
   String FirmwareFilename = GVoilerConf.ffn;
   if (!FirmwareFilename.startsWith("/")) FirmwareFilename = "/" + GVoilerConf.ffn;
-  DEBUG_OUT.print(F("[checkforUpdate] Looking for firmware file "));
+  DEBUG_OUT.print(F(MSG_DBG_UPDATE_INIT));
   DEBUG_OUT.println(FirmwareFilename);
   if (justCheck) return(_FILESYS.exists(FirmwareFilename));
   
