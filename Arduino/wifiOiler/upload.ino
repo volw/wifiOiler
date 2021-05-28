@@ -23,6 +23,7 @@
 bool isServerAvailable(void) {
   String cURL = getOilerbaseURL();
 //  String cURL = "http://oilerbase.fritz.box/oilerbase.php";
+  GVhttp.setAuthorization(GVoilerConf.bac.c_str());
   GVhttp.begin(GVwifiClient, cURL);
   int httpCode = GVhttp.GET();
   GVhttp.end();

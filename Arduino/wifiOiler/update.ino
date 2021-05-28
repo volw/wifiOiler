@@ -93,6 +93,7 @@ bool getUpdateInfo(void)
   String result = "";
 
   //GVhttp.setUserAgent(F(HTTP_USER_AGENT));
+  GVhttp.setAuthorization(GVoilerConf.bac.c_str());
   GVhttp.begin(GVwifiClient, url);
 
   int httpCode = GVhttp.GET();
@@ -101,20 +102,19 @@ bool getUpdateInfo(void)
   if (httpCode > 0) {
     // HTTP header has been send and Server response header has been handled
     result = GVhttp.getString();  // erstes und letztes Zeichen '\n', warum????? (was the php on oilerbase, don't know why)
+
+    int16_t nPos = 0; // DO NOT USE UNSIGNED-TYPE HERE (can be < 0)
+    while (result.charAt(nPos) < 32) nPos++;
+    if (nPos > 0) result = result.substring(nPos);
+
+    nPos = result.length()-1;
+    while (result.charAt(nPos) < 32) nPos--;
+    if (nPos < result.length()-1) result = result.substring(0, nPos+1);
+    
     DEBUG_OUT.print(F(MSG_DBG_UPD_INFO_GET_RET_TEXT));
     DEBUG_OUT.println(result);
-////>>>>debug
-//    for (int i = 0; i < result.length(); i++){
-//      DEBUG_OUT.print("Zeichen(code) an Stelle ");
-//      DEBUG_OUT.print(i, DEC);
-//      DEBUG_OUT.print("=");
-//      DEBUG_OUT.print(result.charAt(i), DEC);
-//      DEBUG_OUT.print(", ");
-//      DEBUG_OUT.println(result.charAt(i), HEX);
-//    }
-////<<<<debug
+
     if (httpCode == 200){ // if valid update info received, fill (vector) GVupdateFiles
-      int16_t nPos; // DO NOT USE uint.. TYPE HERE (as I did)
       while ((nPos=result.indexOf(';')) > 0) {
         GVupdateFiles.push_back({result.substring(0, nPos),_UF_INITIAL});
         result = result.substring(nPos+1);
