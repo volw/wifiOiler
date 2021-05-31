@@ -104,17 +104,17 @@ bool getUpdateInfo(void)
     result = GVhttp.getString();  // erstes und letztes Zeichen '\n', warum????? (was the php on oilerbase, don't know why)
 
     int16_t nPos = 0; // DO NOT USE UNSIGNED-TYPE HERE (can be < 0)
-    while (result.charAt(nPos) < 32) nPos++;
-    if (nPos > 0) result = result.substring(nPos);
+    if (httpCode == 200 && result.length() > 0) {
+      while (result.charAt(nPos) < 32) nPos++;
+      if (nPos > 0) result = result.substring(nPos);
+  
+      nPos = result.length()-1;
+      while (result.charAt(nPos) < 32) nPos--;
+      if (nPos < result.length()-1) result = result.substring(0, nPos+1);
+      
+      DEBUG_OUT.print(F(MSG_DBG_UPD_INFO_GET_RET_TEXT));
+      DEBUG_OUT.println(result);
 
-    nPos = result.length()-1;
-    while (result.charAt(nPos) < 32) nPos--;
-    if (nPos < result.length()-1) result = result.substring(0, nPos+1);
-    
-    DEBUG_OUT.print(F(MSG_DBG_UPD_INFO_GET_RET_TEXT));
-    DEBUG_OUT.println(result);
-
-    if (httpCode == 200){ // if valid update info received, fill (vector) GVupdateFiles
       while ((nPos=result.indexOf(';')) > 0) {
         GVupdateFiles.push_back({result.substring(0, nPos),_UF_INITIAL});
         result = result.substring(nPos+1);
