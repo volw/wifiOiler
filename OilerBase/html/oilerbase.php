@@ -137,14 +137,14 @@ function download($file) {	// download request from client
 // "filename"
 function fileexists($filename) {
 	$uploadfile = UPLOAD_DIR . $filename;
-	
+
 	if (file_exists($uploadfile)) {
 	   mylog("File check initiated for: '" . $uploadfile . "' and :-)");
 	   http_response_code(200);
 	} else {
 	   mylog("File check initiated for: '" . $uploadfile . "' and :-(");
 	   http_response_code(404);    // "Not Found"
-	}	
+	}
 }
 // count($_FILES) > 0
 function upload() {	// get files from client

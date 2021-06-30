@@ -124,9 +124,9 @@ void loop() {
   }
   GVmyLedx.checkState();  // LED-Behandlung
   GVmyPumpx.checkState(); // Behandlung Pumpe
-  checkButton();        // Button Abfrage  
-  checkGPSdata();       // GPS Daten lesen, falls welche da sind
-  checkMovement();      // Überprüfung auf Bewegung
+  checkButton();          // Button Abfrage  
+  checkGPSdata();         // GPS Daten lesen, falls welche da sind
+  checkMovement();        // Überprüfung auf Bewegung
   GVmyDisplay.Check();    // Display handling
   
   if (GVmaintenanceMode && (millis() > (GVshowMaintMode + 10000UL))) {

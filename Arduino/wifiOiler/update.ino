@@ -79,6 +79,7 @@ bool checkforUpdate(bool justCheck, bool reboot) {
   {
     DEBUG_OUT.println(MSG_DBG_NO_FIRMWARE_FILE);
   }
+  return update;
 }
 
 /***********************************************************
