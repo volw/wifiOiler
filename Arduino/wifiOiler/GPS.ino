@@ -248,14 +248,13 @@ void checkMovement()
     {
       GVlastMovingState = true;
       DEBUG_OUT.println(F(MSG_DBG_MOVEMENT_MOTO_MOVING));
-      GVmyDisplay.PrintMoveState(true); //20200310i
     }
     if (isHalting() && GVlastMovingState)
     {
       GVlastMovingState = false;
       DEBUG_OUT.println(F(MSG_DBG_MOVEMENT_MOTO_STOPPED));
-      GVmyDisplay.PrintMoveState(false);
     }    
+    GVmyDisplay.PrintMoveState(GVlastMovingState);
   }
 }
 
