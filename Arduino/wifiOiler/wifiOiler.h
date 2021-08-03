@@ -23,7 +23,7 @@
 // _DISPLAY_AVAILABLE_: wenn undefiniert, wird etwas Speicherplatz (7 KB) gespart - ansonsten keine Auswirkung (auch wenn kein Display angeschl. ist)
 // _NO_PUMP_: nur während Entwicklung sinnvoll: Pumpe wird dauerhaft deaktiviert, damit's nicht ständig piept
 
-#define VERSION "4.2.020"
+#define VERSION "4.2.021"
 #define _DISPLAY_AVAILABLE_
 //#define _NO_PUMP_
 

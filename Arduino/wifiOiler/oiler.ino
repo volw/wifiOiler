@@ -155,6 +155,13 @@ bool TriggerPump() {
     if (!GVoilerConf.updateOilCounter()) {
       DEBUG_OUT.println(F(MSG_DBG_ERROR_OPEN_OILCNT_FILE));
     }
+  } else {   // Check, ob Dauerpumpem abgeschaltet werden muss, da Moped fährt... (safety check)
+    GVoilCounter++;
+    if (isMoving() && (GVoilCounter >= MAX_PUMP_ACTION_WHEN_MOVING))
+    {
+      DEBUG_OUT.println(F(MSG_DBG_GPS_SWITCH_OFF_PUMP));
+      setNewMode(MODE_NORMAL);
+    }
   }
   GVmyPumpx.start PUMP_ACTION;
   GVmyLedx.start LED_SHOW_PUMP_ACTION;
