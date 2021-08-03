@@ -384,3 +384,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+Arduino/wifiOiler/data/_uploadAll.bat
