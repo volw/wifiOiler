@@ -23,10 +23,13 @@
 // _DISPLAY_AVAILABLE_: wenn undefiniert, wird etwas Speicherplatz (7 KB) gespart - ansonsten keine Auswirkung (auch wenn kein Display angeschl. ist)
 // _NO_PUMP_: nur während Entwicklung sinnvoll: Pumpe wird dauerhaft deaktiviert, damit's nicht ständig piept
 
-#define VERSION "4.2.021"
+#define VERSION "4.2.022"
 #define _DISPLAY_AVAILABLE_
 //#define _NO_PUMP_
 
+#define LOG_FILE_NAME "/myLogger.txt"
+// Log wird nicht "rund"-geschrieben - wenn größer (check beim Start), dann wird gelöscht!
+#define LOG_FILE_MAX_BYTES 200000
 #define DEBUG_OUT GVmyLogger
 //#define DEBUG_OUT Serial
 

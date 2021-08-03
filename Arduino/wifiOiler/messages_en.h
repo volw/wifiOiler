@@ -23,6 +23,7 @@
 // wifiOiler.ino
 #define MSG_ERROR_INITIALISING_FILESYSTEM "Error initialising LittleFS file system!"
 #define MSG_ERROR_INITIALISING_LOGGER     "Error initialising LittleFS Logger!"
+#define MSG_CHECK_LOG_SIZE_DELETE         "[setup] Log file exceeded maximum size and was deleted"
 #define MSG_PROGRESS_STARTING_INIT        "********** Starting..."
 #define MSG_PROGRESS_STARTING_END         "---------- Initialization completed."
 #define MSG_VERSION_MESSAGE_1             "This is wifiOiler version " // followed by version + MSG_VERSION_MESSAGE_2

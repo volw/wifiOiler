@@ -52,8 +52,14 @@ void setup()
   GVmyDisplay.PrintMeter(getModeMeters(GVpumpMode));
   GVmyDisplay.PrintKmh(0);
 
+  bool deleteLog = false;
   if (!_FILESYS.begin()) {
     Serial.println(F(MSG_ERROR_INITIALISING_FILESYSTEM));
+  } else {  // check, if log file is too big...
+    File f = _FILESYS.open(LOG_FILE_NAME, "r");
+    deleteLog = (f.size() > LOG_FILE_MAX_BYTES);
+    f.close();
+    if (deleteLog) _FILESYS.remove(LOG_FILE_NAME);
   }
 
   GVoilerConf.read();
@@ -64,12 +70,13 @@ void setup()
   // VORSICHT: falls Datei sehr groß wird, können Schreiboperationen (incl.
   // Öffnen und schließen der Datei seeehr langsam sein und das ganze Ding voll ausbremsen - also nur kurz
   // aktiviert lassen (ein paar Stunden oder sogar 1-2 Tage geht aber schon)!
-  if (!GVmyLogger.begin(GVoilerConf.lgf ? "/myLogger.txt" : "", GVoilerConf.lgs)) {
+  if (!GVmyLogger.begin(GVoilerConf.lgf ? LOG_FILE_NAME : "", GVoilerConf.lgs)) {
     Serial.println(F(MSG_ERROR_INITIALISING_LOGGER));
   }
   GVmyDisplay.MessageAdd(".", 10000);
   
   DEBUG_OUT.println(F(MSG_PROGRESS_STARTING_INIT));
+  if (deleteLog) DEBUG_OUT.println(MSG_CHECK_LOG_SIZE_DELETE);
 
   setupButton();
 
