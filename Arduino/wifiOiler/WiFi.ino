@@ -183,7 +183,7 @@ void toggleWiFi(void)
 /***********************************************
  * checkWiFi: WiFi wird ausgeschaltet, wenn sich
  * die Kiste bewegt.
- * nur aufgerufen in main loop, wenn WiFi off!
+ * nur aufgerufen in main loop, wenn WiFi on!
  ***********************************************/
 void checkWiFi(void)
 {
