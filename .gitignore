@@ -14,6 +14,7 @@
 *.kicad_pcb-bak
 *.bck
 *.sch-bak
+fp-info-cache
 # Build results from Arduino > 2.0
 **/build/
 # No Office and PDF files
