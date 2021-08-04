@@ -66,9 +66,9 @@ namespace gpsTrack
                     using (BinaryReader r = new BinaryReader(s))
                     {
                         inFileCounter++;
-                        Console.WriteLine("Converting {0} ({1}) -> {2}", trackFile.Name, trackFile.Startzeit, OutFilename);
+                        Console.Write("Converting {0} ({1}) -> {2}", trackFile.Name, trackFile.Startzeit, OutFilename);
+                        uint fixPointCount = 0;
 
-                        // stop when reached the file end
                         while (s.Position + Configuration.GpsRecordSize < s.Length)
                         {
                             try
@@ -77,7 +77,10 @@ namespace gpsTrack
                                 double distance = fix.distanceBetween(oldfix);
                                 //TODO: wenn der Abstand zu groß ist, könnte der Track aufgeteilt werden...
                                 if (fix.IsValidTimestamp)
+                                {
                                     outfile.WriteLine(fix.getGPXstring());
+                                    fixPointCount++;
+                                }
                                 oldfix = fix;
                             }
                             catch (Exception e)
@@ -91,6 +94,7 @@ namespace gpsTrack
                                 Console.WriteLine(e.StackTrace);
                             }
                         }
+                        Console.WriteLine(" ({0} fixpoints)", fixPointCount);
                     }
                 }
                 CloseOutFile(outfile);
