@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace gpsTrack
 {
@@ -58,6 +55,7 @@ namespace gpsTrack
         public bool IsValid = false;
         public bool Rename = false;
         public List<BinaryTrackFile> SourceFiles;
+        public const int GpsRecordSize = 54;
 
         public Configuration(string[] args)
         {

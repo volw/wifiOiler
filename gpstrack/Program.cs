@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.InteropServices;
 using System.IO;
-using System.Reflection;
 
 namespace gpsTrack
 {
@@ -75,7 +69,7 @@ namespace gpsTrack
                         Console.WriteLine("Converting {0} ({1}) -> {2}", trackFile.Name, trackFile.Startzeit, OutFilename);
 
                         // stop when reached the file end
-                        while (s.Position < s.Length)
+                        while (s.Position + Configuration.GpsRecordSize < s.Length)
                         {
                             try
                             {
