@@ -14,7 +14,7 @@ class LittleFSlogger: public Print {
     bool toSerial = true;
 
   public:
-    LittleFSlogger(String fname = "") {}
+    //LittleFSlogger() {}
 
     bool begin(String fname = "", bool toSer = true) {
     	// if toSer is true, logger will print to Serial as well

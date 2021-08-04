@@ -169,40 +169,39 @@ void handleUpload(void)
       DEBUG_OUT.println(F(MSG_DBG_TRACK_UPLOAD_START));
       uploadResponse += F("searching track files...\n"); GVwebServer.handleClient();
       // Track file names: yyyymmdd-hhmm.dat
-      Dir dir = _FILESYS.openDir("/20");
+      Dir dir = _FILESYS.openDir("/2");  // hier Jahr-3000 Problematik ;-)
       
       while (dir.next()) {
         String fname = dir.fileName();
-        DEBUG_OUT.print(fname);
         if (fname.endsWith(".dat") && (fname.length() == 17))
         {
-          DEBUG_OUT.print(F(MSG_DBG_TRACK_FILE_FOUND_YES));
+          DEBUG_OUT.printf(PSTR(MSG_DBG_TRACK_FILE_FOUND_YES), fname.c_str());
           uploadResponse += "...uploading " + fname + "..."; GVwebServer.handleClient();
           GVmyLedx.on(LED_GRUEN);
           if (sendFile(fname))
           {
             GVmyLedx.start LED_TRACK_UPLOAD_SUCCESS;
             uploadOK++;
-            DEBUG_OUT.println(F("..OK"));
+            DEBUG_OUT.println(F(MSG_DBG_TRACK_UPLOAD_OK));
             uploadResponse += F("OK\n"); GVwebServer.handleClient();
           }
           else 
           {
             GVmyLedx.start LED_TRACK_UPLOAD_FAILED;
             uploadFailed++;
-            DEBUG_OUT.println(F("..FAILED"));
+            DEBUG_OUT.println(F(MSG_DBG_TRACK_UPLOAD_FAILED));
             uploadResponse += F("FAILED\n"); GVwebServer.handleClient();
           }
           GVmyLedx.delay();
         }
         else
         {
-          DEBUG_OUT.println(F(MSG_DBG_TRACK_FILE_FOUND_NO));
+          DEBUG_OUT.printf(PSTR(MSG_DBG_TRACK_FILE_FOUND_NO), fname.c_str());
         }
       }
       if ((uploadOK + uploadFailed) == 0)
       {
-        uploadResponse = F("\nKeine Dateien zum Hochladen gefunden\n-END-"); GVwebServer.handleClient();
+        uploadResponse = F(MSG_HTTP_NO_TRACKS_FOUND); GVwebServer.handleClient();
       }
       else
       {

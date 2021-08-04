@@ -76,14 +76,9 @@ void checkTank(void)
  **************************************************/
 uint16_t getModeMeters(tPumpMode mode)
 {
-  switch (mode) {
-    case MODE_NORMAL: 
-      return GVoilerConf.nmm;
-    case MODE_REGEN: 
-      return GVoilerConf.rmm;
-    case MODE_OFFROAD: 
-      return GVoilerConf.omm;
-  }
+  if (mode == MODE_NORMAL)  return GVoilerConf.nmm;
+  if (mode == MODE_REGEN )  return GVoilerConf.rmm;
+  if (mode == MODE_OFFROAD) return GVoilerConf.omm;
   // bei MODE_OFF und MODE_PERMANENT:
   return 0; 
 }

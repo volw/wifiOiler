@@ -114,14 +114,17 @@
 #define MSG_DBG_CHECK_URL_ERROR           "[isServerAvailable] GET() failed, error: %s\n" // printf: error message from get()
 #define MSG_DBG_FILECHECK_RESULT          "[isFileThere] httpCode = %d\n" // printf: http-code returned
 #define MSG_DBG_SEND_FILE_START           "[sendFile] Starte Übertragung der Datei..."
-#define MSG_DBG_SEND_FILE_CONTENT         "[sendFile] >>> sending file content >>>"
+//#define MSG_DBG_SEND_FILE_CONTENT         "[sendFile] >>> sending file content >>>"
 #define MSG_DBG_SEND_FILE_COMPLETED       "[sendFile] Übertragung beendet"
 #define MSG_DBG_SEND_FILE_CONNECT_ERROR   "[sendFile] Fehler beim Öffnen der Verbindung zu: '%s:%d'\n"  // printf: host name, port
 #define MSG_DBG_SEND_FILE_FOPEN_ERROR     "[sendFile] Fehler beim Öffnen der Datei: %s\n" 	// printf: file name
 #define MSG_DBG_TRACK_UPLOAD_START        "[handleUpload] searching track files:"
-#define MSG_DBG_TRACK_FILE_FOUND_YES      " is a track file - will upload..."  // before this the file name is printed
-#define MSG_DBG_TRACK_FILE_FOUND_NO       " is NO track file..."  // before this the file name is printed
-#define MSG_DBG_UPLOAD_SERVER_ERROR       "[handleUpload] Upload Server not available!"
+#define MSG_DBG_TRACK_FILE_FOUND_YES      "[handleUpload] '%s' is a track file - will upload..."  // printf, followed by OK or FAILED (so no line feed)
+#define MSG_DBG_TRACK_FILE_FOUND_NO       "[handleUpload] '%s' is NO track file...\n"   // printf: file name
+#define MSG_DBG_UPLOAD_SERVER_ERROR       "[handleUpload] Upload Server nicht erreichbar!"
+#define MSG_DBG_TRACK_UPLOAD_OK           "[handleUpload] Hochladen erfolgreich."
+#define MSG_DBG_TRACK_UPLOAD_FAILED       "[handleUpload] Hochladen fehlgeschlagen."
+#define MSG_HTTP_NO_TRACKS_FOUND          "\nKeine Dateien zum Hochladen gefunden\n-END-"   // '-END-' must be at the end, it's a mark for javascript in upload.htm
 
 // webhandler
 #define MSG_DBG_WEB_FILE_READ_ERROR       "[handleFileRead] FEHLER beim Lesen der Datei " // followed by file name (path)
