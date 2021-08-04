@@ -140,7 +140,7 @@ HTTPClient GVhttp;
 WiFiClient GVwifiClient = GVwebServer.client();
 
 // for track file upload
-#define HEADER_LENGTH 215
+#define HEADER_LENGTH 213
 const String boundary = "------------------------15c028380c8415a6"; // Länge 40
 
 const char PROGMEM * C_CONNECTTEST    = "Microsoft Connect Test";

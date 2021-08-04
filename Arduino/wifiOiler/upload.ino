@@ -86,7 +86,6 @@ bool sendFile(String fname) {
       /*   2 */ GVwifiClient.println();
       /*  -- */ GVwifiClient.write(GVoutFile);
       /*   2 */ GVwifiClient.println();
-      /*   2 */ GVwifiClient.println();
       /*  46 */ GVwifiClient.println("--" + boundary + "--");
 
       // don't wait for any response - we check existance with get() Call...
