@@ -45,12 +45,16 @@ bool isServerAvailable(void) {
  * Then the uploaded file has arrived safely ;-)
  * oierbase should return http 200
  *************************************************/ 
-bool isFileThere(String fname) {
-  //GVhttp.setUserAgent(F(HTTP_USER_AGENT));
-  GVhttp.begin(GVwifiClient ,getOilerbaseURL() + "?filename="+fname);
-  int httpCode = GVhttp.GET();
-  DEBUG_OUT.printf(PSTR(MSG_DBG_FILECHECK_RESULT), httpCode);
-  GVhttp.end();
+bool isFileThere(String fname) { 
+  uint8_t numTrials = 3;  // check more than once because of timing problems with multiple (bigger?) files
+  int httpCode = 0;
+  while (httpCode != 200 && numTrials > 0) {
+    GVhttp.begin(GVwifiClient ,getOilerbaseURL() + "?filename="+fname);
+    httpCode = GVhttp.GET();
+    DEBUG_OUT.printf(PSTR(MSG_DBG_FILECHECK_RESULT), httpCode);
+    GVhttp.end();
+    numTrials--;
+  }
   return (httpCode == 200);   // 200, wenn Datei vorhanden
 }
 
