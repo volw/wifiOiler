@@ -76,7 +76,7 @@ Nachdem der Sketch hochgeladen wurde, wird der Sketch zwar sofort gestartet, man
 > 5599:-------- Initialisierung beendet.
 > ```
 
-Mit der Software können nun die ersten Ve1rsuche gestartet werden. Dazu den Browser öffnen und mit "http://wifiOiler.local" verbinden. 
+Mit der Software können nun die ersten Versuche gestartet werden. Dazu den Browser öffnen und mit "http://wifiOiler.local" verbinden. 
 
 ## Platine
 
