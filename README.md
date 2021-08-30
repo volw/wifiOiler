@@ -1,4 +1,7 @@
+![wifioiler_collage](docs/images/collage.jpg)
+
 # wifiOiler
+
 Automatischer streckenabhängiger Kettenöler für's Motorrad mit folgenden Funktionen:
 
 - Ermittlung der zurückgelegten Strecke per GPS.
