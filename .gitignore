@@ -20,6 +20,8 @@ fp-info-cache
 # No Office and PDF files
 *.xls?
 *.pdf
+# Uebersetzung erst mal nicht...
+**/docs_E/
 
 
 ## Ignore Visual Studio temporary files, build results, and
