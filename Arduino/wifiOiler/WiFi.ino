@@ -60,6 +60,7 @@ bool setupWiFi(void) {
   
   DEBUG_OUT.println(F(MSG_DBG_START_SEARCHING_WIFI));
   WiFi.disconnect();  // angeblich werden vorher gemerkte Zugangsdaten damit gelöscht...
+  WiFi.hostname(GVoilerConf.apn);
 
   // Daten konfigurierter Netze in LittleFS: /wifi.ini
   if (readWifiData() > 0)
