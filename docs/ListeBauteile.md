@@ -57,5 +57,5 @@ Zum Schluss habe ich mal einen chinesischen Fertiger ausprobiert, der mit einem 
 
 Ein paar Platinen habe ich übrigens noch und verschenke diese (jeweils eine). Wer Interesse hat, PM an volw (at) gmx (punkt) de. 
 
-Der in KiCad erstellte Schaltplan ist auch hier zu finden. Eine Anleitung zum Erstellen der notwendigen Dateien gibt es bei den Herstellern gewöhnlich auf deren Internetseite [(Beispiel)](https://support.jlcpcb.com/article/102-kicad-515---generating-gerber-and-drill-files).
+Der in KiCad erstellte Schaltplan ist auch hier zu finden. Eine Anleitung zum Erstellen der notwendigen Dateien gibt es bei den Herstellern gewöhnlich auf deren Internetseite [(Beispiel)](https://support.jlcpcb.com/category/23-technical-support).
 <br><br>Es gibt natürlich Gründe, warum man vielleicht woanders bestellen sollte - das muss jeder mit sich selbst ausmachen.
