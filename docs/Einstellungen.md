@@ -55,6 +55,10 @@ Diese Funktion ist noch nicht vollständig implementiert. Die hier angegebene Da
 <a name="fsbrowser"></a>
 ## FS Browser & Editor
 Es werden verschiedene Browser / einfache Explorer für das integrierte Dateisystem des ESP8266 mitgeliefert, die auch einen Editor zum Bearbeiten der Dateien mitbringen. Diese Browser belegen unterschiedlich viel Speicherplatz auf dem internen Dateisystem, was sich auf die Aufzeichnungszeit auswirkt. Mit dem einfachsten Browser (und löscht man die anderen) hat man ca. 2 Stunden mehr Zeit, um Touren aufzuzeichnen. Man kann sich, wie gesagt, für einen entscheiden, diesen in der Konfiguration hinterlegen und dann die anderen löschen. Diese sind initial vorhanden:
-* "/littlefsb.htm": der Kleinste und Einfachste von allen, benötigt keine Verbindung zum Internet.
+* "/littlefsb.htm": der Kleinste und Einfachste von allen, benötigt keine Verbindung zum Internet und hat alles, was man braucht.
 * "/cmedit.htm": wie littlefsb.htm, als Editor wurde der Open Source Editor "CodeMirror" eingebaut. Benötigt zwar keine Verbindung zum Internet, belegt aber auch den meisten Speicherplatz.
 * "/aceedit.htm": nach dem FSBrowser Beispiel von Hristo Gochkov. Hat alles, was man sich denken kann, benötigt aber eine aktive Internet Verbindung, da einige Scripte nachgeladen werden. Benutzt den Editor "ace".
+<a name="prefix"></a>
+## GPS Track Filename Prefix
+Hier kann für die Dateinamen, die für die Aufzeichnung von GPS Tracks verwendet werden, ein vorangestelltes Kürzel (Prefix) bestimmt werden. Die Dateinamen bestehen standardmäßig aus Datum und Uhrzeit des Aufzeichnungsstarts in der Form "JJMMTT-HHMM.dat". Ein Prefix ist z.B. dann sinnvoll, wenn mehrere Öler ihre aufgezeichneten Strecken auf eine Oilerbase hochladen. Mit dem Prefix "KTM-20" würde der Dateiname z.B. so aussehen: "KTM-20220818-1535.dat".
+

@@ -16,6 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ****/
 
+// for track file upload
+#define HEADER_LENGTH 213
+const String boundary = "------------------------15c028380c8415a6"; // Länge 40
+
 /*************************************************
  * Check, ob konfigurierter Upload-/Update server 
  * erreichbar ist.
@@ -79,7 +83,7 @@ bool sendFile(String fname) {
         // adding authorization header for basic authentication (s. #define in wifiOiler.h for auth. string)
         GVwifiClient.printf(PSTR("Authorization: Basic %s\r\n"), GVoilerConf.bac.c_str());
       }
-      GVwifiClient.printf(PSTR("Content-Length: %d\r\n"), HEADER_LENGTH + GVoutFile.size() );
+      GVwifiClient.printf(PSTR("Content-Length: %d\r\n"), HEADER_LENGTH + GVoutFile.size() + GVoilerConf.gts.length());
       GVwifiClient.println("Content-Type: multipart/form-data; boundary=" + boundary);
       GVwifiClient.println();
       //------------------- End of Header ------------------------------
@@ -172,11 +176,19 @@ void handleUpload(void)
       DEBUG_OUT.println(F(MSG_DBG_TRACK_UPLOAD_START));
       uploadResponse += F("searching track files...\n"); GVwebServer.handleClient();
       // Track file names: yyyymmdd-hhmm.dat
-      Dir dir = _FILESYS.openDir("/2");  // hier Jahr-3000 Problematik ;-)
+      Dir dir = _FILESYS.openDir("/"+GVoilerConf.gts);  // hier Jahr-3000 Problematik ;-)
       
       while (dir.next()) {
         String fname = dir.fileName();
-        if (fname.endsWith(".dat") && (fname.length() == 17))
+        // ggf. check auf filename length weglassen
+        //+++
+        DEBUG_OUT.print("Dateiname: "); DEBUG_OUT.println(fname);
+        DEBUG_OUT.print("Dateiname endet mit .dat? -> "); DEBUG_OUT.println(fname.endsWith(".dat"));
+        DEBUG_OUT.print("fname.length(): "); DEBUG_OUT.println(fname.length());
+        DEBUG_OUT.print("GVoilerConf.gts.length(): "); DEBUG_OUT.println(GVoilerConf.gts.length());
+        DEBUG_OUT.print("fname.length() == (GVoilerConf.gts.length() + 15): "); DEBUG_OUT.println(fname.length() == (GVoilerConf.gts.length() + 15));
+        
+        if (fname.endsWith(".dat") && (fname.length() == (GVoilerConf.gts.length() + 15)))
         {
           DEBUG_OUT.printf(PSTR(MSG_DBG_TRACK_FILE_FOUND_YES), fname.c_str());
           uploadResponse += "...uploading " + fname + "..."; GVwebServer.handleClient();

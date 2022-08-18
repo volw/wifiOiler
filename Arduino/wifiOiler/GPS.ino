@@ -200,9 +200,9 @@ bool createDateFilename(uint32_t date, uint32_t time) {
   if (date == 0) return false;
   // time könnte tatsächlich 0 sein...
   
-  char buffer[9] = "20";
+  char buffer[] = "YYMMDD";
 
-  for (uint8_t i = 1; i < 4; i++)
+  for (uint8_t i = 0; i < 3; i++)
   {
     buffer[2*i+1] = (date % 10) + '0';
     date /= 10;
@@ -212,7 +212,7 @@ bool createDateFilename(uint32_t date, uint32_t time) {
   buffer[8] = '\0';
 
   time /= 10000;  // Sekunden und Millisekunden raus...
-  GVgpsTrackFilename = String(buffer) + "-" + ((time < 1000) ? "0" + String(time) : String(time));
+  GVgpsTrackFilename = GVoilerConf.gts + String(buffer) + "-" + ((time < 1000) ? "0" + String(time) : String(time));
   DEBUG_OUT.print(F(MSG_DBG_GPS_DATE_TIME)); DEBUG_OUT.println(GVgpsTrackFilename);
   GVgpsTrackFilename = "/" + GVgpsTrackFilename + ".dat";
  

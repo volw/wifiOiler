@@ -47,6 +47,7 @@ class Configuration {
     bool     gdl = false;             // GPS Debug logging to file (/gpsLog.txt)
     bool     wso = true;              // WiFi beim Starten automatisch an (true) oder aus (false)?
     String   fbe = "/littlefsb.htm";  // (file browser) editor
+    String   gts = "";                // track file filename suffix (if more bikes than oilerbases ;-)
 
     void read() { this->fworker(true); }
     void write() { this->fworker(false); }
@@ -170,6 +171,10 @@ class Configuration {
             else if (key.equals(F("fbe"))) {
               if (readMode) this->fbe = String(value);
               else outFile.print("fbe = " + String(this->fbe)+'\n');
+            }
+            else if (key.equals(F("gts"))) {
+              if (readMode) this->gts = String(value);
+              else outFile.print("gts = " + String(this->gts)+'\n');
             }
             else if (!readMode) outFile.print(line+'\n');
           }

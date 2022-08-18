@@ -30,31 +30,21 @@ Die Konfiguration der Oilerbase ist recht einfach - im Grunde werden nur Standar
 
 ### Betriebssystem installieren
 
-- Download eines Betriebssystem-Image, **Raspberry Pi OS Lite** reicht. Am besten von der Heimatseite https://www.raspberrypi.org/software/operating-systems
-- Schreiben des Images auf die MicroSD Karte (z.B. mit [balenaEtcher](https://www.balena.io/etcher/) oder [Win32 Disk Imager](https://sourceforge.net/projects/win32diskimager/))
-- SD-Karte noch für Windows im Leser stecken lassen. Kann man nicht auf die Karte zugreifen, diese evtl. neu einstecken. Windows ist u.U. der Meinung, dass die Karte formatiert werden muss, da Windows das Format nicht erkennt. Diese Meldungen bitte ignorieren (abbrechen). Eine auch für Windows lesbare Partition (FAT32) ist allerdings dabei. Dort findet man Verzeichnisse und Dateien (deren Namen z.B. mit "kernel", "fixup" oder "start" anfangen). 
-  Dort konfigurieren wir WLAN vor dem Start des Raspberry Pis mit der frisch beschriebenen Karte - und zwar so ([Quelle](https://www.raspberrypi.org/documentation/configuration/wireless/headless.md)):
-- Auf der FAT32 Partition der SD-Karte eine Datei mit Namen *wpa_supplicant.conf* mit folgendem Inhalt anlegen und die Daten des eigenen WLANs eintragen:
+Die mittlerweile einfachste Methode ist die Verwendung vom [Raspberry Pi Imager](https://www.raspberrypi.com/software/). Bereits vor dem Beschreiben der SD-Karte können alle wichtigen Einstellungen vorgegeben werden:
+- Hostname
+- ssh
+- Benutzername/Passwort
+- WLAN Einstellungen
+- Tastatur
+- Zeitzone
 
-  ```
-  country=DE
-  ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-  update_config=1
-  network={
-  	ssid="hier SSID des WLAN eintragen, z.B. FBoxWLAN01"
-  	psk="hier passwort eintragen"
-  }
-  ```
+Dann nur noch das gewünschte Betriebssystem wählen ("Raspberry Pi OS Lite" reicht in unserem Fall) und die SD-Karte wird während des Downloads gleich beschrieben.
 
-* Um Zugriff per SSH zu erlauben, wird an gleicher Stelle noch eine Datei mit Namen ssh angelegt (ohne Endung und ohne Inhalt - muss einfach nur da sein, [Quelle](https://www.raspberrypi.org/documentation/remote-access/ssh/README.md)).
+Nach Fertigstellung sollte der RPi nun eine Anmeldung akzeptieren. Dies kann man unter Windows entweder mit [putty](https://www.putty.org/) oder auch mit der in Windows 10 eingebauten OpenSSH (=Open Secure Shell) bewerkstelligen. Hier mal die OpenSSH Variante (dazu Konsole oder Eingabeaufforderung starten oder mit der Tastenkombination \<Windows>+r den "Ausführen" Dialog). Dann folgenden Befehl eingeben (host und user ändern, wie oben konfiguriert):
 
-* von dieser SD-Karte gestartet, sollte der RPi nun eine Anmeldung akzeptieren. Dies kann man unter Windows entweder mit [putty](https://www.putty.org/) oder auch mit der in Windows 10 eingebauten OpenSSH (=Open Secure Shell) bewerkstelligen. Hier mal die OpenSSH Variante (dazu Konsole oder Eingabeaufforderung starten oder mit der Tastenkombination \<Windows>+r den "Ausführen" Dialog). Dann folgenden Befehl eingeben:
-
-  `ssh pi@raspberrypi` (also ssh Zugang zum Host *raspberrypi* mit User *pi*)
+  `ssh <user>@<host>` 
 
   Eventuelle Warnmeldungen bezüglich ECDSA host keys mit 'yes' beantworten.
-
-  Das Standardpasswort des Users pi ist *raspberry*.
 
   Nach der Anmeldung zunächst mal die letzten Updates einspielen:
 
@@ -62,46 +52,8 @@ Die Konfiguration der Oilerbase ist recht einfach - im Grunde werden nur Standar
   sudo apt update
   sudo apt upgrade
   ```
-
-* Starten der Konfigurationsoberfläche:
-
-  `sudo raspi-config`
-
-  Folgende Punkte anwählen und ändern:
-
-  * System Options -> **Hostname**: z.B. 'oilerbase'
-
-  * System Options -> **Password**: neues Passwort für User pi wählen
-
-  * [Optional] Localisation Options -> **Locale**: 'de_DE.UTF-8 UTF-8' auswählen, anschließende Frage nach 'Default Locale' mit 'de_DE.UTF-8' bestätigen.
-
-  * Localisation Options -> **Timezone**: 'Europe', dann 'Berlin' wählen.
-
-  * Localisation Options -> **WLAN Country**: 'DE' wählen.
-
-  * Advanced Options -> **Expand Filesystem**
-
-  * Localisation Options -> **Keyboard** (funktioniert aktuell leider nicht). Kann auch manuell erledigt werden, wenn raspi-config wieder beendet (und der RPi ggf. durchgestartet) wurde. Dazu die Datei **/etc/default/keyboard** modifizieren. Dazu den Editor starten:
-
-    `sudo nano /etc/default/keyboard`
-
-    Der Inhalt sollte so aussehen (entsprechend ändern):
-
-    ```
-    XKBMODEL="pc105"
-    XKBLAYOUT="de"
-    XKBVARIANT=""
-    XKBOPTIONS=""
-    BACKSPACE="guess"
-    ```
-
-    Danach mit **\<Strg>+O** (und **\<Enter>**)speichern und mit **\<Strg>+X** verlassen.
-    
-    ACHTUNG: wenn oben der Hostname geändert wurde, muss bei erneuter Anmeldung der ssh Befehl natürlich entsprechend angepasst werden. Wurde z.B. der Hostname auf 'oilerbase' geändert, lautet die Angabe für den ssh Befehl jetzt:
-    
-    `ssh pi@oilerbase`
   
-* [**Optional**] Willkommensbildschirm ändern, damit wir bei Anmeldung entsprechend begrüßt werden. Dazu Datei "/home/pi/.profile" bearbeiten. Also: `nano ~/.profile`, dann ans Ende der Datei und dort mit rechter Maustaste die folgenden Zeilen aus der Zwischenablage einfügen (andere "Schriftarten" s. [hier](http://patorjk.com/software/taag)):
+[**Optional**] Willkommensbildschirm ändern, damit wir bei Anmeldung entsprechend begrüßt werden. Dazu Datei "/home/pi/.profile" bearbeiten. Also: `nano ~/.profile`, dann ans Ende der Datei und dort mit rechter Maustaste die folgenden Zeilen aus der Zwischenablage einfügen (andere "Schriftarten" s. [hier](http://patorjk.com/software/taag)):
 
   ```
   cat << 'EOF'
@@ -175,6 +127,7 @@ sudo mkdir /var/www/html
 sudo mkdir /var/www/update
 sudo mkdir /var/www/update/WemosMini
 sudo mkdir /var/www/uploads
+sudo mkdir /var/www/log
 sudo chmod 755 /var/www -R
 sudo chmod 757 /var/www/uploads
 ```
@@ -199,13 +152,13 @@ In dieser Datei werden am Ende einige Zeilen hinzugefügt, um das Verzeichnis de
 
 Editor beenden und mit folgendem Befehl ein Passwort für die Freigabe setzen. Dieses Passwort wird benötigt, um das Verzeichnis unter Windows einzubinden (zu mounten):
 
-`smbpasswd -a root` (und zweimal Passwort eingeben)
+`sudo smbpasswd -a root` (und zweimal Passwort eingeben)
 
 #### Verzeichnis unter Windows einbinden
 
 Danach dann unter Windows (in einer Eingabeaufforderung oder Konsole) mit dem oben gewählten Passwort (entsprechend ändern):
 
-`net use * \\oilerbase\oilerweb passwort /user:root /persistent:yes`
+`net use * \\oilerbase\oilerweb <passwort> /user:root /persistent:yes`
 
 Die Ausgabe sollte so oder ähnlich lauten:
 
@@ -221,7 +174,7 @@ Wenn Z: im weiteren Verlauf verwendet wird, steht es beispielhaft für den Laufw
 
 Und nun der erste Test: Browser starten und Adresse der Oilerbase eingeben:
 
-`http://oilerbase` oder `http://oilerbase.fritz.box`(sollte auch gehen, wenn eine Fritz.box im Einsatz ist). Als Ergebnis wird ein einfaches OK oben links auf einer leeren Seite angezeigt.
+`http://oilerbase/oilerbase.php` oder `http://oilerbase.fritz.box/oilerbase.php`(sollte auch gehen, wenn eine Fritz.box im Einsatz ist). Als Ergebnis wird ein einfaches OK oben links auf einer leeren Seite angezeigt.
 
 ### Öler testen
 
