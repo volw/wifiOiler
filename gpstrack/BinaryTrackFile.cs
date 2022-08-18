@@ -7,6 +7,7 @@ namespace gpsTrack
     {
         public String Name = "";
         public String Pfad = "";
+        public String Prefix = "";
         public long Groesse = 0;
         public DateTime Startzeit;
         public bool IsValid = true;
@@ -24,28 +25,28 @@ namespace gpsTrack
         {
             int Jahr = 0, Monat = 0, Tag = 0, Stunde = 0, Minute = 0, Sekunde = 0;
 
-            // nach Länge kann nicht gefragt werden, da beide Längen gleich sind
-            int nPos = Name.IndexOf('-');
-            //if (Name.Length == "JJJJMMTT-HHMM.dat".Length)  // neues Format
-            if (nPos == 8)  // neues Format
-            {   // JJJJMMTT-HHMM.dat
+            // Datum und Zeit aus Dateinamen bestimmen
+            int nPos = Name.LastIndexOf('-');   // zero based!
+            
+            if (Name.Length-nPos == 9 && nPos > 5)  // neues Format
+            {   // <Prefix>JJMMTT-HHMM.dat
                 isNewNameFormat = true;
-                Jahr = int.Parse(Name.Substring(0, 4));
-                Monat = int.Parse(Name.Substring(4, 2));
-                Tag = int.Parse(Name.Substring(6, 2));
-                Stunde = int.Parse(Name.Substring(9, 2));
-                Minute = int.Parse(Name.Substring(11, 2));
+                Jahr = 2000 + int.Parse(Name.Substring(nPos-6, 2));
+                Monat = int.Parse(Name.Substring(nPos-4, 2));
+                Tag = int.Parse(Name.Substring(nPos-2, 2));
+                Stunde = int.Parse(Name.Substring(nPos+1, 2));
+                Minute = int.Parse(Name.Substring(nPos+3, 2));
                 Sekunde = 0;
-
+                Prefix = Name.Substring(0, nPos - 6);
             }
-            else if (nPos == 6) // altes Format
+            else if (Name.Length - nPos == 11)  // altes Format
             {   // JJMMTT-HHMMSS.dat
-                Jahr = 2000 + int.Parse(Name.Substring(0, 2));
-                Monat = int.Parse(Name.Substring(2, 2));
-                Tag = int.Parse(Name.Substring(4, 2));
-                Stunde = int.Parse(Name.Substring(7, 2));
-                Minute = int.Parse(Name.Substring(9, 2));
-                Sekunde = int.Parse(Name.Substring(11, 2));
+                Jahr = 2000 + int.Parse(Name.Substring(nPos-6, 2));
+                Monat = int.Parse(Name.Substring(nPos-4, 2));
+                Tag = int.Parse(Name.Substring(nPos-2, 2));
+                Stunde = int.Parse(Name.Substring(nPos+1, 2));
+                Minute = int.Parse(Name.Substring(nPos+3, 2));
+                Sekunde = int.Parse(Name.Substring(nPos+5, 2));
             }
             else
             {
@@ -110,21 +111,18 @@ namespace gpsTrack
             if (isNewNameFormat)
                 return Pfad + Path.DirectorySeparatorChar + OnlyName() + ".dat";
             else 
-                return Pfad + Path.DirectorySeparatorChar + OnlyName().Substring(2) + ".dat";
+                return Pfad + Path.DirectorySeparatorChar + OnlyName() + ".dat";
         }
 
         public String DateString()
         {
-            if (isNewNameFormat)
-                return (Startzeit.Year.ToString("D4") + Startzeit.Month.ToString("D2") + Startzeit.Day.ToString("D2"));
-            else
-                return (Startzeit.Year.ToString("D2") + Startzeit.Month.ToString("D2") + Startzeit.Day.ToString("D2"));
+            return (Startzeit.Year.ToString("D2").Substring(2) + Startzeit.Month.ToString("D2") + Startzeit.Day.ToString("D2"));
         }
 
         public String OnlyName()
         {
             if (isNewNameFormat)
-                return (DateString() + "-" + Startzeit.Hour.ToString("D2") + Startzeit.Minute.ToString("D2"));
+                return (Prefix + DateString() + "-" + Startzeit.Hour.ToString("D2") + Startzeit.Minute.ToString("D2"));
             else
                 return (DateString() + "-" + Startzeit.Hour.ToString("D2") + Startzeit.Minute.ToString("D2") + Startzeit.Second.ToString("D2"));
         }

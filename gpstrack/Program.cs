@@ -43,7 +43,7 @@ namespace gpsTrack
                     }
                     else if (conf.DailyConnect)     // konnektieren gewünscht (auf täglicher Basis)
                     {
-                        OutFilename = conf.TargetPath + Path.DirectorySeparatorChar + trackFile.DateString() + ".gpx";
+                        OutFilename = conf.TargetPath + Path.DirectorySeparatorChar + trackFile.Prefix + trackFile.DateString() + ".gpx";
                     }
                     else   // Einzelbehandlung - keine Konnektierung:
                     {
