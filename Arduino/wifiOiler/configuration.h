@@ -47,11 +47,11 @@ class Configuration {
     bool     gdl = false;             // GPS Debug logging to file (/gpsLog.txt)
     bool     wso = true;              // WiFi beim Starten automatisch an (true) oder aus (false)?
     String   fbe = "/littlefsb.htm";  // (file browser) editor
-    String   gts = "";                // track file filename suffix (if more bikes than oilerbases ;-)
+    String   gts = "20";              // track file filename suffix (if more bikes than oilerbases ;-)
 
     void read() { this->fworker(true); }
     void write() { this->fworker(false); }
-    bool updateOilCounter(){
+    bool updateOilCounter(){  // must be public
       outFile = _FILESYS.open(C_OIL_COUNTER_FILE, "w");
       if (outFile) {
         outFile.write((const uint8_t *)&this->use, sizeof(this->use));
@@ -83,102 +83,101 @@ class Configuration {
            line.trim();
         }
            
-        if ((line.length() > 3) && !line.startsWith("//")) {
-          if ((pos = line.indexOf("=")) > 0) {
-            key = String(line.substring(0,pos));
-            value = String(line.substring(pos+1));
-            key.trim(); value.trim();
-            if (key.equals(F("wts"))) {
-              if (readMode) this->wts = value.toInt();
-              else outFile.print("wts = " + String(this->wts)+'\n');
-            }
-            else if (key.equals(F("nmm"))) {
-              if (readMode) this->nmm = value.toInt();
-              else outFile.print("nmm = " + String(this->nmm)+'\n');
-            }
-            else if (key.equals(F("rmm"))) {
-              if (readMode) this->rmm = value.toInt();
-              else outFile.print("rmm = " + String(this->rmm)+'\n');
-            }
-            else if (key.equals(F("omm"))) {
-              if (readMode) this->omm = value.toInt();
-              else outFile.print("omm = " + String(this->omm)+'\n');
-            }
-            else if (key.equals(F("sim"))) {
-              if (readMode) this->sim = value.toInt();
-              else outFile.print("sim = " + String(this->sim)+'\n');
-            }
-            else if (key.equals(F("pac"))) {
-              if (readMode) this->pac = value.toInt();
-              else outFile.print("pac = " + String(this->pac)+'\n');
-            }
-            else if (key.equals(F("glf"))) {
-              if (readMode) this->glf = value.toInt();
-              else outFile.print("glf = " + String(this->glf)+'\n');
-            }
-            else if (key.equals(F("otk"))) {
-              if (readMode) this->otk = value.toInt();
-              else outFile.print("otk = " + String(this->otk)+'\n');
-            }
-            else if (key.equals(F("ffn"))) {
-              if (readMode) this->ffn = String(value);
-              else outFile.print("ffn = " + String(this->ffn)+'\n');
-            }
-            else if (key.equals(F("fpw"))) {
-              if (readMode) this->fpw = value.toInt();
-              else outFile.print("fpw = " + String(this->fpw)+'\n');
-            }
-            else if (key.equals(F("apn"))) {
-              if (readMode) this->apn = String(value);
-              else outFile.print("apn = " + String(this->apn)+'\n');
-            }
-            else if (key.equals(F("app"))) {
-              if (readMode) this->app = String(value);
-              else outFile.print("app = " + String(this->app)+'\n');
-            }
-            else if (key.equals(F("uhn"))) {
-              if (readMode) this->uhn = String(value);
-              else outFile.print("uhn = " + String(this->uhn)+'\n');
-            }
-            else if (key.equals(F("uhp"))) {
-              if (readMode) this->uhp = value.toInt();
-              else outFile.print("uhp = " + String(this->uhp)+'\n');
-            }
-            else if (key.equals(F("url"))) {
-              if (readMode) this->url = String(value);
-              else outFile.print("url = " + String(this->url)+'\n');
-            }
-            else if (key.equals(F("bac"))) {
-              if (readMode) this->bac = String(value);
-              else outFile.print("bac = " + String(this->bac)+'\n');
-            }
-            else if (key.equals(F("lgf"))) {
-              if (readMode) this->lgf = (value.toInt() == 1);
-              else outFile.print("lgf = " + String(this->lgf ? "1" : "0")+'\n');
-            }
-            else if (key.equals(F("lgs"))) {
-              if (readMode) this->lgs = (value.toInt() == 1);
-              else outFile.print("lgs = " + String(this->lgs ? "1" : "0")+'\n');
-            }
-            else if (key.equals(F("gdl"))) {
-              if (readMode) this->gdl = (value.toInt() == 1);
-              else outFile.print("gdl = " + String(this->gdl ? "1" : "0")+'\n');
-            }
-            else if (key.equals(F("wso"))) {
-              if (readMode) this->wso = (value.toInt() == 1);
-              else outFile.print("wso = " + String(this->wso ? "1" : "0")+'\n');
-            }
-            else if (key.equals(F("fbe"))) {
-              if (readMode) this->fbe = String(value);
-              else outFile.print("fbe = " + String(this->fbe)+'\n');
-            }
-            else if (key.equals(F("gts"))) {
-              if (readMode) this->gts = String(value);
-              else outFile.print("gts = " + String(this->gts)+'\n');
-            }
-            else if (!readMode) outFile.print(line+'\n');
+        if (line.length() > 3 
+        && !line.startsWith("//") 
+        && (pos = line.indexOf("=")) > 0) {
+          key = String(line.substring(0,pos));
+          value = String(line.substring(pos+1));
+          key.trim(); value.trim();
+          if (key.equals(F("wts"))) {
+            if (readMode) this->wts = value.toInt();
+            else outFile.print("wts = " + String(this->wts)+'\n');
           }
-          else  if (!readMode) outFile.print(line+'\n');
+          else if (key.equals(F("nmm"))) {
+            if (readMode) this->nmm = value.toInt();
+            else outFile.print("nmm = " + String(this->nmm)+'\n');
+          }
+          else if (key.equals(F("rmm"))) {
+            if (readMode) this->rmm = value.toInt();
+            else outFile.print("rmm = " + String(this->rmm)+'\n');
+          }
+          else if (key.equals(F("omm"))) {
+            if (readMode) this->omm = value.toInt();
+            else outFile.print("omm = " + String(this->omm)+'\n');
+          }
+          else if (key.equals(F("sim"))) {
+            if (readMode) this->sim = value.toInt();
+            else outFile.print("sim = " + String(this->sim)+'\n');
+          }
+          else if (key.equals(F("pac"))) {
+            if (readMode) this->pac = value.toInt();
+            else outFile.print("pac = " + String(this->pac)+'\n');
+          }
+          else if (key.equals(F("glf"))) {
+            if (readMode) this->glf = value.toInt();
+            else outFile.print("glf = " + String(this->glf)+'\n');
+          }
+          else if (key.equals(F("otk"))) {
+            if (readMode) this->otk = value.toInt();
+            else outFile.print("otk = " + String(this->otk)+'\n');
+          }
+          else if (key.equals(F("ffn"))) {
+            if (readMode) this->ffn = String(value);
+            else outFile.print("ffn = " + String(this->ffn)+'\n');
+          }
+          else if (key.equals(F("fpw"))) {
+            if (readMode) this->fpw = value.toInt();
+            else outFile.print("fpw = " + String(this->fpw)+'\n');
+          }
+          else if (key.equals(F("apn"))) {
+            if (readMode) this->apn = String(value);
+            else outFile.print("apn = " + String(this->apn)+'\n');
+          }
+          else if (key.equals(F("app"))) {
+            if (readMode) this->app = String(value);
+            else outFile.print("app = " + String(this->app)+'\n');
+          }
+          else if (key.equals(F("uhn"))) {
+            if (readMode) this->uhn = String(value);
+            else outFile.print("uhn = " + String(this->uhn)+'\n');
+          }
+          else if (key.equals(F("uhp"))) {
+            if (readMode) this->uhp = value.toInt();
+            else outFile.print("uhp = " + String(this->uhp)+'\n');
+          }
+          else if (key.equals(F("url"))) {
+            if (readMode) this->url = String(value);
+            else outFile.print("url = " + String(this->url)+'\n');
+          }
+          else if (key.equals(F("bac"))) {
+            if (readMode) this->bac = String(value);
+            else outFile.print("bac = " + String(this->bac)+'\n');
+          }
+          else if (key.equals(F("lgf"))) {
+            if (readMode) this->lgf = (value.toInt() == 1);
+            else outFile.print("lgf = " + String(this->lgf ? "1" : "0")+'\n');
+          }
+          else if (key.equals(F("lgs"))) {
+            if (readMode) this->lgs = (value.toInt() == 1);
+            else outFile.print("lgs = " + String(this->lgs ? "1" : "0")+'\n');
+          }
+          else if (key.equals(F("gdl"))) {
+            if (readMode) this->gdl = (value.toInt() == 1);
+            else outFile.print("gdl = " + String(this->gdl ? "1" : "0")+'\n');
+          }
+          else if (key.equals(F("wso"))) {
+            if (readMode) this->wso = (value.toInt() == 1);
+            else outFile.print("wso = " + String(this->wso ? "1" : "0")+'\n');
+          }
+          else if (key.equals(F("fbe"))) {
+            if (readMode) this->fbe = String(value);
+            else outFile.print("fbe = " + String(this->fbe)+'\n');
+          }
+          else if (key.equals(F("gts"))) {
+            if (readMode) this->gts = String(value);
+            else outFile.print("gts = " + String(this->gts)+'\n');
+          }
+          else if (!readMode) outFile.print(line+'\n');
         }
         else if (!readMode) outFile.print(line+'\n');
       }
