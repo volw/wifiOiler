@@ -175,18 +175,11 @@ void handleUpload(void)
       uint8_t uploadFailed = 0;
       DEBUG_OUT.println(F(MSG_DBG_TRACK_UPLOAD_START));
       uploadResponse += F("searching track files...\n"); GVwebServer.handleClient();
-      // Track file names: yyyymmdd-hhmm.dat
-      Dir dir = _FILESYS.openDir("/"+GVoilerConf.gts);  // hier Jahr-3000 Problematik ;-)
+      // Track file names: <prefix>yymmdd-hhmm.dat
+      Dir dir = _FILESYS.openDir("/"+GVoilerConf.gts);  // GVoilerConf.gts = prefix
       
       while (dir.next()) {
         String fname = dir.fileName();
-        // ggf. check auf filename length weglassen
-        //+++
-        DEBUG_OUT.print("Dateiname: "); DEBUG_OUT.println(fname);
-        DEBUG_OUT.print("Dateiname endet mit .dat? -> "); DEBUG_OUT.println(fname.endsWith(".dat"));
-        DEBUG_OUT.print("fname.length(): "); DEBUG_OUT.println(fname.length());
-        DEBUG_OUT.print("GVoilerConf.gts.length(): "); DEBUG_OUT.println(GVoilerConf.gts.length());
-        DEBUG_OUT.print("fname.length() == (GVoilerConf.gts.length() + 15): "); DEBUG_OUT.println(fname.length() == (GVoilerConf.gts.length() + 15));
         
         if (fname.endsWith(".dat") && (fname.length() == (GVoilerConf.gts.length() + 15)))
         {
