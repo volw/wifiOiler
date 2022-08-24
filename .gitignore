@@ -388,3 +388,4 @@ MigrationBackup/
 FodyWeavers.xsd
 Arduino/wifiOiler/data/_uploadAll.bat
 *.backup
+*.old
