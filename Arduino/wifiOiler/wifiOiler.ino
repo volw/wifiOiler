@@ -25,12 +25,12 @@
 #include <TinyGPS++.h>
 #include "src/biLedx/biLedx.h"  // lib für nicht-modales Blinken (zweifarbiger) LEDs
 #include "wifiOiler.h"
-#include "configuration.h"
 #include "src/LittleFSlogger.h"
 #include "oilerDisplay.h"
 #include "messages_de.h"
 //#include "messages_en.h"
 #include "globalVars.h"
+#include "configuration.h"
 
 /*******************************************************************
  ******************** Setup ****************************************

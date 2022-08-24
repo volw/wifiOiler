@@ -128,3 +128,6 @@
 
 // webhandler
 #define MSG_DBG_WEB_FILE_READ_ERROR       "[handleFileRead] FEHLER beim Lesen der Datei " // followed by file name (path)
+
+// configuration
+#define MSG_DBG_MISSING_CONF_OPTION       "[fworker] Option nicht in ini Datei: %s\n"   // printf (name of option)

@@ -3,7 +3,7 @@ ESP8266WebServer GVwebServer(80);
 ESP8266WiFiMulti GVwifiMulti;
 
 File GVoutFile, GVfsUploadFile;
-Configuration GVoilerConf;
+//Configuration GVoilerConf;  // moved to configuration.h
 
 // alle globalen Variablen fangen mit GV.. an:
 //********** GPS ***********:
