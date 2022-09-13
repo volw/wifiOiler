@@ -17,7 +17,7 @@
  ****/
 
 // for track file upload
-#define HEADER_LENGTH 213
+#define HEADER_LENGTH 323
 const String boundary = "------------------------15c028380c8415a6"; // Länge 40
 
 /*************************************************
@@ -83,11 +83,15 @@ bool sendFile(String fname) {
         // adding authorization header for basic authentication (s. #define in wifiOiler.h for auth. string)
         GVwifiClient.printf(PSTR("Authorization: Basic %s\r\n"), GVoilerConf.bac.c_str());
       }
-      GVwifiClient.printf(PSTR("Content-Length: %d\r\n"), HEADER_LENGTH + GVoutFile.size() + GVoilerConf.gts.length());
+      GVwifiClient.printf(PSTR("Content-Length: %d\r\n"), HEADER_LENGTH + GVoutFile.size() + 2 * GVoilerConf.gts.length());
       GVwifiClient.println("Content-Type: multipart/form-data; boundary=" + boundary);
       GVwifiClient.println();
       //------------------- End of Header ------------------------------
 
+      /*  44 */ GVwifiClient.println("--" +  boundary);
+      /*  49 */ GVwifiClient.println("Content-Disposition: form-data; name=\"filename\"");
+      /*   2 */ GVwifiClient.println();
+      /*  -- */ GVwifiClient.println(fname);
       /*  44 */ GVwifiClient.println("--" +  boundary);
       /*  79 */ GVwifiClient.println("Content-Disposition: form-data; name=\"userfile\"; filename=\"" + fname + "\"");
       /*  40 */ GVwifiClient.println("Content-Type: application/octet-stream");
@@ -96,8 +100,8 @@ bool sendFile(String fname) {
       /*   2 */ GVwifiClient.println();
       /*  46 */ GVwifiClient.println("--" + boundary + "--");
 
-      // don't wait for any response - we check existance with get() Call...
-      // while (GVwifiClient.available()) DEBUG_OUT.print(GVwifiClient.read());
+      // read response (avoid http 'error' 499 on nginx)
+      while (GVwifiClient.available()) GVwifiClient.read();
       GVwifiClient.stop();
       DEBUG_OUT.println(F(MSG_DBG_SEND_FILE_COMPLETED));
       success = isFileThere(fname);
