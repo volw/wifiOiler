@@ -33,8 +33,6 @@
 #define DEBUG_OUT GVmyLogger
 //#define DEBUG_OUT Serial
 
-//#define LED_BUILTIN 2
-
 // wird der HTTP_USER_AGENT geändert (Sonderzeichen vermeiden!), dann sollte auch in der 'oilerbase.php' (oilerbase)
 // die Variable USER_AGENT entsprechend angepasst werden (s. oilerbase/html/oilerbase.php)
 #define HTTP_USER_AGENT "wifiOiler"
