@@ -132,7 +132,7 @@ typedef PumpModes tPumpMode;
 
 // Wemos D1 mini (Pro)
 #if defined ARDUINO_ESP8266_WEMOS_D1MINI \
- || defined ARDUINO_ESP8266_WEMOS_D1MINIPRO \
+ || defined ARDUINO_ESP8266_WEMOS_D1MINIPRO
   #define LED_ROT          D5 // alt D7
   #define LED_GRUEN        D0 // alt D8
   #pragma message  "Info: compiling for Wemos D1 mini (Pro)..."
