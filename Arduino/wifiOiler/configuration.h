@@ -36,7 +36,7 @@ class Configuration {
     uint16_t glf = 500;   // GPS Low-Filter
     uint16_t otk = 8000;  // Tank Kapazität
     uint16_t use = 0;     // ..davon verbraucht
-    String   ffn = "firmware.bin";
+    String   ffn = UPDATE_FILE;
     uint8_t  fpw = 3;     // Fixpunktabstand beim Schreiben der Tracks in Sekunden (0=no tracks)
     String   apn = "wifiOiler";       // Name eigener Access Point
     String   app = "alteoile";        // Passwort eigener Access Point

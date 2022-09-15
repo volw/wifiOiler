@@ -122,7 +122,7 @@ typedef PumpModes tPumpMode;
 #define PUMP_PIN    D7
 
 // NodeMCU ESP8266 und nackter ESP-12F
-#ifdef ARDUINO_ESP8266_NODEMCU
+#if defined ARDUINO_ESP8266_NODEMCU
   #define LED_ROT          D5   // weiße Litze vom Cockpit-Kabel
   #define LED_GRUEN        D0   // gelbe Litze vom Cockpit-Kabel
   #pragma message "Info: compiling for NodeMCU/ESP12F..."
@@ -130,17 +130,19 @@ typedef PumpModes tPumpMode;
   #define UPDATE_FILE      "/wifiOiler.ino.nodemcu.bin"  
 #endif
 
-// Wemos D1 mini
-#ifdef ARDUINO_ESP8266_WEMOS_D1MINI
+// Wemos D1 mini (Pro)
+#if defined ARDUINO_ESP8266_WEMOS_D1MINI \
+ || defined ARDUINO_ESP8266_WEMOS_D1MINIPRO \
   #define LED_ROT          D5 // alt D7
   #define LED_GRUEN        D0 // alt D8
-  #pragma message  "Info: compiling for Wemos D1 mini..."
+  #pragma message  "Info: compiling for Wemos D1 mini (Pro)..."
   #define BOARD_TYPE       "WemosMini"  // case sensitive; used to build directory name on oilerbase
   #define UPDATE_FILE      "/wifiOiler.ino.d1_mini.bin"  
 #endif
 
 #ifndef BOARD_TYPE
   #error "Board nicht spezifiziert (s. wifiOiler.h)"
+  // andere Boards könnten auch funktionieren, sind aber nicht getestet...
 #endif
 
 #ifdef _NO_PUMP_
