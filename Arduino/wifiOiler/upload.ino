@@ -123,29 +123,31 @@ bool sendFile(String fname) {
   return success;
 }
 
+
 // Meine Messung nach https://stackoverflow.com/questions/8659808/how-does-http-file-upload-work
-// Die gemessene Länge ging nie korrekt bis aufs byte auf - habe den Eindruck, dass das Ende der Datei
-// nur irgendwo innerhalb der boundary landen muss - sonst Fehler.
+// Zur Berechnung der Content-Length: 
+//  - Jedes Zeilenende wird mit 2 Zeichen gezählt
+//  - Start mit Anfang erster Zeile, die mit der Boundary beginnt (hier mit -08 gekennzeichnet)
+//  - Ende mit Zeilenanfang hinter letzter Boundary (hier mit -18 gekennzeichnet)
 //
-// POST / HTTP/1.1
-// Host: localhost:8000
-// User-Agent: curl/7.52.1
-// Accept: */*
-// Content-Length: 230
-// Expect: 100-continue
-// Content-Type: multipart/form-data; boundary=------------------------dea88064e2e3320a
-//
-// Attention: two extra '-':
-// --------------------------dea88064e2e3320a
-// Content-Disposition: form-data; name="userfile"; filename="test.bin"
-// Content-Type: application/octet-stream
-// 
-// aaabbbcccddd
-// eeefffggghhh
-// --------------------------dea88064e2e3320a--
-//
-
-
+//-01 POST / HTTP/1.1
+//-02 Host: kmain:8000
+//-03 Accept: */*
+//-04 User-Agent: wifiOiler/4.2.024
+//-05 Content-Length: 357
+//-06 Content-Type: multipart/form-data; boundary=------------------------2d07b7292c174743
+//-07
+//-08 --------------------------2d07b7292c174743
+//-09 Content-Disposition: form-data; name="filename"
+//-10
+//-11 20220913-2105.dat
+//-12 --------------------------2d07b7292c174743
+//-13 Content-Disposition: form-data; name="userfile"; filename="20220913-2105.dat"
+//-14 Content-Type: application/octet-stream
+//-15
+//-16 123456789012345678901234567890
+//-17 --------------------------2d07b7292c174743--
+//-18 
 
 /***************************************************
  * Upload von Track files
