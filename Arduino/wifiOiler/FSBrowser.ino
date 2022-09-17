@@ -52,7 +52,7 @@ void handleFileList() {
   if (GVwebServer.hasArg("dir"))
     dir = _FILESYS.openDir("/");
   else if (GVwebServer.hasArg("tracks"))
-    dir = _FILESYS.openDir("/2");
+    dir = _FILESYS.openDir("/"+GVoilerConf.gts);
   else {
     GVwebServer.send(500, TEXT_PLAIN, BAD_ARGS);
     return;

@@ -14,7 +14,7 @@ Die meisten hier gelisteten Teile habe ich bei reichelt.de bezogen und verlinke 
 * 2 x Stiftleiste (4) (oder: die 8er Leiste 3 x nehmen und eine in der Mitte durchtrennen)
 * 1 x Stiftleiste (8) für Anschlüsse am Öler [(Beispiel)](https://www.reichelt.de/stiftleiste-fuer-anschlussklemme-8-polig-rm5mm-stl-017-08-p72099.html)
 * 1 x Anschlussklemme für Anschlüsse am Öler [(Beispiel)](https://www.reichelt.de/steckbare-anschlussklemme-8-polig-rm5mm-akl-007-08-p72092.html)
-* 1 x GPS Modul (siehe z.B. ebay) [(Beispiel)](https://www.ebay.de/itm/172363912859)
+* 1 x GPS Modul (siehe z.B. ebay) [(Beispiel)](https://www.ebay.de/itm/295106552762)
 * 4 x Abstandsbolzen M3/6mm, für GPS Modul Montage auf Platine ([Beispiel](https://smile.amazon.de/Schrauben-Schraubenmutter-Sechskant-Distanzh%C3%BClsen-Aufbewahrungsbox/dp/B07KTZW5VL/ref=sr_1_23))
 * 1 x Universalgehäuse 85 x 50 x 29 [(Beispiel)](https://www.conrad.de/de/p/tru-components-tc-2028-sw203-1588521-modul-gehaeuse-85-x-50-x-29-abs-schwarz-1-st-1588521.html)
 * Optional: 0.96 Inch OLED I2C Display [(Beispiel)](https://www.az-delivery.de/en/products/0-96zolldisplay)
@@ -28,7 +28,7 @@ Die meisten hier gelisteten Teile habe ich bei reichelt.de bezogen und verlinke 
 * KFZ-Flachsicherung ([Beispiel](https://www.reichelt.de/kfz-sicherung-normoto-3-a-violett-imaxx-f1503-p242048.html))
 * KFZ Sicherungshalter ([Beispiel](https://www.reichelt.de/kfz-sicherungshalter-normoto-20-a-32-v-ip56-imaxx-h1325-p229033.html))
 * Öl Auslassdüse am Kettenrad (hier am besten mal Ersatzteile bei kommerziellen Ölern checken). Es reicht auch ein dünnes, stabiles (ggf. schräg angeschnittenes Plastikröhrchen, sollte unten am Kettenrad enden, kurz über der Kette, damit die Schwungkraft das Öl zur Kette transportiert). Ist der Auslass, also der Durchmesser dieses Röhrchens zu groß, läuft u.U. der Ölschlauch leer, gerade wenn es im Sommer etwas heißer und das Öl "dünner" wird.
-* Schläuche für Verbindung Tank - Pumpe und Pumpe - Auslass und vielleicht Schellen oder Klemmringe zur Befestigung der Schläuche. Die Dellorto Pumpe hat einen Eingang (Verbindung vom Tank kommend) mit 6,8 mm Außendurchmesser und einen Ausgang mit 3,5 mm Außendurchmesser. Der Schlauch von der Pumpe zur Auslassdüse am Kettenrad sollte schon etwas steifer sein (Hydraulikschlauch), da schlabbrige Schläuche in Ecken gelangen können, wo sie nichts zu suchen haben ;-).
+* Schläuche für Verbindung Tank - Pumpe und Pumpe - Auslass und vielleicht Schellen oder Klemmringe zur Befestigung der Schläuche. Die Dellorto Pumpe hat einen Eingang (Verbindung vom Tank kommend) mit 6,8 mm Außendurchmesser und einen Ausgang mit 3,5 mm Außendurchmesser. Der Schlauch von der Pumpe zur Auslassdüse am Kettenrad sollte schon etwas steifer sein (Hydraulikschlauch), da schlabbrige Schläuche in Ecken gelangen können, wo sie nichts zu suchen haben ;-) ([Beispiel für Schlauch (Ausgang Dellorto): 4 x 2,5](https://www.ebay.de/itm/264462877309))
 * Befestigungsmaterial für Schläuche und Kabel zur Verlegung am/im Motorrad.
 * Ggf. noch ein Ventil für den Entlüftungsschlauch am Tank. Durch heftige Schüttelbewegungen im Gelände kann eventuell durch den Entlüftungsschlauch Öl entweichen ([Beispiel](https://www.amazon.de/dp/B07CMRJ314/ref=pe_3044161_189395811_TE_SCE_3p_dp_1)).
 #### Anmerkungen
