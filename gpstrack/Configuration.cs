@@ -24,9 +24,9 @@ namespace gpsTrack
         {
             "",
             "Syntax:",
-            "{0} <Eingabedatei[.dat]> [<Ausgabedatei[.gpx]> [/o(verwrite)] [/r(ename)]",
+            "{0} <Eingabedatei[.dat]> [<Ausgabedatei[.gpx]> [/o(verwrite)] [/r(ename)] [/t(ime)]",
             " - oder - ",
-            "{0} <Quellverzeichnis> [Zielverzeichnis] [/o(verwrite)] [/d(aily)] [/r(ename)]",
+            "{0} <Quellverzeichnis> [Zielverzeichnis] [/o(verwrite)] [/d(aily)] [/r(ename)] [/t(ime)]",
             "",
             "Hinweise:",
             " - ist die Quelle eine Datei und es wurde keine Ausgabedatei angegeben, so wird eine Datei",
@@ -43,7 +43,8 @@ namespace gpsTrack
             " - /d(aily): mehrere Dateien eines Tages werden in einer Track-Datei zusammengefasst.",
             "             Der Name der Zieldatei wird aus dem Tagesdatum gebildet.",
             " - /r(ename): Quelldateien, die als Datum sechs Nullen zeigen, werden entsprechend umbenannt,",
-            "              wenn das Datum aus den Daten in der jeweiligen Datei ermittelt werden kann."
+            "              wenn das Datum aus den Daten in der jeweiligen Datei ermittelt werden kann.",
+            " - /t(ime): die aufgezeichneten Zeitangaben werden in die lokale Zeitzone umgerechnet."
         };
 
         public bool SourceIsDirectory = false;
@@ -54,6 +55,7 @@ namespace gpsTrack
         public bool DailyConnect = false;
         public bool IsValid = false;
         public bool Rename = false;
+        public bool AdjustTime = false;
         public List<BinaryTrackFile> SourceFiles;
         public const int GpsRecordSize = 54;
 
@@ -64,7 +66,7 @@ namespace gpsTrack
                 PrintUsage("");
                 return;
             }
-            if (args.Length > 5)
+            if (args.Length > 6)
             {
                 PrintUsage("Fehler: Falsche Anzahl Parameter.");
                 return;
@@ -79,6 +81,8 @@ namespace gpsTrack
                     ForceOverwrite = true;
                 else if (args[i].StartsWith("/r", StringComparison.OrdinalIgnoreCase) && "/rename".StartsWith(args[i], StringComparison.OrdinalIgnoreCase))
                     Rename = true;
+                else if (args[i].StartsWith("/t", StringComparison.OrdinalIgnoreCase) && "/time".StartsWith(args[i], StringComparison.OrdinalIgnoreCase))
+                    AdjustTime = true;
                 else if (args[i].StartsWith("/"))
                 {
                     PrintUsage("Unbekannte Option: " + args[i]);

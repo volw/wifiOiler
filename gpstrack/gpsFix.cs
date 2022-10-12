@@ -123,6 +123,8 @@ namespace gpsTrack
             sb.AppendFormat("<ele>{0}</ele>", this.alt.ToString(Culture));
             sb.AppendFormat("<hdop>{0}</hdop>", this.hdop.ToString(Culture));
 
+            /*
+            var output = Timestamp.ToString("yyyy-MM-ddTHH:mm:ssZ");
             String sDate = this.datum.ToString();
             //TODO: use Calendar.ToFourDigitYear(Int32) - not "20"
             sDate = "20" + sDate.Substring(sDate.Length - 2) + '-'
@@ -131,8 +133,10 @@ namespace gpsTrack
             String sTime = this.zeit.ToString();
             sTime = sTime.Substring(0, sTime.Length - 6) + ':' + sTime.Substring(sTime.Length - 6, 2) + ':' + sTime.Substring(sTime.Length - 4, 2);
 
-
             sb.AppendFormat("<time>{0}T{1}Z</time>", sDate, sTime);
+            */
+            sb.AppendFormat("<time>{0}</time>", Timestamp.ToString("yyyy-MM-ddTHH:mm:ssZ"));
+            //sb.AppendFormat("<time>{0}</time>", Timestamp.ToString("yyyy-MM-dd, HH:mm:ss"));
             sb.AppendFormat("<cmt>Msp={0:0.0};mode={1}</cmt>", msp, pmode);
             sb.Append("</trkpt>");
 

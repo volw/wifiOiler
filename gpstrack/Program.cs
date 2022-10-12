@@ -37,6 +37,8 @@ namespace gpsTrack
 
                 foreach (BinaryTrackFile trackFile in conf.SourceFiles)
                 {
+                    // pragmatisch...:
+                    if (conf.AdjustTime) trackFile.Startzeit = trackFile.Startzeit.ToLocalTime();
                     if (!conf.TargetIsDirectory)    // feste Ausgabedatei wurde angegeben - könnte also zum konnektieren kommen
                     {
                         OutFilename = conf.TargetPath;
@@ -78,6 +80,8 @@ namespace gpsTrack
                                 //TODO: wenn der Abstand zu groß ist, könnte der Track aufgeteilt werden...
                                 if (fix.IsValidTimestamp)
                                 {
+                                    //TODO: im Objekt eigentlich besser aufgehoben:
+                                    if (conf.AdjustTime) fix.Timestamp = fix.Timestamp.ToLocalTime();
                                     outfile.WriteLine(fix.getGPXstring());
                                     fixPointCount++;
                                 }
@@ -101,6 +105,7 @@ namespace gpsTrack
                 Console.WriteLine("{0} Datei{1} konvertiert. {2} Ausgabedatei{3} erzeugt.", inFileCounter, inFileCounter != 1 ? "en" : "", outFileCounter, outFileCounter != 1 ? "en" : "");
                 foreach (BinaryTrackFile trackFile in conf.SourceFiles)
                 {
+                    if (conf.AdjustTime) trackFile.Startzeit = TimeZoneInfo.ConvertTimeToUtc(trackFile.Startzeit, TimeZoneInfo.Local);
                     // überprüfen, ob Dateiname mit Startzeit übereinstimmt - wenn nicht, dann Datei umbenennen
                     if (!trackFile.CurrentFullPath().Equals(trackFile.StartTimeFullPath()))
                     {
