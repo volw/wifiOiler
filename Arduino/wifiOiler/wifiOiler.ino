@@ -123,8 +123,10 @@ void setup()
  *******************************************************************/
 void loop() {
   if (!GVwifiSleeping) {
+    if (GVwifiAPmode) {
+      GVdnsServer.processNextRequest();
+    } 
     MDNS.update();
-    GVdnsServer.processNextRequest();
     GVwebServer.handleClient();
     checkWiFi();
   }

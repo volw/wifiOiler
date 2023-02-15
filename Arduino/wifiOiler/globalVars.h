@@ -39,10 +39,11 @@ double   GVlastTotalDist     = 0;     // um real Movement zu checken
 bool     GVlastMovingState   = false; // only for Debug
 uint8_t  GVoilCounter        = 0;     // Dauerpumpen nach x mal aus (wenn Kiste fährt)
 
-//********** WiFi sleep ****:
+//********** WiFi (sleep) ****:
 uint32_t GVlastWiFiCheck = 0;    // Zähler für Movement Detection
 bool     GVwifiSleeping = true;  // Kennzeichen, ob WiFi ausgeschaltet ist oder nicht (nach Start erst mal aus)
 uint32_t GVswitchOnMillis = 0;   // wann WiFi aktiviert (danach wird 30s nicht automatisch ausgeschaltet)
+bool     GVwifiAPmode = false;   // true, wenn ein eigener Access Point errichtet wurde (z.B. wenn keine wifi config verfügbar)
 
 //**** GPS Track Recording ***:
 String   GVgpsTrackFilename = "";// Dateiname (wird gebildet aus Datum und Uhrzeit (vom Satelliten))

@@ -53,7 +53,7 @@
 // WiFi
 #define MSG_DBG_ADD_WIFI_TO_MULTIWIFI     "[readWifiData] Add wifi to wifiMulti: " // followed by SSID from file "/wifi.ini"
 #define MSG_DBG_START_SEARCHING_WIFI      "[setupWiFi] looking for WLAN.."
-#define MSG_DBG_TRY_CONNECT_WIFI          "[setupWiFi] try to connect to configured WLAN.."
+#define MSG_DBG_TRY_CONNECT_WIFI          "[setupWiFi] try to connect to configured WLAN "
 #define MSG_DBG_WIFI_NOT_CONNECTED        "[setupWiFi] not connected to any WiFi"
 #define MSG_DBG_NO_WIFI_CONFIGS_FOUND     "[setupWiFi] no WiFi configuration(s) found in 'wifi.ini'"
 #define MSG_DBG_CONNECT_SUCCESS           "[setupWiFi] connected to '%s', IP:%s\n"  // printf(), SSID, local IP

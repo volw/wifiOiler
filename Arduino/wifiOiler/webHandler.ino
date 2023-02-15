@@ -32,6 +32,11 @@ void setupWebServer(void) {
   GVwebServer.on(F("/reboot"), HTTP_GET, handleReboot);
   GVwebServer.on(F("/update"), HTTP_GET, handleUpdate);
   GVwebServer.on(F("/version"), HTTP_GET, handleVersion);
+  /*** Captive handles ***/
+  //GVwebServer.on(F("/generate_204"), handleRoot); //Android captive portal. Maybe not needed. Might be handled by notFound handler.
+  //GVwebServer.on(F("/favicon.ico"), handleRoot);  //Another Android captive portal. Maybe not needed. Might be handled by notFound handler. Checked on Sony Handy
+  //GVwebServer.on(F("/fwlink"), handleRoot);       //Microsoft captive portal. Maybe not needed. Might be handled by notFound handler.
+  
  
   //LittleFS Browser & editor:
   GVwebServer.on(F("/edit"), HTTP_GET, []() {
@@ -57,7 +62,9 @@ void setupWebServer(void) {
     } else {
       if (!handleFileRead(GVwebServer.uri())) {
         DEBUG_OUT.print(C_FILENOTFOUND);
-        GVwebServer.send(404, TEXT_PLAIN, F("FileNotFound"));
+        if (GVwifiAPmode && !handleFileRead("index.htm")) {
+          GVwebServer.send(404, TEXT_PLAIN, F("FileNotFound"));
+        }
       } else DEBUG_OUT.print(C_SERVEFILE);
     }
     DEBUG_OUT.println(GVwebServer.uri());
