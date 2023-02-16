@@ -71,7 +71,7 @@ bool checkforUpdate(bool justCheck, bool reboot) {
       GVmyDisplay.PrintMessage(F("Reboot..."));
       DEBUG_OUT.println(F(MSG_DBG_BOOT_AFTER_UPDATE));
       delay(10);
-      ESP.restart();
+      oilerReboot();
     }
     else GVmyDisplay.MessageOff();
   }

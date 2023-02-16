@@ -147,3 +147,13 @@ void loop() {
     GVupdateResult = UPD_NOT_ACTIVE; // falls er wieder zurückkommt...
   }
 }
+
+/*******************************************************************
+ ******************** Reboot ***************************************
+ *******************************************************************/
+void oilerReboot() {
+  if (!GVwifiSleeping) {
+    toggleWiFi();
+  }
+  ESP.restart();
+}
