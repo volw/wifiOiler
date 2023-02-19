@@ -107,9 +107,9 @@ bool setupWiFi(void) {
     GVwifiAPmode = true;
     GVmyDisplay.PrintMessage("Starting\nAcc. Point\n");
     GVmyDisplay.MessageAdd(GVoilerConf.apn, 1500);
-    //WiFi.mode(WIFI_AP);   // only Access Point
     WiFi.softAPConfig(myIP, myIP, IPAddress(255, 255, 255, 0));
     DEBUG_OUT.printf(PSTR(MSG_DBG_START_ACCCESS_POINT), GVoilerConf.apn.c_str(), GVoilerConf.app.c_str());
+    delay(200);
     
     if (WiFi.softAP(GVoilerConf.apn, GVoilerConf.app))
     {
@@ -143,9 +143,10 @@ void setupMDNS(void) {
   if (!MDNS.begin(GVoilerConf.apn)) {
     DEBUG_OUT.println(F(MSG_DBG_MDNS_ERROR));
     while(1); // trigger watch dog
-  }
-  else 
+  } else {
+    MDNS.addService("http", "tcp", 80);  //is only added once (there is a check inside addService)
     DEBUG_OUT.printf(PSTR(MSG_DBG_MDNS_STARTED), GVoilerConf.apn.c_str());
+  }
 }
 
 /*****************************************************************

@@ -153,7 +153,9 @@ void loop() {
  *******************************************************************/
 void oilerReboot() {
   if (!GVwifiSleeping) {
-    toggleWiFi();
+    //MDNS.close();
+    WiFi.disconnect();
+    delay(500);
   }
   ESP.restart();
 }

@@ -32,12 +32,7 @@ void setupWebServer(void) {
   GVwebServer.on(F("/reboot"), HTTP_GET, handleReboot);
   GVwebServer.on(F("/update"), HTTP_GET, handleUpdate);
   GVwebServer.on(F("/version"), HTTP_GET, handleVersion);
-  /*** Captive handles ***/
-  //GVwebServer.on(F("/generate_204"), handleRoot); //Android captive portal. Maybe not needed. Might be handled by notFound handler.
-  //GVwebServer.on(F("/favicon.ico"), handleRoot);  //Another Android captive portal. Maybe not needed. Might be handled by notFound handler. Checked on Sony Handy
-  //GVwebServer.on(F("/fwlink"), handleRoot);       //Microsoft captive portal. Maybe not needed. Might be handled by notFound handler.
   
- 
   //LittleFS Browser & editor:
   GVwebServer.on(F("/edit"), HTTP_GET, []() {
     if (!handleFileRead(GVoilerConf.fbe)) {
@@ -52,27 +47,14 @@ void setupWebServer(void) {
     GVwebServer.send(200, TEXT_PLAIN, "");
   }, handleFileUpload);
 
-  GVwebServer.onNotFound([]() {
-    if (GVwebServer.uri().equalsIgnoreCase("/connecttest.txt")){
-      DEBUG_OUT.print(C_SERVE_INLINE);
-      GVwebServer.send(200, TEXT_PLAIN, C_CONNECTTEST);
-    } else if (GVwebServer.uri().equalsIgnoreCase("/hotspot-detect.html")){
-      DEBUG_OUT.print(C_SERVE_INLINE);
-      GVwebServer.send(200, TEXT_HTML, C_HOTSPOT_DETECT);
-    } else {
-      if (!handleFileRead(GVwebServer.uri())) {
-        DEBUG_OUT.print(C_FILENOTFOUND);
-        if (GVwifiAPmode && !handleFileRead("index.htm")) {
-          GVwebServer.send(404, TEXT_PLAIN, F("FileNotFound"));
-        }
-      } else DEBUG_OUT.print(C_SERVEFILE);
-    }
-    DEBUG_OUT.println(GVwebServer.uri());
-  });
+  GVwebServer.onNotFound(handleNotFound);
   GVwebServer.begin();
   GVhttp.setAuthorization(GVoilerConf.bac.c_str());   // wenn keine Auth. vom Server gefordert wird, geht das trotzdem...
 }
 
+/*************************************************
+ * return full url of oiler
+ *************************************************/
 String getOilerbaseURL() {
   return ("http://" + GVoilerConf.uhn + ":" + GVoilerConf.uhp + GVoilerConf.url);
 }
@@ -97,6 +79,30 @@ String getContentType(String fname) {
   else return TEXT_PLAIN;
 }
 
+/*************************************************
+ * notFound Handler
+ *************************************************/
+void handleNotFound(void) {
+  if (GVwebServer.uri().equalsIgnoreCase("/connecttest.txt")){
+    handleFileRead("index.htm");
+    DEBUG_OUT.print("[handleNotFound] asked for /connecttest.txt - served index.htm");
+    // DEBUG_OUT.print(C_SERVE_INLINE);
+    // GVwebServer.send(200, TEXT_PLAIN, C_CONNECTTEST);
+  } else if (GVwebServer.uri().equalsIgnoreCase("/hotspot-detect.html")){
+    handleFileRead("index.htm");
+    DEBUG_OUT.print("[handleNotFound] asked for /hotspot-detect.html - served index.htm");
+    // DEBUG_OUT.print(C_SERVE_INLINE);
+    // GVwebServer.send(200, TEXT_HTML, C_HOTSPOT_DETECT);
+  } else {
+    if (!handleFileRead(GVwebServer.uri())) {
+      DEBUG_OUT.print(C_FILENOTFOUND);
+      if (GVwifiAPmode && !handleFileRead("index.htm")) {
+        GVwebServer.send(404, TEXT_PLAIN, F("FileNotFound"));
+      }
+    } else DEBUG_OUT.print(C_SERVEFILE);
+  }
+  DEBUG_OUT.println(GVwebServer.uri());
+}
 
 /*************************************************
  * Lesen einer Datei aus LittleFS Dateisystem
@@ -159,22 +165,11 @@ void handleMessage(String message, bool justBack)
 }
 
 /***************************************************
- * wait some ms and five webserver time to respond
- * only necessary if not returning to main loop
- ***************************************************/
-void handleClient(uint32_t waitms=500)
-{
-  uint32_t wait = millis();
-  while (wait + waitms > millis()) GVwebServer.handleClient();
-}
-
-/***************************************************
  * webHandler: Test Pumpe
  ***************************************************/
 void handlePumpTest(void)
 {
   GVwebServer.send( 200, TEXT_HTML, "OK" );
-  handleClient();
   TriggerPump();
 }
 
@@ -184,7 +179,6 @@ void handlePumpTest(void)
 void handleLEDTest(void)
 {
   GVwebServer.send( 200, TEXT_HTML, "OK" );
-  handleClient();
 
   GVmyLedx.add LED_TEST_GRUEN;
   GVmyLedx.add (0, 300);
@@ -230,12 +224,8 @@ void handlePumpMode(void) {
     {
       return GVwebServer.send(400, TEXT_PLAIN, "UNKNOWN");
     }
-    GVwebServer.send(200, TEXT_PLAIN, getPumpModeStr(GVpumpMode));
   }
-  else // return current pumpmode
-  {
-    GVwebServer.send(200, TEXT_PLAIN, getPumpModeStr(GVpumpMode));
-  }
+  GVwebServer.send(200, TEXT_PLAIN, getPumpModeStr(GVpumpMode));
 }
 
 /***********************************************************
@@ -335,7 +325,7 @@ void handleRunTimeInfo(void) {
     }
   }
 
-  // sending config values as json string:
+  // sending runtime info as json string:
   output += ",\"fr\":" + String(ESP.getFreeHeap());                   // free ram
   output += ",\"cr\":" + String(GVgpsNew.charsProcessed());           // gps characters processed
   output += ",\"gf\":" + String(GVgpsNew.sentencesWithFix());         // gps sentences with fix
