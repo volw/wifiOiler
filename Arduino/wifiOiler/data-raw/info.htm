@@ -1,0 +1,81 @@
+<!DOCTYPE html><html lang="de">
+<head>
+	<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Runtime info</title><link rel="stylesheet" href="wifiOiler.css">
+	<script>
+    var ta = [];
+    ta["ve"]="Version";
+    ta["da"]="display support available";
+    ta["rt"]="time running";
+    ta["fr"]="free RAM";
+    ta["cr"]="GPS chars processed";
+    ta["gf"]="GPS records with fix";
+    ta["pc"]="GPS records with correct checksum";
+    ta["fc"]="GPS records with failed checksum";
+    ta["mp"]="meters since last pump action";
+    ta["pm"]="pump mode";
+    ta["ra"]="GPS recording active";
+    ta["tf"]="name of current track file";
+    ta["rw"]="total count of recorded GPS fixes";
+    ta["rs"]="size of GPS record";
+    ta["we"]="total count of write errors";
+    ta["gm"]="GPS distance (meters) since start";
+    ta["mc"]="current state of movement counter";
+    ta["xc"]="max movement counter";
+    ta["tc"]="total count of pump actions since start";
+    ta["mm"]="maintenance mode active";
+    ta["wc"]="SSID of current connected WiFi";
+    ta["ip"]="current ip adress";
+    ta["fs"]="available free space (file system)";
+    ta["rl"]="no. of GPS records left";
+    ta["tl"]="time left for track recording (hh:mm)";
+
+		function ge(id){return document.getElementById(id);}
+		function createInfoTable(json){
+			var table=document.createElement('table'),row,cell;
+      table.style="text-align:right;border-collapse:collapse;";
+      JSON.parse(json,function(key,value){
+        if (key.length > 0){
+				  let row=table.insertRow();
+				  let cell=row.insertCell();
+          //cell.style="border:1px solid black; text-align:right;padding:3px;spacing:3px;";
+          cell.style="border:1px solid black;padding:3px;";
+				  cell.appendChild(document.createTextNode(value));
+				  cell=row.insertCell();
+          cell.style="border:1px solid black;text-align:left;padding:3px;";
+				  cell.appendChild(document.createTextNode(ta[key]));}
+				ge("out").appendChild(table);})}
+		function createFileTable(json){
+			var table = document.createElement('table'),row,cell;
+      var oFiles = JSON.parse(json);
+      oFiles.forEach(function(item){
+			  let row=table.insertRow();
+        //row.style="border:1px solid black;";
+        let cell=row.insertCell();
+        cell.style="border:1px solid black;";
+  			cell.appendChild(document.createTextNode(item["name"]));
+				cell=row.insertCell();
+        cell.style="border:1px solid black;text-align:right;";
+				cell.appendChild(document.createTextNode(item["size"]));});
+			ge("files").appendChild(table);}
+	  function getInfo(){
+	    var xmlHttp=new XMLHttpRequest();
+			xmlHttp.onreadystatechange=function(){
+      	if(this.readyState==4&&this.status==200) createInfoTable(xmlHttp.responseText);
+      };xmlHttp.open("GET","/info?test",true);
+	    xmlHttp.send(null);}
+	  function getFiles(){
+	    var xmlHttp=new XMLHttpRequest();
+			xmlHttp.onreadystatechange=function(){
+        if(this.readyState==4&&this.status==200)createFileTable(xmlHttp.responseText);};
+	    xmlHttp.open("GET","/list?dir",true);
+	    xmlHttp.send(null);}
+    function getContent(){getInfo();getFiles();}
+	</script>
+</head>
+<body onload="getContent();">
+<div class="flex" id="out"><h3>Runtime Infos:</h3></div>
+<br><br>
+<div class="flex" id="files"><h3>Filesystem content:</h3></div>
+</body>
+</html>

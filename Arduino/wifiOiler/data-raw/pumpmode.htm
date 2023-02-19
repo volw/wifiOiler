@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="de">
+<head>
+	<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Set Pump Mode</title><link rel="stylesheet" href="wifiOiler.css">
+<script>
+	cUrl = "/pumpmode";b=null;
+	function mode(m){
+		m=(m==null?'':'?mode='+m);
+		xhr=new XMLHttpRequest();
+    xhr.open("GET",cUrl+m,true);
+    xhr.onreadystatechange = function(){
+  		if (xhr.readyState == 4){
+  			if (b!=null) b.setAttribute('class','myButton');
+				b=document.getElementById(xhr.responseText); // Mode wird als Text zurückgegeben (s. Button IDs)
+				if (b!=null) b.setAttribute('class','myButton myAButton');}};
+		xhr.send(null);}
+	function cB(m){
+		var b=document.createElement('input');b.type='button';b.setAttribute('class','myButton');
+		b.value=m;b.id=m;b.onclick= function(){mode(m);};
+		var o=document.getElementById('buttons');if (o!=null) o.appendChild(b);}
+	function init(){cB('Normal');cB('Regen');cB('Offroad');cB('Permanent');cB('AUS');mode();}
+document.addEventListener("DOMContentLoaded", init);
+</script>
+<div class="flex"><h2>Modus Pumpe</h2><div id='buttons' class='flex'></div>&nbsp;
+	<input type="button" class="myButton" value="Zur&uuml;ck" onclick='history.back();'/>
+</div>
+</body></html>

@@ -1,0 +1,12 @@
+body {background:#F7F2E0;font-family: sans-serif;}		
+select:focus {background: #CCCCCC;}
+.changed {background:#F5A9BC;}
+.myButton {box-shadow:0px 10px 14px -7px #276873;width:250px;
+	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);	
+	border-radius:12px;cursor:pointer;color:#ffffff;font-family:Arial;
+	font-size:1.2em;font-weight:bold;padding:13px 50px;margin-bottom:10px;}
+.myAButton {background:linear-gradient(to bottom, #ff3f3f 5%, #408c99 100%);}
+.flex {display:flex;flex-direction:column;align-items: center;}			
+.config {display:flex;flex-direction:column;align-items: left;}		
+input, select {margin-bottom: 20px;width:150px;}
+button {margin:5px;}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+<head><title>ReBoot</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="stylesheet" href="wifiOiler.css">
+<style>
+	.wrapper {margin-left:auto;margin-right:auto;
+    display: block; position: relative; width: 150px; height: 150px;}
+</style>
+<script src="/animation.js"></script>
+<script>
+var animation = new Animation();
+function init(){animation.init(ge("wrapper"));animation.run();initReboot();}
+function ge(s){return document.getElementById(s)}
+function initReboot(){
+	xmlHttp = new XMLHttpRequest();
+  xmlHttp.timeout = 3000;
+  xmlHttp.ontimeout=function(){requestAnimationFrame(()=>checkResultNew());}
+	xmlHttp.onreadystatechange = function(){
+	  if (xmlHttp.readyState == 4){
+      if (xmlHttp.status == 200) requestAnimationFrame(()=>checkResultNew());}};
+	xmlHttp.open("GET", "/reboot?bootnow", true);
+	xmlHttp.send(null);}
+var retries = 10;
+function Retry(){
+	retries--;
+	if (retries <= 0){
+		ge("status").innerHTML = "<b>FEHLER: &Ouml;ler konnte nicht erreicht werden.<br>WiFi anschalten oder neu booten</b>";
+    animation.stop();ge("button").hidden=false;		
+	} else {
+    if (retries<=7) ge("status").innerHTML = "<b>TimeOut in " + (3*retries) + "s";
+		requestAnimationFrame(()=>checkResultNew());}}
+function checkResultNew(){
+	const xhr = new XMLHttpRequest();
+	xhr.open('GET', '/connecttest.txt', true);
+	xhr.timeout = 3000; // time in milliseconds
+	xhr.onload = () => {
+  	if (xhr.readyState === 4) {
+	    if (xhr.status === 200) {
+  	    console.log(xhr.responseText);
+        window.location.replace('/');
+    	} else {
+      	console.error(xhr.statusText);
+      	Retry();}}};
+	xhr.ontimeout = (e) => {Retry();};
+	xhr.onerror = (e) => {console.error(xhr.statusText);Retry();};	
+	xhr.send(null);}
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</head>
+<body>
+	<center>
+		<h2>Neustart des &Ouml;lers</h2>
+    <p>Nach dem Neustart wird automatisch zum Hauptmen&uuml; weitergeleitet.</p>
+    <p>Bitte warten...</p>
+		<div id="wrapper" class="wrapper"></div>
+		<b><div id="status" name="status"></div></b>
+    <div id="button" name="button" hidden>
+      <a href=/><button type="button" class="myButton">Zur&uuml;ck</button></a>
+    </div>
+	</center>
+</body>
+</html>

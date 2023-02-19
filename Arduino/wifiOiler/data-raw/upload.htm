@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html><head><title>Upload track files</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="stylesheet" href="wifiOiler.css">
+<style>
+	.wrapper {margin-left:auto;margin-right:auto;
+    display: block; position: relative; width: 150px; height: 150px;}
+</style>
+<script src="/animation.js"></script>
+<script type="text/javascript">
+cUrl = "/upload?result";
+var animation = new Animation();
+function init(){animation.init(ge("wrapper"));animation.run();getResult();}
+function ge(s){return document.getElementById(s)}
+function getResult(){
+	xmlHttp = new XMLHttpRequest();
+  xmlHttp.onreadystatechange = function(){
+  	if (xmlHttp.readyState == 4){	// 4 = done
+  		result = xmlHttp.responseText;
+  		lEnde = result.endsWith("-END-");
+  		if (lEnde){
+  		  result = result.substring(0, result.length - "-END-".length);
+    		animation.stop();ge("button").hidden=false;
+  		} else {
+				window.setTimeout(function() { getResult() }, 1000)
+  		}
+  		document.getElementById("result").innerText=result;
+  	}
+	};
+  xmlHttp.open("GET", cUrl, true);
+  xmlHttp.send(null);
+}
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</head>
+<body><center>
+	<div id="wrapper" class="wrapper"></div>
+	<h2>Uploading Tracks</h2>
+	<div id="result" name="result"></div>
+  <div id="button" name="button" hidden>
+  	<a href=/><button type="button" class="myButton">Zur&uuml;ck</button></a>
+	</div>
+</center></body>
+</html>

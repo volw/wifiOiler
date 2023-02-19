@@ -1,0 +1,306 @@
+<!doctype html><html lang="de"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Filebrowser</title>
+<style>
+  body {margin: 1em 0;max-width: 60em;font-family: monospace;display: grid;grid-template-columns: auto auto;}
+  topbar {grid-column: 1 / 3;grid-row: 1;background: #ffede0;border-color: #df6c20;}
+  flist {grid-column: 1 / 2;grid-row: 2;background: #ebf5d7;border-color: #8db243;font-size: 1.2em;}
+  editor {grid-column: 2 / 3;grid-row: 2;background: #A9E2F3;border-color: #d5d5d5;width: 80vw;height: 80vh;}
+  topbar, flist, editor {border: 1px solid;padding: .5em;margin: .5em;}
+  .editor {width:100%;height:calc(100% - 1.2em);border:none;outline:none;white-space: pre;tab-size: 2;scroll-behavior: auto;}
+  .flist ul, .flist li {padding: 0;margin: 0;list-style: none;}
+  .flist span {margin-bottom: 5px;padding: 0 0 0 18px;cursor: pointer;display: inline-block;vertical-align: middle;
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADoSURBVBgZBcExblNBGAbA2ceegTRBuIKOgiihSZNTcC5LUHAihNJR0kGKCDcYJY6D3/77MdOinTvzAgCw8ysThIvn/VojIyMjIyPP+bS1sUQIV2s95pBDDvmbP/mdkft83tpYguZq5Jh/OeaYh+yzy8hTHvNlaxNNczm+la9OTlar1UdA/+C2A4trRCnD3jS8BB1obq2Gk6GU6QbQAS4BUaYSQAf4bhhKKTFdAzrAOwAxEUAH+KEM01SY3gM6wBsEAQB0gJ+maZoC3gI6iPYaAIBJsiRmHU0AALOeFC3aK2cWAACUXe7+AwO0lc9eTHYTAAAAAElFTkSuQmCC) no-repeat;
+    background-position: 0 0}
+  .lastentry {background: #FFFFFF;}
+</style>
+<script>
+  var cUrl="/list", lastSelectedFile="", scrollPos=0;
+  var texts=["bak","c","cpp","css","h","htm","html","ini","js","json","md","txt","xml"];
+  function ge(e) {return document.getElementById(e);}
+  function init() {
+    getList();
+    ge("target").value = "/";
+    ge("datei").onchange = function(e){
+      var input = ge("datei");
+      var path = ge("target");
+      if(input.files.length === 0) return;
+      var filename = input.files[0].name;
+      var ext = /(?:\.([^.]+))?$/.exec(filename)[1];
+      var name = /(.*)\.[^.]+$/.exec(filename)[1];
+      if(typeof name !== 'undefined') filename = name;
+      if(typeof ext !== 'undefined') filename = filename + "." + ext;
+      path.value = "/"+filename;
+    }
+    document.addEventListener("keydown", function(e){
+			if (e.ctrlKey && e.key === 's'){
+        e.preventDefault();
+				ge("btnsave").click();
+			}
+			if (e.ctrlKey && e.key === 'd'){
+        e.preventDefault();
+				ge("btndelete").click();
+			}
+			if (e.ctrlKey && e.key === 'r'){
+        e.preventDefault();
+				ge("btnrename").click();
+			}
+    });
+    // prevent strange scroll behaviour of chrome/edge
+    // https://stackoverflow.com/questions/56329625
+    var edit = ge("fedit");
+    edit.addEventListener("keydown", function(e){
+      if (e.keyCode == 13) {
+        e.preventDefault();
+        var ed = ge("fedit");
+        //e.stopPropagation();
+        var indent = getIndentation(ed);
+        document.execCommand('insertText',true,'\n'+' '.repeat(indent));
+        ed.scrollTop = scrollPos;
+        ed.scrollLeft = 0;
+      } else if (e.keyCode == 9) {
+        //Position ermitteln:
+        e.preventDefault();
+        var ed=ge("fedit");
+        var pos=ed.selectionStart-1;
+        var cc = 0;
+        while (pos >=0 && ed.value.charCodeAt(pos) != 10) {cc++;pos--;}
+        document.execCommand('insertText',true,' '.repeat(2-(cc%2)));
+      }
+    });
+    edit.addEventListener("scroll", function(){scrollPos = ge("fedit").scrollTop;});
+    edit.addEventListener("paste", function(e){
+      e.preventDefault();
+      var cbbin = e.clipboardData;
+      document.execCommand('insertText', true, cbbin.getData("Text"));
+      //ge("fedit").scrollTop = scrollPos;
+    });
+  }
+  function getIndentation(obj){
+    var start = obj.selectionStart - 1;
+    var ind = 0;
+    while (start > 0 && obj.value.charCodeAt(start) != 10){
+      if (start >= 0){
+        if (obj.value.charCodeAt(start) == 32) ind++;
+        else ind = 0;
+      }
+      start--;
+    }
+    return ind;
+  }
+  function getList(id = ""){
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function(){
+      if (xmlHttp.readyState == 4) {  // 4 = done
+        if(xmlHttp.status == 200) {
+          var strJSON = xmlHttp.responseText;
+          if (strJSON != null) addList(ge("flist"), "/", JSON.parse(strJSON));
+          setLastEntry(id);
+        }
+        else alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
+    }};
+    xmlHttp.open("GET", cUrl+"?dir", true);
+    xmlHttp.send(null);
+  }
+  function loadFile(theUrl) {
+    ge("fedit").value = "";
+    ge("flabel").innerText = "";
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function(){
+      if (xmlHttp.readyState == 4){
+        if(xmlHttp.status == 200) {
+          ge("fedit").value = xmlHttp.responseText;
+          ge("flabel").innerText = theUrl;
+          ge("fedit").focus();
+    }}}
+    xmlHttp.open("GET", theUrl, true);
+    xmlHttp.send(null);
+  }
+  function isTextFile(path){
+    var ext = /(?:\.([^.]+))?$/.exec(path)[1];
+    if(typeof ext === 'undefined') return false;
+		return (texts.indexOf(ext) > -1);
+  }
+  function createFilelistEntry(path, name, size){
+    var entry = document.createElement("li");
+    entry.id = name;
+    entry.className = "listentry";
+    var label = document.createElement("span");
+    //label.textContent = name + " (" + size + ")";
+    label.textContent = name;
+    entry.appendChild(label);
+    entry.onclick = function(e){
+      document.querySelectorAll(".lastentry").forEach(e=>{e.className="";});
+      entry.className = "lastentry";
+      if(isTextFile(entry.id)){
+        loadFile(entry.id);
+      } else {
+        ge("fedit").value = "";
+        ge("flabel").innerText = "";
+      }
+    };
+    return entry;
+  }
+  function addList(parent, path, items){
+    // falls Liste existiert, diese leeren:
+    parent.childNodes.forEach(child=>{parent.removeChild(child);});
+    var list = document.createElement("ul");
+    parent.appendChild(list);
+    items.forEach(f=>{if(f.type==="file") list.appendChild(createFilelistEntry(path,f.name,f.size));});
+  }
+  function doUpload() {
+    var datei = ge("datei");
+    if(datei.files.length === 0) return;
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+	    if (xmlHttp.readyState == 4)
+	      if(xmlHttp.status != 200) alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
+	      else {
+	        getList(ge("target").value);
+	        ge("target").value = "/";
+	        ge("datei").value = "";
+	  }}
+    var formData = new FormData();
+    formData.append("data", datei.files[0], ge("target").value);
+    xmlHttp.open("POST", "/edit");
+    xmlHttp.send(formData);
+  }
+  function doSave() {
+    var fname = "/" + ge("flabel").innerText;
+    if (fname === "/") return;
+    var ed = ge("fedit");
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+      if (xmlHttp.readyState == 4){
+        if(xmlHttp.status != 200) alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
+        else getList(ge("flabel").innerText);
+    }}
+    var formData = new FormData();
+    formData.append("data", new Blob([ed.value],{type:"text/plain"}),fname);
+    xmlHttp.open("POST", "/edit");
+    xmlHttp.send(formData);
+  }
+  function doDelete() {
+    document.querySelectorAll(".lastentry").forEach(entry => {
+      var file = "/" + entry.id;
+      if (confirm(file + " will be deleted!!")) {
+        xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+          if (xmlHttp.readyState == 4) {
+            if(xmlHttp.status != 200) alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
+            else getList();
+        }}
+        var formData = new FormData();
+        formData.append("path", file);
+        xmlHttp.open("DELETE", "/edit");
+        xmlHttp.send(formData);
+      }
+    });
+  }
+  function doNewFile() {
+    var fname = ge("target").value;
+    if (fname === "" || fname === "/") return;
+    if (!fname.startsWith("/")){
+      fname = "/" + fname;
+      ge("target").value = fname;
+    }
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+      if (xmlHttp.readyState == 4){
+        if(xmlHttp.status != 200) alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
+        else {
+          var fname = ge("target").value;
+          ge("fedit").value = "";
+          ge("fedit").focus();
+          ge("flabel").innerText = fname;
+          ge("target").value = "/";
+          getList(fname);
+    }}}
+    var formData = new FormData();
+    formData.append("path", fname);
+    xmlHttp.open("PUT", "/edit");
+    xmlHttp.send(formData);
+  }
+  function doRename() {
+    var entries = document.querySelectorAll(".lastentry");
+    if (entries.length != 1 ) return;
+    var oldName = entries[0].id;
+    if (oldName === "" || oldName === "/") return;
+    if (!oldName.startsWith("/")) oldName = "/" + oldName;
+    var newName = ge("target").value;
+    if (newName === "" || newName === "/") return;
+    if (!newName.startsWith("/")) newName = "/" + newName;
+    if (confirm("Rename '" + oldName + "' to '" + newName + "'")) {
+      xmlHttp = new XMLHttpRequest();
+      xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4){
+          if(xmlHttp.status != 200) alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
+          else {
+            ge("target").value = "/";
+            getList(newName);
+      }}}
+      var formData = new FormData();
+      formData.append("path", newName);
+      formData.append("old", oldName);
+      xmlHttp.open("PUT", "/edit");
+      xmlHttp.send(formData);
+  }}
+  function doDownload() {
+    var entries = document.querySelectorAll(".lastentry");
+    if (entries.length != 1 ) return;
+    var path = entries[0].id;
+    ge('download-frame').src = path+"?download=true";
+  }
+  function doExtract() {
+    var entries = document.querySelectorAll(".lastentry");
+  	if (entries.length != 1 ) return;
+    var filename = entries[0].id;
+    var ext = /(?:\.([^.]+))?$/.exec(filename)[1].toLowerCase();
+    var name = /(.*)\.[^.]+$/.exec(filename)[1];
+    if(typeof name !== 'undefined') filename = name;
+    if(typeof ext === 'undefined' || ext != "gz") { alert("ERROR: no archive file");	return;}
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function(){
+      if (xmlHttp.readyState == 4){
+        if(xmlHttp.status == 200) {
+          ge("fedit").value = xmlHttp.responseText;
+          ge("flabel").innerText = filename; // async doSave() will do the rest
+          doSave();
+    }}}
+    xmlHttp.open("GET", filename, true);
+    xmlHttp.send(null);
+  }
+  function setLastEntry(id = ge("flabel").innerText){
+  	var entryid = id;
+  	if (entryid == "" || entryid == "/") return;
+    if (entryid[0] == '/') entryid = entryid.substring(1);
+    if (entryid.length < 1) return;
+  	// falls einer vorhanden, dann löschen:
+		document.querySelectorAll(".lastentry").forEach(e=>{e.className="";});
+    // ... und neu setzen:
+    //document.querySelector(".flist li[id='"+entryid+"']").className="lastentry";
+    //querySelector() geht so baden, wenn nichts gefunden wurde - querySelectorAll().forEach() nicht.
+    document.querySelectorAll(".flist li[id='"+entryid+"']").forEach(c=>{c.className="lastentry"});
+  }
+</script>
+</head>
+<body onload="init();">
+  <topbar>
+    <input id="datei"  name="datei"  type="file" size="50" accept="*.*" />
+    <input id="target" name="target" type="text" placeholder="/" />
+    <button type="button" id="btnupload" name="btnupload" onclick="doUpload();">Upload</button>
+    <button type="button" id="btnsave" name="btnsave" onclick="doSave();">Save</button>
+    <button type="button" id="btnmkfile" name="btnmkfile" onclick="doNewFile();">New File</button>
+    <button type="button" id="btnrename" name="btnrename" onclick="doRename();">Rename</button>
+    <button type="button" id="btndelete" name="btndelete" onclick="doDelete();">Delete</button>
+    <button type="button" id="btndownload" name="btndownload" onclick="doDownload();">Download</button>
+    <button type="button" id="btnextract" name="btnextract" onclick="doExtract();">Extract</button>
+  </topbar>
+  <flist><div id="flist" class="flist"></div></flist>
+  <editor>
+    <div id="flabel"></div><div id="scrollpos"></div>
+    <textarea class="editor" id="fedit" spellcheck="false"></textarea>
+  </editor>
+  <iframe id=download-frame style='display:none;'></iframe>
+</body>
+</html>

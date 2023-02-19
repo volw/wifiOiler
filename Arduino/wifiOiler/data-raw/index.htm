@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="de">
+<head>
+	<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Main Page</title>
+
+	<link rel="stylesheet" href="wifiOiler.css">
+
+	<script>
+	  function getVersion(){
+	    xmlHttp=new XMLHttpRequest();
+	    xmlHttp.onreadystatechange=function(){if(xmlHttp.readyState==4){document.getElementById("version").innerHTML=xmlHttp.responseText;}};
+	    xmlHttp.open("GET","/version",true);
+	    xmlHttp.send(null);
+	  }
+	  function callLink(l,m){
+	    xmlHttp=new XMLHttpRequest();
+	    xmlHttp.onreadystatechange = function(){if (xmlHttp.readyState == 4 && xmlHttp.status == 200) alert(m);};
+	    xmlHttp.open("GET",l,true);
+	    xmlHttp.send(null);
+	  }
+	</script>
+</head>
+<body onload="getVersion();">
+<div class="flex">
+<h2><div id='version'>Version</div></h2>
+<input type="button" value="Modus Pumpe"   class="myButton" onclick="window.location.href='/pumpmode.htm';"/>
+<input type="button" value="Konfiguration" class="myButton" onclick="window.location.href='/config.htm';"/>
+<input type="button" value="File Browser"  class="myButton" onclick="window.location.href='/edit';"/>
+<input type="button" value="Runtime Info"  class="myButton" onclick="window.location.href='/info.htm';"/>
+<input type="button" value="Test Pumpe"    class="myButton" onclick="callLink('/pumptest','Pumpentest gestartet...');"/>
+<input type="button" value="Test LED"      class="myButton" onclick="callLink('/ledtest','LED Test: 3 x gr&uuml;n und 3 x rot');"/>
+<input type="button" value="Upload Tracks" class="myButton" onclick="window.location.href='/upload';"/>
+&nbsp;
+<input type="button" value="Update Oiler"  class="myButton" onclick="window.location.href='/update';"/>
+<input type="button" value="Soft Reboot"   class="myButton" onclick="window.location.href='/reboot.htm';"/>
+</div>
+</body>
+</html>
