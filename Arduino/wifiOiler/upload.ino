@@ -169,14 +169,15 @@ void handleUpload(void)
   {
     //erst mal sollte gecheckt werden, ob der Server überhaupt erreichbar ist...
     uploadResponse = "";
+
+    // Warteseite anzeigen:
+    handleFileRead("/upload.htm");
+    uint32_t wait = millis();
+    // 1s warten und webServer damit Zeit für Aktion zu geben
+    while (wait + 1000 > millis()) GVwebServer.handleClient();
+      
     if (isServerAvailable())
     {
-      // Warteseite anzeigen:
-      handleFileRead("/upload.htm");
-      uint32_t wait = millis();
-      // 1s warten und webServer damit Zeit für Aktion zu geben
-      while (wait + 1000 > millis()) GVwebServer.handleClient();
-      
       uint8_t uploadOK = 0;
       uint8_t uploadFailed = 0;
       DEBUG_OUT.println(F(MSG_DBG_TRACK_UPLOAD_START));
@@ -224,7 +225,9 @@ void handleUpload(void)
         GVwebServer.handleClient();
         if (uploadOK > 0) checkFilesystemSpace();
       }
+    } else {
+      uploadResponse = String(MSG_DBG_UPLOAD_SERVER_ERROR) + "\n-END-";
+      GVwebServer.handleClient();
     }
-    else handleMessage(F(MSG_DBG_UPLOAD_SERVER_ERROR));
   }
 }

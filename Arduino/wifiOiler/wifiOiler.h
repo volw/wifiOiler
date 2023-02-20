@@ -21,10 +21,12 @@
 // VERSION: für Update Vorgang, Version wird auch auf Startseite des Ölers angezeigt.
 // _DISPLAY_AVAILABLE_: wenn undefiniert, wird etwas Speicherplatz (7 KB) gespart - ansonsten keine Auswirkung (auch wenn kein Display angeschl. ist)
 // _NO_PUMP_: nur während Entwicklung sinnvoll: Pumpe wird dauerhaft deaktiviert, damit's nicht ständig piept
+// _CAPTIVE_PORTAL_: Access Point wird als Captive Portal erstellt (wie Anmeldeseite eines Hotspots z.B. in Hotels)
 
-#define VERSION "4.2.026"
+#define VERSION "4.2.027"
 #define _DISPLAY_AVAILABLE_
 //#define _NO_PUMP_
+#define _CAPTIVE_PORTAL_
 
 #define LOG_FILE_NAME "/myLogger.txt"
 // Log wird nicht "rund"-geschrieben - wenn größer (check beim Start), dann wird gelöscht!
@@ -156,7 +158,6 @@ typedef PumpModes tPumpMode;
 //**************************************************************
 // we have to do some forward declarations because default
 // values for params are not working for 'normal' functions:
-void handleMessage(String message, bool justBack = true);
 bool checkforUpdate(bool justCheck = false, bool reboot = true);
 
 #endif
