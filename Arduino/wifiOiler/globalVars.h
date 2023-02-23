@@ -157,10 +157,11 @@ std::vector<updateFile> GVupdateFiles;
 HTTPClient GVhttp;
 WiFiClient GVwifiClient = GVwebServer.client();
 
-const char PROGMEM * C_CONNECTTEST    = "Microsoft Connect Test";
-const char PROGMEM * C_HOTSPOT_DETECT = "<html><script type='text/javascript'>window['_gaUserPrefs']={ioo:function(){return true;}}</script><head><title>Success</title><style></style></head><body>Success</body></html>";
-const char PROGMEM * C_SERVE_INLINE   = "[GVwebServer.onNotFound] serve inline: ";
-const char PROGMEM * C_FILENOTFOUND   = "[GVwebServer.onNotFound] not found: ";
+#ifdef _CAPTIVE_PORTAL_
+  const char PROGMEM * C_FILENOTFOUND   = "[GVwebServer.onNotFound] serve index.htm, not found: ";
+#else
+  const char PROGMEM * C_FILENOTFOUND   = "[GVwebServer.onNotFound] not found: ";
+#endif
 const char PROGMEM * C_SERVEFILE      = "[GVwebServer.onNotFound] serve: ";
 
 LittleFSlogger GVmyLogger;  // Serial und/oder in Datei

@@ -3,19 +3,19 @@
 	<meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Main Page</title>
-
 	<link rel="stylesheet" href="wifiOiler.css">
-
 	<script>
+    const $ = function(e) {return document.getElementById(e);}
+    function meldung(m){$('popup2').style.display='block';$('msgtxt').innerHTML="<h3>"+m+"</h3>";}
 	  function getVersion(){
 	    xmlHttp=new XMLHttpRequest();
-	    xmlHttp.onreadystatechange=function(){if(xmlHttp.readyState==4){document.getElementById("version").innerHTML=xmlHttp.responseText;}};
+	    xmlHttp.onreadystatechange=function(){if(xmlHttp.readyState==4){$("version").innerHTML=xmlHttp.responseText;}};
 	    xmlHttp.open("GET","/version",true);
 	    xmlHttp.send(null);
 	  }
 	  function callLink(l,m){
 	    xmlHttp=new XMLHttpRequest();
-	    xmlHttp.onreadystatechange = function(){if (xmlHttp.readyState == 4 && xmlHttp.status == 200) alert(m);};
+	    xmlHttp.onreadystatechange = function(){if (xmlHttp.readyState == 4 && xmlHttp.status == 200) meldung(m);};
 	    xmlHttp.open("GET",l,true);
 	    xmlHttp.send(null);
 	  }
@@ -35,5 +35,9 @@
 <input type="button" value="Update Oiler"  class="myButton" onclick="window.location.href='/update';"/>
 <input type="button" value="Soft Reboot"   class="myButton" onclick="window.location.href='/reboot.htm';"/>
 </div>
-</body>
+		<div class="popup" id="popup2"><center>
+		  <p><div id="msgtxt"></div></p>
+		  <p>&nbsp;</p>
+			<input type="button" value="OK" class="myButton" onclick="$('popup2').style.display='none';"/></center>
+		</div>
 </html>

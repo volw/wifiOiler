@@ -83,24 +83,14 @@ String getContentType(String fname) {
  * notFound Handler
  *************************************************/
 void handleNotFound(void) {
-  if (GVwebServer.uri().equalsIgnoreCase("/connecttest.txt")){
-    handleFileRead("index.htm");
-    DEBUG_OUT.print("[handleNotFound] asked for /connecttest.txt - served index.htm");
-    // DEBUG_OUT.print(C_SERVE_INLINE);
-    // GVwebServer.send(200, TEXT_PLAIN, C_CONNECTTEST);
-  } else if (GVwebServer.uri().equalsIgnoreCase("/hotspot-detect.html")){
-    handleFileRead("index.htm");
-    DEBUG_OUT.print("[handleNotFound] asked for /hotspot-detect.html - served index.htm");
-    // DEBUG_OUT.print(C_SERVE_INLINE);
-    // GVwebServer.send(200, TEXT_HTML, C_HOTSPOT_DETECT);
-  } else {
-    if (!handleFileRead(GVwebServer.uri())) {
-      DEBUG_OUT.print(C_FILENOTFOUND);
-      if (GVwifiAPmode && !handleFileRead("index.htm")) {
-        GVwebServer.send(404, TEXT_PLAIN, F("FileNotFound"));
-      }
-    } else DEBUG_OUT.print(C_SERVEFILE);
-  }
+  if (!handleFileRead(GVwebServer.uri())) {
+    DEBUG_OUT.print(C_FILENOTFOUND);
+#ifdef _CAPTIVE_PORTAL_
+    if (GVwifiAPmode && !handleFileRead("index.htm")) {
+      GVwebServer.send(404, TEXT_PLAIN, F("Error serving index.htm"));
+    }
+#endif    
+  } else DEBUG_OUT.print(C_SERVEFILE);
   DEBUG_OUT.println(GVwebServer.uri());
 }
 
@@ -140,30 +130,6 @@ bool handleFileRead(String path)
   return false;
 }
 
-/******************************************************
- * Hilfsfunktion zum Anzeigen einer Meldung und 
- * weiterer Aktion:
- * justBack == true : zurück per history.back() (default)
- * justBack == false: expliziter Aufruf des Hauptmenüs
- ******************************************************/ 
-void handleMessage(String message, bool justBack)
-{
-  GVwebServer.setContentLength(CONTENT_LENGTH_UNKNOWN);
-  GVwebServer.send( 200, TEXT_HTML, "");
-  //GVwebServer.sendContent(F("<!DOCTYPE html><html><head>"));
-  GVwebServer.sendContent(F("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">"));
-  //GVwebServer.sendContent(F("</head><body><script type=\"text/javascript\">"));
-  GVwebServer.sendContent(F("</head><body><script>function msg(){alert(\""));
-  GVwebServer.sendContent(message);
-  if (justBack)
-    GVwebServer.sendContent(F("\");history.back();}"));
-  else
-    GVwebServer.sendContent(F("\");window.location.replace('/');}"));
-  GVwebServer.sendContent(F("window.onload=msg;</script></body></html>"));
-  GVwebServer.sendContent(""); // this tells web client that transfer is done
-  GVwebServer.client().stop();
-}
-
 /***************************************************
  * webHandler: Test Pumpe
  ***************************************************/
@@ -184,7 +150,6 @@ void handleLEDTest(void)
   GVmyLedx.add (0, 300);
   GVmyLedx.add LED_TEST_ROT;
   GVmyLedx.start();
-  //handleMessage(F("LED Test gestartet (erst gruen, dann rot)"));
 }
 
 /***************************************************
