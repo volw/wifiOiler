@@ -26,11 +26,11 @@ class ValueList {
   };
 
   struct Item ValueList[_LIST_LEN_] = {
-    { "apn", false },{ "app", false },{ "bac", false },{ "fbe", false },{ "ffn", false },
+    { "apn", false },{ "app", false },{ "bac", false },{ "wts", false },{ "ffn", false },
     { "fpw", false },{ "gdl", false },{ "glf", false },{ "gts", false },{ "lgf", false },
     { "lgs", false },{ "nmm", false },{ "omm", false },{ "otk", false },{ "pac", false },
     { "rmm", false },{ "sim", false },{ "uhn", false },{ "uhp", false },{ "url", false },
-    { "use", false },{ "wso", false },{ "wts", false }
+    { "use", false },{ "wso", false }
   };
 
   public:

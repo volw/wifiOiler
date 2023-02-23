@@ -35,7 +35,7 @@ void setupWebServer(void) {
   
   //LittleFS Browser & editor:
   GVwebServer.on(F("/edit"), HTTP_GET, []() {
-    if (!handleFileRead(GVoilerConf.fbe)) {
+    if (!handleFileRead(FS_BROWSER_URL)) {
       GVwebServer.send(404, TEXT_PLAIN, F("FileNotFound"));
     }
   });
@@ -222,7 +222,6 @@ void handleConfigPage(void) {
     if (GVwebServer.hasArg(F("lgs"))) GVoilerConf.lgs = GVwebServer.arg(F("lgs"))=="1";      // Bool: logging to Serial
     if (GVwebServer.hasArg(F("gdl"))) GVoilerConf.gdl = GVwebServer.arg(F("gdl"))=="1";      // Bool: GPS logging
     if (GVwebServer.hasArg(F("wso"))) GVoilerConf.wso = GVwebServer.arg(F("wso"))=="1";      // Bool: autom. WiFi-Start
-    if (GVwebServer.hasArg(F("fbe"))) GVoilerConf.fbe = GVwebServer.arg(F("fbe"));           // File Browser & Editor
     if (GVwebServer.hasArg(F("gts"))) GVoilerConf.gts = GVwebServer.arg(F("gts"));           // GPS Track Filename Suffix
     GVoilerConf.write();
     checkFilesystemSpace(); // GVcurrentfpw wird dort ggf. korrigiert
@@ -250,7 +249,6 @@ void handleConfigPage(void) {
   output += ",\"lgs\":\"" + String(GVoilerConf.lgs) + "\"";
   output += ",\"gdl\":\"" + String(GVoilerConf.gdl) + "\"";
   output += ",\"wso\":\"" + String(GVoilerConf.wso) + "\"";
-  output += ",\"fbe\":\"" + String(GVoilerConf.fbe) + "\"";
   output += ",\"gts\":\"" + String(GVoilerConf.gts) + "\"}";
   GVwebServer.send(200, F("text/json"), output);
 }

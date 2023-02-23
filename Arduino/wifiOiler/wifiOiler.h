@@ -28,11 +28,13 @@
 //#define _NO_PUMP_
 #define _CAPTIVE_PORTAL_
 
+
 #define LOG_FILE_NAME "/myLogger.txt"
 // Log wird nicht "rund"-geschrieben - wenn größer (check beim Start), dann wird gelöscht!
 #define LOG_FILE_MAX_BYTES 200000
 #define DEBUG_OUT GVmyLogger
 //#define DEBUG_OUT Serial
+#define FS_BROWSER_URL "/littlefsb.htm"
 
 // wird der HTTP_USER_AGENT geändert (Sonderzeichen vermeiden!), dann sollte auch in der 'oilerbase.php' (oilerbase)
 // die Variable USER_AGENT entsprechend angepasst werden (s. oilerbase/html/oilerbase.php)
