@@ -135,11 +135,12 @@ const IPAddress myIP(192, 168, 4, 1);
 
 //**** Update Oiler (upload files and restart on new binary ***************
 #define UPD_NOT_ACTIVE       0
-#define UPD_UPLOADING_FILES  1
-#define UPD_UPDATE_ENDED     2
-#define UPD_MUST_REBOOT      3
-#define UPD_REBOOT_NOW       4
-#define UPD_ERROR            5
+#define UPD_STARTED          1
+#define UPD_UPLOADING_FILES  2
+#define UPD_UPDATE_ENDED     3
+#define UPD_MUST_REBOOT      4
+#define UPD_REBOOT_NOW       5
+#define UPD_ERROR            6
 String   GVupdateMessage    = "";     // response string for web gui
 uint8_t  GVupdateResult     = UPD_NOT_ACTIVE;   // state of update (s. defines)
 uint32_t GVupdFileSizeTotal = 0;     // upload progress, total size (bytes) of current file

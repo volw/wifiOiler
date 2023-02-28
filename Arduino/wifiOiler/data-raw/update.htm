@@ -29,7 +29,6 @@ function doUpdate(){
 function updateEnd(){animation.stop();ge("button").hidden=false;}
 function checkResult(){
 	xmlHttp = new XMLHttpRequest();
-	//xmlHttp.timeout = 30000;
 	xmlHttp.ontimeout = function(){
 		ge("status").innerHTML = "<b>FEHLER: &Ouml;ler konnte nicht erreicht werden.<br>WiFi anschalten oder neu booten</b>"
 		  + "<br>Update sollte erneut durchgef&uuml;hrt werden<br>(neue Versionsnummer erkennbar?)";
@@ -53,10 +52,8 @@ function checkResult(){
           updateEnd();
         } else {
           ge("status").innerHTML = "Update aktiv - uploading files:<br>" + result;
-          //requestAnimationFrame(() => checkResult());
           window.setTimeout(checkResult, 1500);
 	} } } };
-	//xmlHttp.open("GET", "http://wifioiler.fritz.box/update?result", true);
 	xmlHttp.open("GET", "/update?result", true);
 	xmlHttp.send(null);
 }

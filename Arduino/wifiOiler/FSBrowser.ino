@@ -60,17 +60,12 @@ void handleFileList() {
 
   // Beispiel Ausgabe:  [{"type":"file","name":"config.htm"},{"type":"file","name":"connecttest.txt"}]
   String output = "[";
-  // Dir dir = _FILESYS.openDir("/");
+
   while (dir.next()) {
     if (output != "[") output += ',';
-    #ifdef _SPIFFS_
-      //im SPIFFS FS wird Dateiname mit leitendem "/" zurückgegeben (dir.filename())
-      //im LittleFS NICHT!
-      output += "{\"type\":\"file\",\"name\":\""+dir.fileName().substring(1)+"\",\"size\":"+dir.fileSize()+"}";
-    #else      
-      //LittleFS:
-      output += "{\"type\":\"file\",\"name\":\""+dir.fileName()+"\",\"size\":"+dir.fileSize()+"}";
-    #endif
+    //im SPIFFS FS wird Dateiname mit leitendem "/" zurückgegeben (dir.filename())
+    //im LittleFS NICHT!
+    output += "{\"type\":\"file\",\"name\":\""+dir.fileName()+"\",\"size\":"+dir.fileSize()+"}";
   }
   output += "]";
   GVwebServer.send(200, F("text/json"), output);

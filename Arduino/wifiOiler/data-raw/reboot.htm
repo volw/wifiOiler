@@ -32,7 +32,7 @@ function Retry(){
 		requestAnimationFrame(()=>checkResultNew());}}
 function checkResultNew(){
 	const xhr = new XMLHttpRequest();
-	xhr.open('GET', '/connecttest.txt', true);
+	xhr.open('GET', '/favicon.ico', true);
 	xhr.timeout = 3000; // time in milliseconds
 	xhr.onload = () => {
   	if (xhr.readyState === 4) {
