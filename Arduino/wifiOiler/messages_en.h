@@ -84,7 +84,7 @@
 #define MSG_DBG_UPDATE_INIT               "[checkforUpdate] Looking for firmware file " // followed by name of firmware file
 #define MSG_DBG_UPDATE_START              "[checkforUpdate] Firmware file found - updating now..."
 #define MSG_DBG_UPDATE_ERROR              "[checkforUpdate] ERROR"
-#define MSG_DBG_UPDATE_RESULT             "[checkforUpdate] Update.end(true)==" // followed by Update.end(true)
+#define MSG_DBG_UPDATE_SUCCESS            "[checkforUpdate] Update successfully finished"
 #define MSG_DBG_UPDATE_GETERROR           "[checkforUpdate] Update.getError():" // followed by Update.getError()
 #define MSG_DBG_REMOVING_FIRMWARE_FILE    "[checkforUpdate] removing firmware file " // followed by name of firmware file
 #define MSG_DBG_ERROR_DEL_FIRMWARE_FILE   "[checkforUpdate] ERROR removing firmware file!!"

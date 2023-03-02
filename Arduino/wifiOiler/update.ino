@@ -18,6 +18,15 @@
 #define BUFFER_SIZE 1024    // adjust, if not enough RAM at runtime
 
 /**************************************************************
+ * Callback function for stream update
+ **************************************************************/
+void updateCallback(size_t currSize, size_t totalSize) {
+  static boolean lGreen = false;
+  lGreen = !lGreen;
+  GVmyLedx.on(lGreen ? LED_GRUEN : LED_ROT);
+}
+
+/**************************************************************
  * check for new binary in file system (file name see <GVoilerConf.ffn>)
  * when found: update & restart
  **************************************************************/
@@ -36,31 +45,23 @@ bool checkforUpdate(bool justCheck, bool reboot) {
     DEBUG_OUT.println(F(MSG_DBG_UPDATE_START));
     GVmyDisplay.PrintMessage("Firmware\nfound:\nupdating..");
     File file = _FILESYS.open(FirmwareFilename, "r");
-  
-    uint32_t maxSketchSpace = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
-    if (!Update.begin(maxSketchSpace, U_FLASH)) { //start with max available size
-      Update.printError(DEBUG_OUT);
-      DEBUG_OUT.println(F(MSG_DBG_UPDATE_ERROR));
-    }
-    else
-    {
-      while (file.available())
-      {
-        GVmyLedx.on(LED_GRUEN);
-        uint8_t ibuffer[128];
-        file.read((uint8_t *)ibuffer, 128);
-        Update.write(ibuffer, sizeof(ibuffer));
-        GVmyLedx.off();
-      }
-      DEBUG_OUT.print(F(MSG_DBG_UPDATE_RESULT));
-      update = Update.end(true);
-      DEBUG_OUT.println(update);
-      if (!update) {
+
+    if (file) {
+      GVmyLedx.on(LED_ROT);
+      Update.onProgress(updateCallback);
+      Update.begin(file.size(), U_FLASH);
+      Update.writeStream(file);
+      update = Update.end();
+      if (update){
+        DEBUG_OUT.println(F(MSG_DBG_UPDATE_SUCCESS));
+      } else {
         DEBUG_OUT.print(F(MSG_DBG_UPDATE_GETERROR));
         DEBUG_OUT.println(Update.getError());
       }
+      file.close();      
+      GVmyLedx.off();
     }
-    file.close();
+
     DEBUG_OUT.print(F(MSG_DBG_REMOVING_FIRMWARE_FILE));
     DEBUG_OUT.println(FirmwareFilename);
     if (!_FILESYS.remove(FirmwareFilename)) 
@@ -102,7 +103,7 @@ bool getUpdateInfo(void)
   DEBUG_OUT.printf(PSTR(MSG_DBG_UPD_INFO_GET_RET_CODE), httpCode);
   if (httpCode > 0) {
     // HTTP header has been send and Server response header has been handled
-    result = GVhttp.getString();  // erstes und letztes Zeichen '\n', warum????? (was the php on oilerbase, don't know why)
+    result = GVhttp.getString();
 
     int16_t nPos = 0, nStart = 0; // DO NOT USE UNSIGNED-TYPE HERE (can be < 0)
     if (httpCode == 200 && result.length() > 0) {
