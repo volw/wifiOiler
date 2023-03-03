@@ -123,24 +123,28 @@ typedef PumpModes tPumpMode;
 
 #define BUTTON_PIN  D6
 #define PUMP_PIN    D7
+#define LED_ROT          D5   // weiße Litze vom Cockpit-Kabel
+#define LED_GRUEN        D0   // gelbe Litze vom Cockpit-Kabel
 
 // NodeMCU ESP8266 und nackter ESP-12F
 #if defined ARDUINO_ESP8266_NODEMCU
-  #define LED_ROT          D5   // weiße Litze vom Cockpit-Kabel
-  #define LED_GRUEN        D0   // gelbe Litze vom Cockpit-Kabel
   #pragma message "Info: compiling for NodeMCU/ESP12F..."
-  #define BOARD_TYPE       "NodeMCU"  // case sensitive; used to build directory name on oilerbase
-  #define UPDATE_FILE      "/wifiOiler.ino.nodemcu.bin"  
+  #define BOARD_TYPE  "NodeMCU"  // case sensitive; used to build directory name on oilerbase
+  #define UPDATE_FILE "/wifiOiler.ino.nodemcu.bin"  
 #endif
 
-// Wemos D1 mini (Pro)
-#if defined ARDUINO_ESP8266_WEMOS_D1MINI \
- || defined ARDUINO_ESP8266_WEMOS_D1MINIPRO
-  #define LED_ROT          D5 // alt D7
-  #define LED_GRUEN        D0 // alt D8
-  #pragma message  "Info: compiling for Wemos D1 mini (Pro)..."
-  #define BOARD_TYPE       "WemosMini"  // case sensitive; used to build directory name on oilerbase
-  #define UPDATE_FILE      "/wifiOiler.ino.d1_mini.bin"  
+// Wemos D1 mini
+#if defined ARDUINO_ESP8266_WEMOS_D1MINI
+  #pragma message  "Info: compiling for Wemos D1 mini..."
+  #define BOARD_TYPE  "WemosMini"  // case sensitive; used to build directory name on oilerbase
+  #define UPDATE_FILE "/wifiOiler.ino.d1_mini.bin"  
+#endif
+
+// Wemos D1 mini Pro
+#if defined ARDUINO_ESP8266_WEMOS_D1MINIPRO
+  #pragma message  "Info: compiling for Wemos D1 mini Pro..."
+  #define BOARD_TYPE  "WemosMiniPro"  // case sensitive; used to build directory name on oilerbase
+  #define UPDATE_FILE "/wifiOiler.ino.d1_mini.bin"  
 #endif
 
 #ifndef BOARD_TYPE
