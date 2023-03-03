@@ -268,9 +268,10 @@ void handleRunTimeInfo(void) {
   sZeit += ":" + (temp < 10 ? "0" + String(temp) : String(temp));
 
   String output = "{\"ve\":\"" + String(VERSION) + "\"";  // version
-  output += ",\"rt\":\"" + sZeit + "\"";          // runtime
+  output += ",\"rt\":\"" + sZeit + "\"";               // runtime
+  output += ",\"bt\":\"" + String(BOARD_TYPE) + "\"";  // board type (#define)
   #ifdef _DISPLAY_AVAILABLE_  
-    output += ",\"da\":\"Ja\"";                   // display available
+    output += ",\"da\":\"Ja\"";                        // display available
   #else
     output += ",\"da\":\"Nein\"";
   #endif    
