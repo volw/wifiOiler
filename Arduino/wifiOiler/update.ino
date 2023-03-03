@@ -47,16 +47,20 @@ bool checkforUpdate(bool justCheck, bool reboot) {
     File file = _FILESYS.open(FirmwareFilename, "r");
 
     if (file) {
-      GVmyLedx.on(LED_ROT);
       Update.onProgress(updateCallback);
-      Update.begin(file.size(), U_FLASH);
-      Update.writeStream(file);
-      update = Update.end();
-      if (update){
-        DEBUG_OUT.println(F(MSG_DBG_UPDATE_SUCCESS));
+      if (!Update.begin(file.size(), U_FLASH)) {
+        Update.printError(DEBUG_OUT);
+        DEBUG_OUT.println(F(MSG_DBG_UPDATE_ERROR));
       } else {
-        DEBUG_OUT.print(F(MSG_DBG_UPDATE_GETERROR));
-        DEBUG_OUT.println(Update.getError());
+        GVmyLedx.on(LED_ROT);
+        Update.writeStream(file);
+        update = Update.end();
+        if (update){
+          DEBUG_OUT.println(F(MSG_DBG_UPDATE_SUCCESS));
+        } else {
+          DEBUG_OUT.print(F(MSG_DBG_UPDATE_GETERROR));
+          DEBUG_OUT.println(Update.getError());
+        }
       }
       file.close();      
       GVmyLedx.off();
@@ -171,6 +175,9 @@ bool downloadFile(String subPath)
       GVoutFile = _FILESYS.open(fname, "w");
       if (GVoutFile)
       {
+        GVmyDisplay.PrintMessage("FileUpload\n");
+        GVmyDisplay.MessageAdd(fname);
+
         // read all data from server
         while (GVhttp.connected() && (fileLen > 0 || fileLen == -1)) {
           
@@ -192,6 +199,9 @@ bool downloadFile(String subPath)
         }
         //DEBUG_OUT.println(F("[downloadFile] connection closed or file end - closing file..."));
         GVoutFile.close();
+        GVmyLedx.start LED_FILE_UPLOAD_SUCCESS;
+        GVmyDisplay.PrintMessage("Success");
+        GVmyLedx.delay();
         result = true;
       } else {
         DEBUG_OUT.println(F(MSG_DBG_UPD_DOWNLOAD_OPEN_ERROR));
@@ -219,7 +229,7 @@ bool handleUpdateFiles(void){
       GVupdateMessage += GVupdateFiles[i].fileName; 
       GVwebServer.handleClient();
   
-      if (downloadFile(GVupdateFiles[i].fileName)){   // wie mit Fehlern umgehen?
+      if (downloadFile(GVupdateFiles[i].fileName)){
         GVupdateFiles[i].state = _UF_UPLOADOK;
         DEBUG_OUT.print(F(MSG_DBG_UPD_DOWNLOAD_COMPLETE));
         DEBUG_OUT.println(GVupdateFiles[i].fileName);
