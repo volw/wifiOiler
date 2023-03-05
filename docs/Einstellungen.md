@@ -46,9 +46,9 @@ URL für Upload der Track Dateien. Siehe Dokumentation zur [Oilerbase](../OilerB
 
 ## Basic Authentication Zugangsdaten
 
-Für den Zugang zur Oilerbase kann eine sogenannte "Basic Authentication" eingerichtet werden. Die notwendigen Zugangsdaten müssen hier dann in der Form <user>:<password> eingetragen werden, also z.B. "Peter:MeInPaSsWoRt". Falls man die Daten nicht in Klartext speichern möchte, können diese auch base64-encoded eingegeben werden. Dazu kann z.B. diese [Webseite](https://www.blitter.se/utils/basic-authentication-header-generator/) verwendet werden. Mit den oben verwendeten Beispieldaten wird folgende Zeichenkette erzeugt, die dann hier eingetragen werden kann: "UGV0ZXI6TWVJblBhU3NXb1J0".
+Für den Zugang zur Oilerbase kann eine sogenannte "Basic Authentication" eingerichtet werden. Die notwendigen Zugangsdaten müssen hier dann in der Form <user>:<password> eingetragen werden, also z.B. "Peter:MeInPaSsWoRt". In der Einstellungsdatei oiler.ini wird dieser Wert mit der Javascript Funktion btoa() base-64 encoded abgespeichert. Falls man die Zugangsdaten in der oiler.ini manuell einfügt (also nicht über den Konfigurationsdialog des Ölers), muss die Codierung selber vorgenommen werden. Dafür gibt es Internetseiten (einfach mal nach "base64 Encoder" suchen). Mit den oben verwendeten Beispieldaten wird z.B. folgende Zeichenkette erzeugt: "UGV0ZXI6TWVJblBhU3NXb1J0".
 
-Wird keine Basic Authentication an der Oilerbase verwendet, muss dieses Feld leer gelassen werden.
+Wird keine Basic Authentication an der Oilerbase verwendet, sollte dieses Feld leer gelassen werden.
 
 ## Logging to file?
 
