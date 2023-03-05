@@ -26,7 +26,7 @@ const String boundary = "------------------------15c028380c8415a6"; // Länge 40
  *************************************************/ 
 bool isServerAvailable(void) {
   String cURL = getOilerbaseURL();
-//  String cURL = "http://oilerbase.fritz.box/oilerbase.php";
+
   GVhttp.setAuthorization(GVoilerConf.bac.c_str());
   GVhttp.begin(GVwifiClient, cURL);
   int httpCode = GVhttp.GET();

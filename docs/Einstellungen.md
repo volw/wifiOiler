@@ -41,24 +41,25 @@ Host Name der Oilerbase, muss aus dem Internet erreichbar sein oder sich im glei
 ## Upload Host Port
 Port zum Upload der Track Dateien. Siehe Dokumentation zur [Oilerbase](../OilerBase/readme.md).
 ## Upload Host URL
+
 URL für Upload der Track Dateien. Siehe Dokumentation zur [Oilerbase](../OilerBase/readme.md).
+
+## Basic Authentication Zugangsdaten
+
+Für den Zugang zur Oilerbase kann eine sogenannte "Basic Authentication" eingerichtet werden. Die notwendigen Zugangsdaten müssen hier dann in der Form <user>:<password> eingetragen werden, also z.B. "Peter:MeInPaSsWoRt". Falls man die Daten nicht in Klartext speichern möchte, können diese auch base64-encoded eingegeben werden. Dazu kann z.B. diese [Webseite](https://www.blitter.se/utils/basic-authentication-header-generator/) verwendet werden. Mit den oben verwendeten Beispieldaten wird folgende Zeichenkette erzeugt, die dann hier eingetragen werden kann: "UGV0ZXI6TWVJblBhU3NXb1J0".
+
+Wird keine Basic Authentication an der Oilerbase verwendet, muss dieses Feld leer gelassen werden.
+
 ## Logging to file?
+
 Der Öler gibt während des Betriebs einige Diagnosemeldungen aus. Diese können zu Analysezwecken in eine Datei geschrieben werden. Es empfiehlt sich, dies nur kurzzeitig zu machen, da das interne Dateisystem schnell volllaufen kann. Im Regelfall steht hier also **Nein**.
 ## Logging to Serial?
 Die Diagnosemeldungen des Ölers können während der Laufzeit über die serielle Schnittstelle ausgegeben werden. Dies ist ganz nützlich, um sie mit dem Arduino Serial Monitor mitzulesen, wenn man in der Bauphase ist oder die ersten Testläufe im nicht eingebauten Zustand macht. Ist der Öler erst mal eingebaut und sozusagen im Dauerbetrieb, sollte hier ein **Nein** stehen (auch wenn's den Öler nicht sonderlich stört, macht sich das in der Performance und ggf. im Stromverbrauch etwas bemerkbar).
 ## GPS Logging to File?
-Die empfangenen GPS Daten können ebenfalls in eine Datei geschrieben werden (gpslog.txt). Zur kurzzeitigen Analsyse ganz nützlich - auf keinen Fall für längere Zeit auf **Ja** stehen lassen. Das Dateisystem ist ruckzuck voll, da pro Sekunde mindestens zwei Sätze geschrieben werden. Also nicht stundenlang aktiviert lassen!!
+Die empfangenen GPS Daten können ebenfalls in eine Datei geschrieben werden (gpslog.txt). Zur kurzzeitigen Analsyse ganz nützlich - auf keinen Fall für längere Zeit auf **Ja** stehen lassen. Das Dateisystem ist ruckzuck voll, und der Öler wird stark ausgebremst. Also nicht stundenlang aktiviert lassen!!
 ## WiFi automatisch starten?
 Gibt an, ob beim Starten des Ölers das WLAN automatisch aktiviert werden soll. Es kann auch nachträglich über den Button aktiviert werden (langer Buttondruck).
-## GPS config file
-Diese Funktion ist noch nicht vollständig implementiert. Die hier angegebene Datei soll Konfigurationsbefehle für das GPS-Modul enthalten, die beim Start des Ölers an das GPS-Modul gesendet werden sollen. Wie gesagt - noch nicht fertig.
-<a name="fsbrowser"></a>
-## FS Browser & Editor
-Es werden verschiedene Browser / einfache Explorer für das integrierte Dateisystem des ESP8266 mitgeliefert, die auch einen Editor zum Bearbeiten der Dateien mitbringen. Diese Browser belegen unterschiedlich viel Speicherplatz auf dem internen Dateisystem, was sich auf die Aufzeichnungszeit auswirkt. Mit dem einfachsten Browser (und löscht man die anderen) hat man ca. 2 Stunden mehr Zeit, um Touren aufzuzeichnen. Man kann sich, wie gesagt, für einen entscheiden, diesen in der Konfiguration hinterlegen und dann die anderen löschen. Diese sind initial vorhanden:
-* "/littlefsb.htm": der Kleinste und Einfachste von allen, benötigt keine Verbindung zum Internet und hat alles, was man braucht.
-* "/cmedit.htm": wie littlefsb.htm, als Editor wurde der Open Source Editor "CodeMirror" eingebaut. Benötigt zwar keine Verbindung zum Internet, belegt aber auch den meisten Speicherplatz.
-* "/aceedit.htm": nach dem FSBrowser Beispiel von Hristo Gochkov. Hat alles, was man sich denken kann, benötigt aber eine aktive Internet Verbindung, da einige Scripte nachgeladen werden. Benutzt den Editor "ace".
-<a name="prefix"></a>
+
 ## GPS Track Filename Prefix
 Hier kann für die Dateinamen, die für die Aufzeichnung von GPS Tracks verwendet werden, ein vorangestelltes Kürzel (Prefix) bestimmt werden. Die Dateinamen bestehen standardmäßig aus Datum und Uhrzeit des Aufzeichnungsstarts in der Form "JJMMTT-HHMM.dat". Ein Prefix ist z.B. dann sinnvoll, wenn mehrere Öler ihre aufgezeichneten Strecken auf eine Oilerbase hochladen. Mit dem Prefix "KTM-20" würde der Dateiname z.B. so aussehen: "KTM-20220818-1535.dat".
 
