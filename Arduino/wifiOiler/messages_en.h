@@ -114,6 +114,7 @@
 #define MSG_DBG_CHECK_URL_START           "[isServerAvailable] check URL (GET):%s\n"  // printf: complete url (server, port and url)
 #define MSG_DBG_CHECK_URL_SERVER_IP       "[isServerAvailable] ip address of '%s' is %s\n"  // printf: server, ip
 #define MSG_DBG_CHECK_URL_ERROR           "[isServerAvailable] GET() failed, error: %s\n" // printf: error message from get()
+#define MSG_DBG_CHECK_URL_HTTP_ERR_401    "[isServerAvailable] 401: not authorized (missing basic authentication?)"
 #define MSG_DBG_FILECHECK_RESULT          "[isFileThere] httpCode = %d\n" // printf: http-code returned
 #define MSG_DBG_SEND_FILE_START           "[sendFile] Initiate transfer of file..."
 //#define MSG_DBG_SEND_FILE_CONTENT         "[sendFile] >>> sending file content >>>"
@@ -123,7 +124,7 @@
 #define MSG_DBG_TRACK_UPLOAD_START        "[handleUpload] searching track files:"
 #define MSG_DBG_TRACK_FILE_FOUND_YES      "[handleUpload] %s is a track file - will upload..."  // followed by OK or FAILED (so no line feed)
 #define MSG_DBG_TRACK_FILE_FOUND_NO       "[handleUpload] %s is NO track file...\n"
-#define MSG_DBG_UPLOAD_SERVER_ERROR       "[handleUpload] Upload server not available!"
+#define MSG_DBG_UPLOAD_SERVER_ERROR       "[handleUpload] Upload server not available! (s. Log)"
 #define MSG_DBG_TRACK_UPLOAD_OK           "[handleUpload] upload successful."
 #define MSG_DBG_TRACK_UPLOAD_FAILED       "[handleUpload] upload FAILED."
 #define MSG_HTTP_NO_TRACKS_FOUND          "\nNo track files found - nothing to upload\n-END-"

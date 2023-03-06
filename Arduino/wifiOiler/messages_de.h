@@ -113,7 +113,8 @@
 // upload
 #define MSG_DBG_CHECK_URL_START           "[isServerAvailable] check URL (GET):%s\n"  // printf: complete url (server, port and url)
 #define MSG_DBG_CHECK_URL_SERVER_IP       "[isServerAvailable] IP-Adresse von '%s' ist %s\n"  // printf: server, ip
-#define MSG_DBG_CHECK_URL_ERROR           "[isServerAvailable] GET() failed, error: %s\n" // printf: error message from get()
+#define MSG_DBG_CHECK_URL_ERROR           "[isServerAvailable] GET() fehlgeschlagen, error: %s\n" // printf: error message from get()
+#define MSG_DBG_CHECK_URL_HTTP_ERR_401    "[isServerAvailable] 401: fehlende Authorisierung (Basic Authentication nötig?)"
 #define MSG_DBG_FILECHECK_RESULT          "[isFileThere] httpCode = %d\n" // printf: http-code returned
 #define MSG_DBG_SEND_FILE_START           "[sendFile] Starte Übertragung der Datei..."
 //#define MSG_DBG_SEND_FILE_CONTENT         "[sendFile] >>> sending file content >>>"
@@ -123,7 +124,7 @@
 #define MSG_DBG_TRACK_UPLOAD_START        "[handleUpload] searching track files:"
 #define MSG_DBG_TRACK_FILE_FOUND_YES      "[handleUpload] '%s' is a track file - will upload..."  // printf, followed by OK or FAILED (so no line feed)
 #define MSG_DBG_TRACK_FILE_FOUND_NO       "[handleUpload] '%s' is NO track file...\n"   // printf: file name
-#define MSG_DBG_UPLOAD_SERVER_ERROR       "[handleUpload] Upload Server nicht erreichbar!"
+#define MSG_DBG_UPLOAD_SERVER_ERROR       "[handleUpload] Upload Server nicht erreichbar! (s. Log)"
 #define MSG_DBG_TRACK_UPLOAD_OK           "[handleUpload] Hochladen erfolgreich."
 #define MSG_DBG_TRACK_UPLOAD_FAILED       "[handleUpload] Hochladen fehlgeschlagen."
 #define MSG_HTTP_NO_TRACKS_FOUND          "\nKeine Dateien zum Hochladen gefunden\n-END-"   // '-END-' must be at the end, it's a mark for javascript in upload.htm

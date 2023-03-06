@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ************************************************************************/
-#define _LIST_LEN_ 23
+#define _LIST_LEN_ 22
 
 class ValueList {
   
