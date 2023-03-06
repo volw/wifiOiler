@@ -38,6 +38,13 @@ bool isServerAvailable(void) {
   {
     DEBUG_OUT.printf(PSTR(MSG_DBG_CHECK_URL_SERVER_IP), GVoilerConf.uhn.c_str(), remoteHostIP.toString().c_str());
   }
+  if (httpCode == 401) DEBUG_OUT.println(F(MSG_DBG_CHECK_URL_HTTP_ERR_401));
+  else if (httpCode <= 0) DEBUG_OUT.printf(PSTR(MSG_DBG_CHECK_URL_ERROR), GVhttp.errorToString(httpCode).c_str());
+  else {
+    DEBUG_OUT.print("httpCode = ");
+    DEBUG_OUT.println(httpCode);
+  }
+    
   if (httpCode <= 0){
     DEBUG_OUT.printf(PSTR(MSG_DBG_CHECK_URL_ERROR), GVhttp.errorToString(httpCode).c_str());
   }
