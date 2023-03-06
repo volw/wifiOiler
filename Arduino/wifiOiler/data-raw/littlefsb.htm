@@ -13,17 +13,82 @@
     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADoSURBVBgZBcExblNBGAbA2ceegTRBuIKOgiihSZNTcC5LUHAihNJR0kGKCDcYJY6D3/77MdOinTvzAgCw8ysThIvn/VojIyMjIyPP+bS1sUQIV2s95pBDDvmbP/mdkft83tpYguZq5Jh/OeaYh+yzy8hTHvNlaxNNczm+la9OTlar1UdA/+C2A4trRCnD3jS8BB1obq2Gk6GU6QbQAS4BUaYSQAf4bhhKKTFdAzrAOwAxEUAH+KEM01SY3gM6wBsEAQB0gJ+maZoC3gI6iPYaAIBJsiRmHU0AALOeFC3aK2cWAACUXe7+AwO0lc9eTHYTAAAAAElFTkSuQmCC) no-repeat;
     background-position: 0 0}
   .lastentry {background: #FFFFFF;}
+	#id_msgbox
+	{
+	  display: none;
+	  position: absolute;
+	  padding: 15px;
+	  left: 50%;
+	  margin-left: -150px;
+	  top: 50%;
+	  margin-top: -100px;
+	  background: #FFF;
+		box-shadow: 10px 10px #555;
+		border: 2px solid black;
+		z-index: 1;
+  }
+  #id_msgbox button {
+  	width: 100px;
+  	margin:10px;
+    margin-bottom: 0;
+    font-weight: bold;
+    font-size: 120%;  
+  }
+	#id_msgbox:after {
+	  position: fixed;
+	  content: "";
+	  top: 0;
+	  left: 0;
+	  bottom: 0;
+	  right: 0;
+	  background: rgba(0,0,0,0.5);
+	  z-index: -2;
+	}
+	#id_msgbox:before {
+	  position: absolute;
+	  content: "";
+	  top: 0;
+	  left: 0;
+	  bottom: 0;
+	  right: 0;
+	  background: white;
+	  z-index: -1;
+	}   
 </style>
 <script>
   var cUrl="/list", lastSelectedFile="", scrollPos=0;
   var texts=["bak","c","cpp","css","h","htm","html","ini","js","json","md","txt","xml"];
-  function ge(e) {return document.getElementById(e);}
+		const $ = function(id){return document.getElementById(id);}
+
+		function message(msg, func){
+			$("id_msgbox").innerHTML = msg;
+			var b = document.createElement("button");
+			b.id = "mb_btn";
+			b.appendChild(document.createTextNode("OK"));
+			b.onclick = function(){$('id_msgbox').style.display="none";$("mb_btn").remove();if (typeof(func)=='function') func();}
+			$("id_msgbox").appendChild(b);
+			$("id_msgbox").style.display = "block";
+		}
+		function confirm(msg, ifYesFunc){
+			$("id_msgbox").innerHTML = msg;
+			var b = document.createElement("button");
+			b.id = "mb_btnYes";
+			b.appendChild(document.createTextNode("Ja"));
+			b.onclick = function(){$('id_msgbox').style.display="none";$("mb_btnYes").remove();$("mb_btnNo").remove();if (typeof(ifYesFunc)=='function') ifYesFunc();}
+			$("id_msgbox").appendChild(b);
+			b = document.createElement("button");
+			b.id = "mb_btnNo";
+			b.appendChild(document.createTextNode("Nein"));
+			b.onclick = function(){$('id_msgbox').style.display="none";$("mb_btnYes").remove();$("mb_btnNo").remove();}
+			$("id_msgbox").appendChild(b);
+			$("id_msgbox").style.display = "block";
+		}
   function init() {
     getList();
-    ge("target").value = "/";
-    ge("datei").onchange = function(e){
-      var input = ge("datei");
-      var path = ge("target");
+    $("target").value = "/";
+    $("datei").onchange = function(e){
+      var input = $("datei");
+      var path = $("target");
       if(input.files.length === 0) return;
       var filename = input.files[0].name;
       var ext = /(?:\.([^.]+))?$/.exec(filename)[1];
@@ -35,24 +100,24 @@
     document.addEventListener("keydown", function(e){
 			if (e.ctrlKey && e.key === 's'){
         e.preventDefault();
-				ge("btnsave").click();
+				$("btnsave").click();
 			}
 			if (e.ctrlKey && e.key === 'd'){
         e.preventDefault();
-				ge("btndelete").click();
+				$("btndelete").click();
 			}
 			if (e.ctrlKey && e.key === 'r'){
         e.preventDefault();
-				ge("btnrename").click();
+				$("btnrename").click();
 			}
     });
     // prevent strange scroll behaviour of chrome/edge
     // https://stackoverflow.com/questions/56329625
-    var edit = ge("fedit");
+    var edit = $("fedit");
     edit.addEventListener("keydown", function(e){
       if (e.keyCode == 13) {
         e.preventDefault();
-        var ed = ge("fedit");
+        var ed = $("fedit");
         //e.stopPropagation();
         var indent = getIndentation(ed);
         document.execCommand('insertText',true,'\n'+' '.repeat(indent));
@@ -61,19 +126,19 @@
       } else if (e.keyCode == 9) {
         //Position ermitteln:
         e.preventDefault();
-        var ed=ge("fedit");
+        var ed=$("fedit");
         var pos=ed.selectionStart-1;
         var cc = 0;
         while (pos >=0 && ed.value.charCodeAt(pos) != 10) {cc++;pos--;}
         document.execCommand('insertText',true,' '.repeat(2-(cc%2)));
       }
     });
-    edit.addEventListener("scroll", function(){scrollPos = ge("fedit").scrollTop;});
+    edit.addEventListener("scroll", function(){scrollPos = $("fedit").scrollTop;});
     edit.addEventListener("paste", function(e){
       e.preventDefault();
       var cbbin = e.clipboardData;
       document.execCommand('insertText', true, cbbin.getData("Text"));
-      //ge("fedit").scrollTop = scrollPos;
+      //$("fedit").scrollTop = scrollPos;
     });
   }
   function getIndentation(obj){
@@ -94,24 +159,24 @@
       if (xmlHttp.readyState == 4) {  // 4 = done
         if(xmlHttp.status == 200) {
           var strJSON = xmlHttp.responseText;
-          if (strJSON != null) addList(ge("flist"), "/", JSON.parse(strJSON));
+          if (strJSON != null) addList($("flist"), "/", JSON.parse(strJSON));
           setLastEntry(id);
         }
-        else alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
+        else message("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText+"<br>");
     }};
     xmlHttp.open("GET", cUrl+"?dir", true);
     xmlHttp.send(null);
   }
   function loadFile(theUrl) {
-    ge("fedit").value = "";
-    ge("flabel").innerText = "";
+    $("fedit").value = "";
+    $("flabel").innerText = "";
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function(){
       if (xmlHttp.readyState == 4){
         if(xmlHttp.status == 200) {
-          ge("fedit").value = xmlHttp.responseText;
-          ge("flabel").innerText = theUrl;
-          ge("fedit").focus();
+          $("fedit").value = xmlHttp.responseText;
+          $("flabel").innerText = theUrl;
+          $("fedit").focus();
     }}}
     xmlHttp.open("GET", theUrl, true);
     xmlHttp.send(null);
@@ -135,8 +200,8 @@
       if(isTextFile(entry.id)){
         loadFile(entry.id);
       } else {
-        ge("fedit").value = "";
-        ge("flabel").innerText = "";
+        $("fedit").value = "";
+        $("flabel").innerText = "";
       }
     };
     return entry;
@@ -149,75 +214,92 @@
     items.forEach(f=>{if(f.type==="file") list.appendChild(createFilelistEntry(path,f.name,f.size));});
   }
   function doUpload() {
-    var datei = ge("datei");
+    var datei = $("datei");
     if(datei.files.length === 0) return;
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
 	    if (xmlHttp.readyState == 4)
-	      if(xmlHttp.status != 200) alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
+	      if(xmlHttp.status != 200) message("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText+"<br>");
 	      else {
-	        getList(ge("target").value);
-	        ge("target").value = "/";
-	        ge("datei").value = "";
+	        getList($("target").value);
+	        $("target").value = "/";
+	        $("datei").value = "";
+          message("Upload abgeschlossen<br>");
 	  }}
     var formData = new FormData();
-    formData.append("data", datei.files[0], ge("target").value);
+    formData.append("data", datei.files[0], $("target").value);
     xmlHttp.open("POST", "/edit");
     xmlHttp.send(formData);
   }
   function doSave() {
-    var fname = "/" + ge("flabel").innerText;
+    var fname = "/" + $("flabel").innerText;
     if (fname === "/") return;
-    var ed = ge("fedit");
+    var ed = $("fedit");
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
       if (xmlHttp.readyState == 4){
-        if(xmlHttp.status != 200) alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
-        else getList(ge("flabel").innerText);
+        if(xmlHttp.status != 200) message("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText+"<br>");
+        else {getList($("flabel").innerText);message("Datei wurde gesichert: "+fname+"<br>");}
     }}
     var formData = new FormData();
     formData.append("data", new Blob([ed.value],{type:"text/plain"}),fname);
     xmlHttp.open("POST", "/edit");
     xmlHttp.send(formData);
   }
+  function deleteFile(file) {
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+    if (xmlHttp.readyState == 4) {
+      if(xmlHttp.status != 200) message("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText+"<br>");
+      else getList();
+    }}
+    var formData = new FormData();
+    formData.append("path", file);
+    xmlHttp.open("DELETE", "/edit");
+    xmlHttp.send(formData);
+  }
   function doDelete() {
     document.querySelectorAll(".lastentry").forEach(entry => {
       var file = "/" + entry.id;
-      if (confirm(file + " will be deleted!!")) {
-        xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function () {
-          if (xmlHttp.readyState == 4) {
-            if(xmlHttp.status != 200) alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
-            else getList();
-        }}
-        var formData = new FormData();
-        formData.append("path", file);
-        xmlHttp.open("DELETE", "/edit");
-        xmlHttp.send(formData);
-      }
+      confirm(file + " will be deleted!!<br>",(function(){deleteFile(file);}));
     });
   }
   function doNewFile() {
-    var fname = ge("target").value;
+    var fname = $("target").value;
     if (fname === "" || fname === "/") return;
     if (!fname.startsWith("/")){
       fname = "/" + fname;
-      ge("target").value = fname;
+      $("target").value = fname;
     }
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
       if (xmlHttp.readyState == 4){
-        if(xmlHttp.status != 200) alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
+        if(xmlHttp.status != 200) message("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText+"<br>");
         else {
-          var fname = ge("target").value;
-          ge("fedit").value = "";
-          ge("fedit").focus();
-          ge("flabel").innerText = fname;
-          ge("target").value = "/";
+          var fname = $("target").value;
+          $("fedit").value = "";
+          $("fedit").focus();
+          $("flabel").innerText = fname;
+          $("target").value = "/";
           getList(fname);
     }}}
     var formData = new FormData();
     formData.append("path", fname);
+    xmlHttp.open("PUT", "/edit");
+    xmlHttp.send(formData);
+  }
+  function renameFile(oldf,newf) {
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+      if (xmlHttp.readyState == 4){
+        if(xmlHttp.status != 200) message("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText+"<br>");
+        else {
+          $("target").value = "/";
+          getList(newf);
+    }}}
+    var formData = new FormData();
+    formData.append("path", newf);
+    formData.append("old", oldf);
     xmlHttp.open("PUT", "/edit");
     xmlHttp.send(formData);
   }
@@ -227,29 +309,16 @@
     var oldName = entries[0].id;
     if (oldName === "" || oldName === "/") return;
     if (!oldName.startsWith("/")) oldName = "/" + oldName;
-    var newName = ge("target").value;
+    var newName = $("target").value;
     if (newName === "" || newName === "/") return;
     if (!newName.startsWith("/")) newName = "/" + newName;
-    if (confirm("Rename '" + oldName + "' to '" + newName + "'")) {
-      xmlHttp = new XMLHttpRequest();
-      xmlHttp.onreadystatechange = function () {
-        if (xmlHttp.readyState == 4){
-          if(xmlHttp.status != 200) alert("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
-          else {
-            ge("target").value = "/";
-            getList(newName);
-      }}}
-      var formData = new FormData();
-      formData.append("path", newName);
-      formData.append("old", oldName);
-      xmlHttp.open("PUT", "/edit");
-      xmlHttp.send(formData);
-  }}
+    confirm("Rename '" + oldName + "' to '" + newName + "'<br>",(function(){renameFile(oldName,newName);}));
+  }
   function doDownload() {
     var entries = document.querySelectorAll(".lastentry");
     if (entries.length != 1 ) return;
     var path = entries[0].id;
-    ge('download-frame').src = path+"?download=true";
+    $('download-frame').src = path+"?download=true";
   }
   function doExtract() {
     var entries = document.querySelectorAll(".lastentry");
@@ -258,19 +327,19 @@
     var ext = /(?:\.([^.]+))?$/.exec(filename)[1].toLowerCase();
     var name = /(.*)\.[^.]+$/.exec(filename)[1];
     if(typeof name !== 'undefined') filename = name;
-    if(typeof ext === 'undefined' || ext != "gz") { alert("ERROR: no archive file");	return;}
+    if(typeof ext === 'undefined' || ext != "gz") {message("ERROR: no archive file<br>");return;}
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function(){
       if (xmlHttp.readyState == 4){
         if(xmlHttp.status == 200) {
-          ge("fedit").value = xmlHttp.responseText;
-          ge("flabel").innerText = filename; // async doSave() will do the rest
+          $("fedit").value = xmlHttp.responseText;
+          $("flabel").innerText = filename; // async doSave() will do the rest
           doSave();
     }}}
     xmlHttp.open("GET", filename, true);
     xmlHttp.send(null);
   }
-  function setLastEntry(id = ge("flabel").innerText){
+  function setLastEntry(id = $("flabel").innerText){
   	var entryid = id;
   	if (entryid == "" || entryid == "/") return;
     if (entryid[0] == '/') entryid = entryid.substring(1);
@@ -302,5 +371,9 @@
     <textarea class="editor" id="fedit" spellcheck="false"></textarea>
   </editor>
   <iframe id=download-frame style='display:none;'></iframe>
+<div id="id_msgbox" display="none" align="center">
+	<div id="mb_text"></div>
+	<div id="mb_buttons"></div>
+</div>  
 </body>
 </html>
