@@ -4,9 +4,74 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Main Page</title>
 	<link rel="stylesheet" href="wifiOiler.css">
+<style>
+	#id_msgbox
+	{
+	  display: none;
+	  position: absolute;
+	  padding: 15px;
+	  left: 50%;
+	  margin-left: -150px;
+	  top: 50%;
+	  margin-top: -100px;
+	  background: #FFF;
+		box-shadow: 10px 10px #555;
+		border: 2px solid black;
+		z-index: 1;
+  }
+  #id_msgbox button {
+  	width: 100px;
+  	margin:10px;
+    margin-bottom: 0;
+    font-weight: bold;
+    font-size: 120%;  
+  }
+	#id_msgbox:after {
+	  position: fixed;
+	  content: "";
+	  top: 0;
+	  left: 0;
+	  bottom: 0;
+	  right: 0;
+	  background: rgba(0,0,0,0.5);
+	  z-index: -2;
+	}
+	#id_msgbox:before {
+	  position: absolute;
+	  content: "";
+	  top: 0;
+	  left: 0;
+	  bottom: 0;
+	  right: 0;
+	  background: white;
+	  z-index: -1;
+	}  
+</style>
 	<script>
-    const $ = function(e) {return document.getElementById(e);}
-    function meldung(m){$('popup2').style.display='block';$('msgtxt').innerHTML="<h3>"+m+"</h3>";}
+		const $ = function(id){return document.getElementById(id);}
+		function message(msg, func){
+			$("id_msgbox").innerHTML = msg;
+			var b = document.createElement("button");
+			b.id = "mb_btn";
+			b.appendChild(document.createTextNode("OK"));
+			b.onclick = function(){$('id_msgbox').style.display="none";$("mb_btn").remove();if (typeof(func)=='function') func();}
+			$("id_msgbox").appendChild(b);
+			$("id_msgbox").style.display = "block";
+		}
+		function confirm(msg, ifYesFunc){
+			$("id_msgbox").innerHTML = msg;
+			var b = document.createElement("button");
+			b.id = "mb_btnYes";
+			b.appendChild(document.createTextNode("Ja"));
+			b.onclick = function(){$('id_msgbox').style.display="none";$("mb_btnYes").remove();$("mb_btnNo").remove();if (typeof(ifYesFunc)=='function') ifYesFunc();}
+			$("id_msgbox").appendChild(b);
+			b = document.createElement("button");
+			b.id = "mb_btnNo";
+			b.appendChild(document.createTextNode("Nein"));
+			b.onclick = function(){$('id_msgbox').style.display="none";$("mb_btnYes").remove();$("mb_btnNo").remove();}
+			$("id_msgbox").appendChild(b);
+			$("id_msgbox").style.display = "block";
+		}
 	  function getVersion(){
 	    xmlHttp=new XMLHttpRequest();
 	    xmlHttp.onreadystatechange=function(){if(xmlHttp.readyState==4){$("version").innerHTML=xmlHttp.responseText;}};
@@ -15,7 +80,7 @@
 	  }
 	  function callLink(l,m){
 	    xmlHttp=new XMLHttpRequest();
-	    xmlHttp.onreadystatechange = function(){if (xmlHttp.readyState == 4 && xmlHttp.status == 200) meldung(m);};
+	    xmlHttp.onreadystatechange = function(){if (xmlHttp.readyState == 4 && xmlHttp.status == 200) message(m);};
 	    xmlHttp.open("GET",l,true);
 	    xmlHttp.send(null);
 	  }
@@ -28,14 +93,16 @@
 <input type="button" value="Konfiguration" class="myButton" onclick="window.location.href='/config.htm';"/>
 <input type="button" value="File Browser"  class="myButton" onclick="window.location.href='/edit';"/>
 <input type="button" value="Runtime Info"  class="myButton" onclick="window.location.href='/info.htm';"/>
-<input type="button" value="Test Pumpe"    class="myButton" onclick="callLink('/pumptest','Pumpentest gestartet...');"/>
-<input type="button" value="Test LED"      class="myButton" onclick="callLink('/ledtest','LED Test: 3 x gr&uuml;n und 3 x rot');"/>
+<input type="button" value="Test Pumpe"    class="myButton" onclick="callLink('/pumptest','Pumpentest gestartet...<br>');"/>
+<input type="button" value="Test LED"      class="myButton" onclick="callLink('/ledtest','LED Test: 3 x gr&uuml;n und 3 x rot<br>');"/>
 <input type="button" value="Upload Tracks" class="myButton" onclick="window.location.href='/upload';"/>
 &nbsp;
-<input type="button" value="Update Oiler"  class="myButton" onclick="window.location.href='/update';"/>
-<input type="button" value="Soft Reboot"   class="myButton" onclick="window.location.href='/reboot.htm';"/>
+<input type="button" value="Update Oiler"  class="myButton" onclick="confirm('wifiOiler aktualisieren?<br>(Kontakt zur oilerbase notwendig)<br>',(function(){window.location.href='/update.htm';}));"/>
+<input type="button" value="Soft Reboot"   class="myButton" onclick="confirm('wifiOiler neu starten?<br>',(function(){window.location.href='/reboot.htm';}));"/>
 </div>
-<div class="popup" id="popup2"><center><p><div id="msgtxt"></div></p><p>&nbsp;</p>
-<input type="button" value="OK" class="myButton" onclick="$('popup2').style.display='none';"/></center>
+<div id="id_msgbox" display="none" align="center">
+	<div id="mb_text"></div>
+	<div id="mb_buttons"></div>
 </div>
+</body>
 </html>
