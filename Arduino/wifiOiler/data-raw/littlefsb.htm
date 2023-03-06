@@ -13,76 +13,20 @@
     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADoSURBVBgZBcExblNBGAbA2ceegTRBuIKOgiihSZNTcC5LUHAihNJR0kGKCDcYJY6D3/77MdOinTvzAgCw8ysThIvn/VojIyMjIyPP+bS1sUQIV2s95pBDDvmbP/mdkft83tpYguZq5Jh/OeaYh+yzy8hTHvNlaxNNczm+la9OTlar1UdA/+C2A4trRCnD3jS8BB1obq2Gk6GU6QbQAS4BUaYSQAf4bhhKKTFdAzrAOwAxEUAH+KEM01SY3gM6wBsEAQB0gJ+maZoC3gI6iPYaAIBJsiRmHU0AALOeFC3aK2cWAACUXe7+AwO0lc9eTHYTAAAAAElFTkSuQmCC) no-repeat;
     background-position: 0 0}
   .lastentry {background: #FFFFFF;}
-	#id_msgbox
-	{
-	  display: none;
-	  position: absolute;
-	  padding: 15px;
-	  left: 50%;
-	  margin-left: -150px;
-	  top: 50%;
-	  margin-top: -100px;
-	  background: #FFF;
-		box-shadow: 10px 10px #555;
-		border: 2px solid black;
-		z-index: 1;
-  }
-  #id_msgbox button {
-  	width: 100px;
-  	margin:10px;
-    margin-bottom: 0;
-    font-weight: bold;
-    font-size: 120%;  
-  }
-	#id_msgbox:after {
-	  position: fixed;
-	  content: "";
-	  top: 0;
-	  left: 0;
-	  bottom: 0;
-	  right: 0;
-	  background: rgba(0,0,0,0.5);
-	  z-index: -2;
-	}
-	#id_msgbox:before {
-	  position: absolute;
-	  content: "";
-	  top: 0;
-	  left: 0;
-	  bottom: 0;
-	  right: 0;
-	  background: white;
-	  z-index: -1;
-	}   
+	#id_msgbox{font-family:arial,sans-serif;font-weight:bold;display:none;position:absolute;padding:15px;left:50%;margin-left:-150px;top:50%;margin-top:-100px;background:#FFF;box-shadow:10px 10px #555;border:2px solid black;z-index:1;}
+	#id_msgbox button{width:100px;margin:10px;margin-bottom:0;font-weight:bold;font-size:120%;}
+	#id_msgbox:after{position:fixed;content:"";top:0;left:0;bottom:0;right:0;background:rgba(0,0,0,0.5);z-index:-2;}
+	#id_msgbox:before{position:absolute;content:"";top:0;left:0;bottom:0;right:0;background:white;z-index:-1;}
 </style>
 <script>
   var cUrl="/list", lastSelectedFile="", scrollPos=0;
-  var texts=["bak","c","cpp","css","h","htm","html","ini","js","json","md","txt","xml"];
-		const $ = function(id){return document.getElementById(id);}
+  var texts=["bak","c","cpp","css","h","htm","html","ini","js","json","md","txt","xml","ino"];
+	const $ = function(id){return document.getElementById(id);}
 
-		function message(msg, func){
-			$("id_msgbox").innerHTML = msg;
-			var b = document.createElement("button");
-			b.id = "mb_btn";
-			b.appendChild(document.createTextNode("OK"));
-			b.onclick = function(){$('id_msgbox').style.display="none";$("mb_btn").remove();if (typeof(func)=='function') func();}
-			$("id_msgbox").appendChild(b);
-			$("id_msgbox").style.display = "block";
-		}
-		function confirm(msg, ifYesFunc){
-			$("id_msgbox").innerHTML = msg;
-			var b = document.createElement("button");
-			b.id = "mb_btnYes";
-			b.appendChild(document.createTextNode("Ja"));
-			b.onclick = function(){$('id_msgbox').style.display="none";$("mb_btnYes").remove();$("mb_btnNo").remove();if (typeof(ifYesFunc)=='function') ifYesFunc();}
-			$("id_msgbox").appendChild(b);
-			b = document.createElement("button");
-			b.id = "mb_btnNo";
-			b.appendChild(document.createTextNode("Nein"));
-			b.onclick = function(){$('id_msgbox').style.display="none";$("mb_btnYes").remove();$("mb_btnNo").remove();}
-			$("id_msgbox").appendChild(b);
-			$("id_msgbox").style.display = "block";
-		}
+	function msgBase(msg,tpl,func){$("id_msgbox").innerHTML = msg;$("id_msgbox").appendChild($(tpl).content.cloneNode(true));$("id_msgbox").style.display = "block";$("mb_btnYes").onclick = function(){$('id_msgbox').style.display='none';if (typeof(func)=='function') func();}}
+	function meldung(msg, func){msgBase(msg,"onebtn",func);}
+	function frage(msg, func){msgBase(msg,"twobtn",func);$("mb_btnNo").onclick = function(){$('id_msgbox').style.display="none";}}
+
   function init() {
     getList();
     $("target").value = "/";
@@ -162,7 +106,7 @@
           if (strJSON != null) addList($("flist"), "/", JSON.parse(strJSON));
           setLastEntry(id);
         }
-        else message("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText+"<br>");
+        else meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
     }};
     xmlHttp.open("GET", cUrl+"?dir", true);
     xmlHttp.send(null);
@@ -219,12 +163,12 @@
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
 	    if (xmlHttp.readyState == 4)
-	      if(xmlHttp.status != 200) message("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText+"<br>");
+	      if(xmlHttp.status != 200) meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
 	      else {
 	        getList($("target").value);
 	        $("target").value = "/";
 	        $("datei").value = "";
-          message("Upload abgeschlossen<br>");
+          meldung("Upload abgeschlossen");
 	  }}
     var formData = new FormData();
     formData.append("data", datei.files[0], $("target").value);
@@ -238,8 +182,8 @@
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
       if (xmlHttp.readyState == 4){
-        if(xmlHttp.status != 200) message("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText+"<br>");
-        else {getList($("flabel").innerText);message("Datei wurde gesichert: "+fname+"<br>");}
+        if(xmlHttp.status != 200) meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
+        else {getList($("flabel").innerText);meldung("Datei wurde gesichert: "+fname);}
     }}
     var formData = new FormData();
     formData.append("data", new Blob([ed.value],{type:"text/plain"}),fname);
@@ -250,7 +194,7 @@
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
     if (xmlHttp.readyState == 4) {
-      if(xmlHttp.status != 200) message("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText+"<br>");
+      if(xmlHttp.status != 200) meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
       else getList();
     }}
     var formData = new FormData();
@@ -261,7 +205,7 @@
   function doDelete() {
     document.querySelectorAll(".lastentry").forEach(entry => {
       var file = "/" + entry.id;
-      confirm(file + " will be deleted!!<br>",(function(){deleteFile(file);}));
+      frage(file + " wird endgültig gel&ouml;scht!!",(function(){deleteFile(file);}));
     });
   }
   function doNewFile() {
@@ -274,7 +218,7 @@
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
       if (xmlHttp.readyState == 4){
-        if(xmlHttp.status != 200) message("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText+"<br>");
+        if(xmlHttp.status != 200) meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
         else {
           var fname = $("target").value;
           $("fedit").value = "";
@@ -292,7 +236,7 @@
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
       if (xmlHttp.readyState == 4){
-        if(xmlHttp.status != 200) message("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText+"<br>");
+        if(xmlHttp.status != 200) meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
         else {
           $("target").value = "/";
           getList(newf);
@@ -312,7 +256,7 @@
     var newName = $("target").value;
     if (newName === "" || newName === "/") return;
     if (!newName.startsWith("/")) newName = "/" + newName;
-    confirm("Rename '" + oldName + "' to '" + newName + "'<br>",(function(){renameFile(oldName,newName);}));
+    frage("Umbenennen von Datei '" + oldName + "' in '" + newName + "'",(function(){renameFile(oldName,newName);}));
   }
   function doDownload() {
     var entries = document.querySelectorAll(".lastentry");
@@ -327,7 +271,7 @@
     var ext = /(?:\.([^.]+))?$/.exec(filename)[1].toLowerCase();
     var name = /(.*)\.[^.]+$/.exec(filename)[1];
     if(typeof name !== 'undefined') filename = name;
-    if(typeof ext === 'undefined' || ext != "gz") {message("ERROR: no archive file<br>");return;}
+    if(typeof ext === 'undefined' || ext != "gz") {meldung("Datei ist kein Archiv und kann nicht ausgepackt werden");return;}
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function(){
       if (xmlHttp.readyState == 4){
@@ -371,9 +315,8 @@
     <textarea class="editor" id="fedit" spellcheck="false"></textarea>
   </editor>
   <iframe id=download-frame style='display:none;'></iframe>
-<div id="id_msgbox" display="none" align="center">
-	<div id="mb_text"></div>
-	<div id="mb_buttons"></div>
-</div>  
+<div id="id_msgbox" display="none" align="center"></div>
+<template id="onebtn"><br><br><button id="mb_btnYes">OK</button></template>
+<template id="twobtn"><br><br><button id="mb_btnYes">Ja</button><button id="mb_btnNo">Nein</button></template>
 </body>
 </html>
