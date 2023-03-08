@@ -17,6 +17,10 @@
 	#id_msgbox button{width:100px;margin:10px;margin-bottom:0;font-weight:bold;font-size:120%;}
 	#id_msgbox:after{position:fixed;content:"";top:0;left:0;bottom:0;right:0;background:rgba(0,0,0,0.5);z-index:-2;}
 	#id_msgbox:before{position:absolute;content:"";top:0;left:0;bottom:0;right:0;background:white;z-index:-1;}
+	#overlay {display:none;left: 0;top: 0;width: 100%;height: 100%;position: fixed;background: rgba(0,0,0,0.5);}
+	#overlay_content {left: 50%;position: absolute;top: 50%;transform: translate(-50%, -50%);}
+	#spinner {width: 100px;height: 100px;display: inline-block;border-width: 10px;border-color: grey white grey white;border-radius: 100%;border-style: solid;animation: spin 1.2s linear infinite;}
+	@keyframes spin { 100% {transform: rotate(360deg);}}
 </style>
 <script>
   var cUrl="/list", lastSelectedFile="", scrollPos=0;
@@ -26,6 +30,8 @@
 	function msgBase(msg,tpl,func){$("id_msgbox").innerHTML = msg;$("id_msgbox").appendChild($(tpl).content.cloneNode(true));$("id_msgbox").style.display = "block";$("mb_btnYes").onclick = function(){$('id_msgbox').style.display='none';if (typeof(func)=='function') func();}}
 	function meldung(msg, func){msgBase(msg,"onebtn",func);}
 	function frage(msg, func){msgBase(msg,"twobtn",func);$("mb_btnNo").onclick = function(){$('id_msgbox').style.display="none";}}
+	function aniStart(){$('overlay').style.display = 'block';}
+	function aniStop(){$('overlay').style.display = 'none';}
 
   function init() {
     getList();
@@ -159,31 +165,34 @@
   }
   function doUpload() {
     var datei = $("datei");
+  	aniStart();
     if(datei.files.length === 0) return;
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
-	    if (xmlHttp.readyState == 4)
+	    if (xmlHttp.readyState == 4) {
+	      aniStop();
 	      if(xmlHttp.status != 200) meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
 	      else {
 	        getList($("target").value);
 	        $("target").value = "/";
 	        $("datei").value = "";
-          meldung("Upload abgeschlossen");
-	  }}
+	  }}}
     var formData = new FormData();
     formData.append("data", datei.files[0], $("target").value);
     xmlHttp.open("POST", "/edit");
     xmlHttp.send(formData);
   }
   function doSave() {
+    aniStart();
     var fname = "/" + $("flabel").innerText;
     if (fname === "/") return;
     var ed = $("fedit");
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
       if (xmlHttp.readyState == 4){
+        aniStop();
         if(xmlHttp.status != 200) meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
-        else {getList($("flabel").innerText);meldung("Datei wurde gesichert: "+fname);}
+        else {getList($("flabel").innerText);}
     }}
     var formData = new FormData();
     formData.append("data", new Blob([ed.value],{type:"text/plain"}),fname);
@@ -191,9 +200,11 @@
     xmlHttp.send(formData);
   }
   function deleteFile(file) {
+    aniStart();
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
     if (xmlHttp.readyState == 4) {
+      aniStop();
       if(xmlHttp.status != 200) meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
       else getList();
     }}
@@ -210,7 +221,8 @@
   }
   function doNewFile() {
     var fname = $("target").value;
-    if (fname === "" || fname === "/") return;
+    if (fname === "" || fname === "/") {meldung("Bitte Dateinamen links im Feld angeben");return;}
+    aniStart();
     if (!fname.startsWith("/")){
       fname = "/" + fname;
       $("target").value = fname;
@@ -218,6 +230,7 @@
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
       if (xmlHttp.readyState == 4){
+        aniStop();
         if(xmlHttp.status != 200) meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
         else {
           var fname = $("target").value;
@@ -233,9 +246,11 @@
     xmlHttp.send(formData);
   }
   function renameFile(oldf,newf) {
+    aniStart();
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
       if (xmlHttp.readyState == 4){
+        aniStop();
         if(xmlHttp.status != 200) meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
         else {
           $("target").value = "/";
@@ -249,32 +264,35 @@
   }
   function doRename() {
     var entries = document.querySelectorAll(".lastentry");
-    if (entries.length != 1 ) return;
+    if (entries.length != 1 ) {meldung("Bitte die Datei in Liste markieren,<br>die umbenannt werden soll");return;}
     var oldName = entries[0].id;
-    if (oldName === "" || oldName === "/") return;
+    if (oldName === "" || oldName === "/") {meldung("Dateiname ist leer(?)");return;}
     if (!oldName.startsWith("/")) oldName = "/" + oldName;
     var newName = $("target").value;
-    if (newName === "" || newName === "/") return;
+    if (newName === "" || newName === "/") {meldung("Bitte neuen Dateinamen im Eingabefeld angeben");return;}
     if (!newName.startsWith("/")) newName = "/" + newName;
-    frage("Umbenennen von Datei '" + oldName + "' in '" + newName + "'",(function(){renameFile(oldName,newName);}));
+    if (newName === oldName) {meldung("Alter und neuer Dateiname sind gleich...?");return;}
+    frage("Umbenennen von Datei '" + oldName + "' in '" + newName + "'?",(function(){renameFile(oldName,newName);}));
   }
   function doDownload() {
     var entries = document.querySelectorAll(".lastentry");
-    if (entries.length != 1 ) return;
+    if (entries.length != 1 ) {meldung("Bitte Datei in Liste markieren");return;}
     var path = entries[0].id;
     $('download-frame').src = path+"?download=true";
   }
   function doExtract() {
     var entries = document.querySelectorAll(".lastentry");
-  	if (entries.length != 1 ) return;
+  	if (entries.length != 1 ) {meldung("Bitte Archivdatei in der Liste markieren");return;}
+    aniStart();
     var filename = entries[0].id;
     var ext = /(?:\.([^.]+))?$/.exec(filename)[1].toLowerCase();
     var name = /(.*)\.[^.]+$/.exec(filename)[1];
     if(typeof name !== 'undefined') filename = name;
-    if(typeof ext === 'undefined' || ext != "gz") {meldung("Datei ist kein Archiv und kann nicht ausgepackt werden");return;}
+    if(typeof ext === 'undefined' || ext != "gz") {aniStop();meldung("Datei ist kein Archiv und kann nicht ausgepackt werden");return;}
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function(){
       if (xmlHttp.readyState == 4){
+        aniStop();
         if(xmlHttp.status == 200) {
           $("fedit").value = xmlHttp.responseText;
           $("flabel").innerText = filename; // async doSave() will do the rest
@@ -315,6 +333,7 @@
     <textarea class="editor" id="fedit" spellcheck="false"></textarea>
   </editor>
   <iframe id=download-frame style='display:none;'></iframe>
+<div id="overlay"><div id="overlay_content"><span id="spinner"></span></div></div>
 <div id="id_msgbox" display="none" align="center"></div>
 <template id="onebtn"><br><br><button id="mb_btnYes">OK</button></template>
 <template id="twobtn"><br><br><button id="mb_btnYes">Ja</button><button id="mb_btnNo">Nein</button></template>
