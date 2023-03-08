@@ -8,12 +8,9 @@ select:focus {background: #CCCCCC;}
 .myAButton {background:linear-gradient(to bottom, #ff3f3f 5%, #408c99 100%);}
 .flex {display:flex;flex-direction:column;align-items: center;}			
 .config {display:flex;flex-direction:column;align-items: left;}		
-.popup {display:none;position:fixed;padding:10px;width:280px;left:50%;margin-left:-150px;height:160px;top:50%;margin-top:-100px;background:#FFF;z-index:20;}
-#popup2:after {position:fixed;content:"";top:0;left:0;bottom:0;right:0;background:rgba(0,0,0,0.5);z-index:-2;}
-#popup2:before {border:2px solid black;position:absolute;content:"";top:0;left:0;bottom:0;right:0;background:white;opacity:0.9;box-shadow:10px 10px #555;z-index: -1;}
 input, select {margin-bottom: 20px;width:150px;}
 button {margin:5px;}
-#id_msgbox{font-family:arial,sans-serif;font-weight:bold;display:none;position:fixed;padding:15px;left:50%;margin-left:-150px;top:50%;margin-top:-100px;background:#FFF;box-shadow:10px 10px #555;border:2px solid black;z-index:1;}
+#id_msgbox{font-family:arial,sans-serif;font-weight:bold;display:none;position:fixed;padding:15px;left:50%;margin-left:-150px;top:50%;margin-top:-100px;box-shadow:10px 10px #555;z-index:1;}
 #id_msgbox button{width:100px;margin:10px;margin-bottom:0;font-weight:bold;font-size:120%;}
 #id_msgbox:after{position:fixed;content:"";top:0;left:0;bottom:0;right:0;background:rgba(0,0,0,0.5);z-index:-2;}
-#id_msgbox:before{position:absolute;content:"";top:0;left:0;bottom:0;right:0;background:white;z-index:-1;}
+#id_msgbox:before{position:absolute;content:"";top:0;left:0;bottom:0;right:0;background:white;border:2px solid black;z-index:-1;}
