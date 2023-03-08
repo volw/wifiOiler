@@ -165,8 +165,8 @@
   }
   function doUpload() {
     var datei = $("datei");
+    if(datei.files.length === 0) {meldung("Bitte Datei ausw&auml;hlen (s.Button),<br> die hochgeladen werden soll");return;}
   	aniStart();
-    if(datei.files.length === 0) return;
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
 	    if (xmlHttp.readyState == 4) {
@@ -183,9 +183,9 @@
     xmlHttp.send(formData);
   }
   function doSave() {
-    aniStart();
     var fname = "/" + $("flabel").innerText;
-    if (fname === "/") return;
+    if (fname === "/") {meldung("Keine Datei aktiv, die gesichert werden kann");return;}
+    aniStart();
     var ed = $("fedit");
     xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
@@ -214,10 +214,10 @@
     xmlHttp.send(formData);
   }
   function doDelete() {
-    document.querySelectorAll(".lastentry").forEach(entry => {
-      var file = "/" + entry.id;
-      frage(file + " wird endgültig gel&ouml;scht!!",(function(){deleteFile(file);}));
-    });
+    var entries = document.querySelectorAll(".lastentry");
+    if (entries.length != 1 ) {meldung("Bitte Datei in Liste markieren,<br>die gel&ouml;scht werden soll");return;}
+    var filename = entries[0].id;
+    frage(filename + " endg&uuml;ltig l&ouml;schen?",(function(){deleteFile(filename);}));
   }
   function doNewFile() {
     var fname = $("target").value;
