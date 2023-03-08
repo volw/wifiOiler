@@ -26,13 +26,11 @@
   var cUrl="/list", lastSelectedFile="", scrollPos=0;
   var texts=["bak","c","cpp","css","h","htm","html","ini","js","json","md","txt","xml","ino"];
 	const $ = function(id){return document.getElementById(id);}
-
 	function msgBase(msg,tpl,func){$("id_msgbox").innerHTML = msg;$("id_msgbox").appendChild($(tpl).content.cloneNode(true));$("id_msgbox").style.display = "block";$("mb_btnYes").onclick = function(){$('id_msgbox').style.display='none';if (typeof(func)=='function') func();}}
 	function meldung(msg, func){msgBase(msg,"onebtn",func);}
 	function frage(msg, func){msgBase(msg,"twobtn",func);$("mb_btnNo").onclick = function(){$('id_msgbox').style.display="none";}}
 	function aniStart(){$('overlay').style.display = 'block';}
 	function aniStop(){$('overlay').style.display = 'none';}
-
   function init() {
     getList();
     $("target").value = "/";
@@ -48,18 +46,9 @@
       path.value = "/"+filename;
     }
     document.addEventListener("keydown", function(e){
-			if (e.ctrlKey && e.key === 's'){
-        e.preventDefault();
-				$("btnsave").click();
-			}
-			if (e.ctrlKey && e.key === 'd'){
-        e.preventDefault();
-				$("btndelete").click();
-			}
-			if (e.ctrlKey && e.key === 'r'){
-        e.preventDefault();
-				$("btnrename").click();
-			}
+			if (e.ctrlKey && e.key === 's'){e.preventDefault();$("btnsave").click();}
+			if (e.ctrlKey && e.key === 'd'){e.preventDefault();$("btndelete").click();}
+			if (e.ctrlKey && e.key === 'r'){e.preventDefault();$("btnrename").click();}
     });
     // prevent strange scroll behaviour of chrome/edge
     // https://stackoverflow.com/questions/56329625
@@ -88,7 +77,6 @@
       e.preventDefault();
       var cbbin = e.clipboardData;
       document.execCommand('insertText', true, cbbin.getData("Text"));
-      //$("fedit").scrollTop = scrollPos;
     });
   }
   function getIndentation(obj){
