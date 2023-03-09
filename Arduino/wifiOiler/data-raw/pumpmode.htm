@@ -3,7 +3,8 @@
 	<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Set Pump Mode</title><link rel="stylesheet" href="wifiOiler.css">
 <script>
-	cUrl = "/pumpmode";b=null;
+  const apmBtn=['Normal','Regen','Offroad','Permanent','AUS'];
+  cUrl = "/pumpmode";b=null;
 	function mode(m){
 		m=(m==null?'':'?mode='+m);
 		xhr=new XMLHttpRequest();
@@ -15,13 +16,11 @@
 				if (b!=null) b.setAttribute('class','myButton myAButton');}};
 		xhr.send(null);}
 	function cB(m){
-		var b=document.createElement('input');b.type='button';b.setAttribute('class','myButton');
-		b.value=m;b.id=m;b.onclick= function(){mode(m);};
+		var b=document.createElement('button');b.setAttribute('class','myButton');
+		b.appendChild(document.createTextNode(m));b.id=m;b.onclick= function(){mode(m);};
 		var o=document.getElementById('buttons');if (o!=null) o.appendChild(b);}
-	function init(){cB('Normal');cB('Regen');cB('Offroad');cB('Permanent');cB('AUS');mode();}
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener("DOMContentLoaded", (()=>{apmBtn.forEach(function(m){cB(m);mode()})}));
 </script>
 <div class="flex"><h2>Modus Pumpe</h2><div id='buttons' class='flex'></div>&nbsp;
-	<input type="button" class="myButton" value="Zur&uuml;ck" onclick='history.back();'/>
-</div>
-</body></html>
+	<button class="myButton" onclick='history.back();'>Zur&uuml;ck</button>
+</div></body></html>

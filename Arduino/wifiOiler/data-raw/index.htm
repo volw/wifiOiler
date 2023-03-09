@@ -26,16 +26,16 @@
 <body onload="getVersion();">
 <div class="flex">
 <h2><div id='version'>Version</div></h2>
-<input type="button" value="Modus Pumpe"   class="myButton" onclick="window.location.href='/pumpmode.htm';"/>
-<input type="button" value="Konfiguration" class="myButton" onclick="window.location.href='/config.htm';"/>
-<input type="button" value="File Browser"  class="myButton" onclick="window.location.href='/edit';"/>
-<input type="button" value="Runtime Info"  class="myButton" onclick="window.location.href='/info.htm';"/>
-<input type="button" value="Test Pumpe"    class="myButton" onclick="callLink('/pumptest','Pumpentest gestartet...');"/>
-<input type="button" value="Test LED"      class="myButton" onclick="callLink('/ledtest','LED Test gestartet, wenn die LED <br>3 x gr&uuml;n und 3 x rot leuchtet, ist alles OK');"/>
-<input type="button" value="Upload Tracks" class="myButton" onclick="window.location.href='/upload';"/>
+<button class="myButton" onclick="window.location.href='/pumpmode.htm';">Modus Pumpe</button>
+<button class="myButton" onclick="window.location.href='/config.htm';"/>Konfiguration</button>
+<button class="myButton" onclick="window.location.href='/edit';"/>File Browser</button>
+<button class="myButton" onclick="window.location.href='/info.htm';"/>Runtime Info</button>
+<button class="myButton" onclick="callLink('/pumptest','Pumpentest gestartet...');"/>Test Pumpe</button>
+<button class="myButton" onclick="callLink('/ledtest','LED Test gestartet, wenn die LED <br>3 x gr&uuml;n und 3 x rot leuchtet, ist alles OK');"/>Test LED</button>
+<button class="myButton" onclick="window.location.href='/upload';"/>Upload Tracks</button>
 &nbsp;
-<input type="button" value="Update Oiler"  class="myButton" onclick="frage('wifiOiler aktualisieren?<br>(Kontakt zur oilerbase notwendig)',(function(){window.location.href='/update.htm';}));"/>
-<input type="button" value="Soft Reboot"   class="myButton" onclick="frage('wifiOiler neu starten?',(function(){window.location.href='/reboot.htm';}));"/>
+<button class="myButton" onclick="frage('wifiOiler aktualisieren?<br>(Kontakt zur oilerbase notwendig)',(function(){window.location.href='/update.htm';}));"/>Update Oiler</button>
+<button class="myButton" onclick="frage('wifiOiler neu starten?',(function(){window.location.href='/reboot.htm';}));"/>Soft Reboot</button>
 </div>
 <div id="id_msgbox" display="none" align="center"></div>
 <template id="onebtn"><br><br><button id="mb_btnYes">OK</button></template>
