@@ -15,7 +15,8 @@
 		function msgBase(msg,tpl,func){$("id_msgbox").innerHTML = msg;$("id_msgbox").appendChild($(tpl).content.cloneNode(true));$("id_msgbox").style.display = "block";$("mb_btnYes").onclick = function(){$('id_msgbox').style.display='none';if (typeof(func)=='function') func();}}
 		function meldung(msg, func){msgBase(msg,"onebtn",func);}
 		function frage(msg, func){msgBase(msg,"twobtn",func);$("mb_btnNo").onclick = function(){$('id_msgbox').style.display="none";}}
-
+		function aniStart(){$('overlay').style.display = 'block';}
+		function aniStop(){$('overlay').style.display = 'none';}
 		function onBodyLoad(){getConfig();$("sim").addEventListener("input", calc);}
 		function calc() {
        var meter = $("sim").value;
@@ -35,6 +36,7 @@
 
 		function putConfig(){
 			var parms="";
+			aniStart();
 			JSON.parse(configVal,
         function( key, value ) {
           var o=$(key);
@@ -49,16 +51,15 @@
           }
         });
 			xmlHttp = new XMLHttpRequest();
-			xmlHttp.onreadystatechange = function(){if(this.readyState==4&&this.status==200) meldung("Konfiguration wurde gesichert!",(function (){window.location.href = "/";}));};
-			//if (parms.length>3){
-				xmlHttp.open("GET", theUrl+"?"+parms, true);xmlHttp.send(null);
-			//}else alert(unescape("Keine Werte ge%E4ndert%21"));
+			xmlHttp.onreadystatechange = function(){if(this.readyState==4&&this.status==200) {aniStop();window.location.href = "/";}};
+			xmlHttp.open("GET", theUrl+"?"+parms, true);xmlHttp.send(null);
 }
 		function getConfig(){
+			aniStart();
 			xmlHttp = new XMLHttpRequest();
 			xmlHttp.onreadystatechange = function(){
 				if (xmlHttp.readyState == 4){
-					configVal = xmlHttp.responseText;setValues();calc();
+					configVal = xmlHttp.responseText;setValues();calc();aniStop();
 					$("wait").hidden=true;$("form").hidden=false;}};
 			xmlHttp.open("GET", theUrl, true);
 			xmlHttp.send(null);}
@@ -105,6 +106,7 @@ Ohne Zusatz werden die Namen wie folgt gebildet: YYMMDD-HHMM.dat
 (upload all track files before changing it)</label><input type="text" id="gts" name="gts" maxlength="10"/>
 <input type="button" value="Speichern" class="myButton" onclick="putConfig()"/>
 <input type="button" value="Abbruch"   class="myButton" onclick="history.back()"/>
+<div id="overlay"><div id="overlay_content"><span id="spinner"></span></div></div>
 <div id="id_msgbox" display="none" align="center"></div>
 <template id="onebtn"><br><br><button id="mb_btnYes">OK</button></template>
 <template id="twobtn"><br><br><button id="mb_btnYes">Ja</button><button id="mb_btnNo">Nein</button></template>
