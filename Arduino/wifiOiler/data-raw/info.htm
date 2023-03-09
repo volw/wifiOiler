@@ -31,7 +31,9 @@
     ta["rl"]="no. of GPS records left";
     ta["tl"]="time left for track recording (hh:mm)";
 
-		function ge(id){return document.getElementById(id);}
+		const $ = function(id){return document.getElementById(id);}
+		function aniStart(){$('overlay').style.display = 'block';}
+		function aniStop(){$('overlay').style.display = 'none';}
 		function createInfoTable(json){
 			var table=document.createElement('table'),row,cell;
       table.style="text-align:right;border-collapse:collapse;";
@@ -45,7 +47,7 @@
 				  cell=row.insertCell();
           cell.style="border:1px solid black;text-align:left;padding:3px;";
 				  cell.appendChild(document.createTextNode(ta[key]));}
-				ge("out").appendChild(table);})}
+				$("out").appendChild(table);})}
 		function createFileTable(json){
 			var table = document.createElement('table'),row,cell;
       var oFiles = JSON.parse(json);
@@ -58,17 +60,19 @@
 				cell=row.insertCell();
         cell.style="border:1px solid black;text-align:right;";
 				cell.appendChild(document.createTextNode(item["size"]));});
-			ge("files").appendChild(table);}
+			$("files").appendChild(table);}
 	  function getInfo(){
+	  	aniStart();
 	    var xmlHttp=new XMLHttpRequest();
 			xmlHttp.onreadystatechange=function(){
-      	if(this.readyState==4&&this.status==200) createInfoTable(xmlHttp.responseText);
+      if(this.readyState==4&&this.status==200) {createInfoTable(xmlHttp.responseText);aniStop();}
       };xmlHttp.open("GET","/info?test",true);
 	    xmlHttp.send(null);}
 	  function getFiles(){
+	  	aniStart();
 	    var xmlHttp=new XMLHttpRequest();
 			xmlHttp.onreadystatechange=function(){
-        if(this.readyState==4&&this.status==200)createFileTable(xmlHttp.responseText);};
+        if(this.readyState==4&&this.status==200) {createFileTable(xmlHttp.responseText);aniStop();}};
 	    xmlHttp.open("GET","/list?dir",true);
 	    xmlHttp.send(null);}
     function getContent(){getInfo();getFiles();}
@@ -78,5 +82,6 @@
 <div class="flex" id="out"><h3>Runtime Infos:</h3></div>
 <br><br>
 <div class="flex" id="files"><h3>Filesystem content:</h3></div>
+<div id="overlay"><div id="overlay_content"><span id="spinner"></span></div></div>
 </body>
 </html>
