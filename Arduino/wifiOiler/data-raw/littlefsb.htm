@@ -1,19 +1,21 @@
 <!doctype html><html lang="de"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="validator:url" content="https://validator.w3.org/nu/">
+<meta name="validator:date" content="2023-03-12">
 <title>Filebrowser</title>
 <style>
   body {margin: 1em 0;max-width: 60em;font-family: monospace;display: grid;grid-template-columns: auto auto;}
-  topbar {grid-column: 1 / 3;grid-row: 1;background: #ffede0;border-color: #df6c20;}
-  flist {grid-column: 1 / 2;grid-row: 2;background: #ebf5d7;border-color: #8db243;font-size: 1.2em;}
-  editor {grid-column: 2 / 3;grid-row: 2;background: #A9E2F3;border-color: #d5d5d5;width: 80vw;height: 80vh;}
-  topbar, flist, editor {border: 1px solid;padding: .5em;margin: .5em;}
+  #topbar {grid-column: 1 / 3;grid-row: 1;background: #ffede0;border-color: #df6c20;}
+  #flist {grid-column: 1 / 2;grid-row: 2;background: #ebf5d7;border-color: #8db243;font-size: 1.2em;}
+  #editor {grid-column: 2 / 3;grid-row: 2;background: #A9E2F3;border-color: #d5d5d5;width: 80vw;height: 80vh;}
+  #topbar, .flist, #editor {border: 1px solid;padding: .5em;margin: .5em;}
   .editor {width:100%;height:calc(100% - 1.2em);border:none;outline:none;white-space: pre;tab-size: 2;scroll-behavior: auto;}
-  .flist ul, .flist li {padding: 0;margin: 0;list-style: none;}
-  .flist span {margin-bottom: 5px;padding: 0 0 0 18px;cursor: pointer;display: inline-block;vertical-align: middle;
+  #flist ul, #flist li {padding: 0;margin: 0;list-style: none;}
+  #flist span {margin-bottom: 5px;padding: 0 0 0 18px;cursor: pointer;display: inline-block;vertical-align: middle;
     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADoSURBVBgZBcExblNBGAbA2ceegTRBuIKOgiihSZNTcC5LUHAihNJR0kGKCDcYJY6D3/77MdOinTvzAgCw8ysThIvn/VojIyMjIyPP+bS1sUQIV2s95pBDDvmbP/mdkft83tpYguZq5Jh/OeaYh+yzy8hTHvNlaxNNczm+la9OTlar1UdA/+C2A4trRCnD3jS8BB1obq2Gk6GU6QbQAS4BUaYSQAf4bhhKKTFdAzrAOwAxEUAH+KEM01SY3gM6wBsEAQB0gJ+maZoC3gI6iPYaAIBJsiRmHU0AALOeFC3aK2cWAACUXe7+AwO0lc9eTHYTAAAAAElFTkSuQmCC) no-repeat;
     background-position: 0 0}
   .lastentry {background: #FFFFFF;}
-	#id_msgbox{font-family:arial,sans-serif;font-weight:bold;display:none;position:absolute;padding:15px;left:50%;margin-left:-150px;top:50%;margin-top:-100px;background:#FFF;box-shadow:10px 10px #555;border:2px solid black;z-index:1;}
+	#id_msgbox{font-family:arial,sans-serif;font-weight:bold;text-align:center;display:none;position:absolute;padding:15px;left:50%;margin-left:-150px;top:50%;margin-top:-100px;background:#FFF;box-shadow:10px 10px #555;border:2px solid black;z-index:1;}
 	#id_msgbox button{width:100px;margin:10px;margin-bottom:0;font-weight:bold;font-size:120%;}
 	#id_msgbox:after{position:fixed;content:"";top:0;left:0;bottom:0;right:0;background:rgba(0,0,0,0.5);z-index:-2;}
 	#id_msgbox:before{position:absolute;content:"";top:0;left:0;bottom:0;right:0;background:white;z-index:-1;}
@@ -304,9 +306,9 @@
 </script>
 </head>
 <body onload="init();">
-  <topbar>
-    <input id="datei"  name="datei"  type="file" size="50" accept="*.*" />
-    <input id="target" name="target" type="text" placeholder="/" />
+  <div id="topbar">
+    <input id="datei"  name="datei"  type="file" size="50">
+    <input id="target" name="target" type="text" placeholder="/" >
     <button type="button" id="btnupload" name="btnupload" onclick="doUpload();">Upload</button>
     <button type="button" id="btnsave" name="btnsave" onclick="doSave();">Save</button>
     <button type="button" id="btnmkfile" name="btnmkfile" onclick="doNewFile();">New File</button>
@@ -314,15 +316,15 @@
     <button type="button" id="btndelete" name="btndelete" onclick="doDelete();">Delete</button>
     <button type="button" id="btndownload" name="btndownload" onclick="doDownload();">Download</button>
     <button type="button" id="btnextract" name="btnextract" onclick="doExtract();">Extract</button>
-  </topbar>
-  <flist><div id="flist" class="flist"></div></flist>
-  <editor>
+  </div>
+  <div id="flist"></div>
+  <div id="editor">
     <div id="flabel"></div><div id="scrollpos"></div>
     <textarea class="editor" id="fedit" spellcheck="false"></textarea>
-  </editor>
+  </div>
   <iframe id=download-frame style='display:none;'></iframe>
 <div id="overlay"><div id="overlay_content"><span id="spinner"></span></div></div>
-<div id="id_msgbox" display="none" align="center"></div>
+<div id="id_msgbox"></div>
 <template id="onebtn"><br><br><button id="mb_btnYes">OK</button></template>
 <template id="twobtn"><br><br><button id="mb_btnYes">Ja</button><button id="mb_btnNo">Nein</button></template>
 </body>

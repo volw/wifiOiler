@@ -1,6 +1,6 @@
 /************************************************************************
  * wifiOiler, an automatic distance depending motorbike chain oiler
- * Copyright (C) 2019-2022, volw
+ * Copyright (C) 2019-2023, volw
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

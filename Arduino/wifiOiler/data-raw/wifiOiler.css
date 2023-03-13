@@ -1,17 +1,18 @@
-body {background:#F7F2E0;font-family: sans-serif;}		
+body {background:#F7F2E0;font-family: sans-serif;}
 select:focus {background: #CCCCCC;}
 .changed {background:#F5A9BC;}
 .myButton {box-shadow:0px 10px 14px -7px #276873;width:250px;
-	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);	
+	background:linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
 	border-radius:12px;cursor:pointer;color:#ffffff;font-family:Arial;
 	font-size:1.2em;font-weight:bold;padding:13px 50px;margin:5px;}
-.myButton:active {box-shadow:0px 0px 0px 0px;background: #206a77;}
+.myButton:active {box-shadow:0px 0px 0px 0px;background: #206a77;transform:scale(1.1);}
 .myAButton {background:linear-gradient(to bottom, #ff3f3f 5%, #408c99 100%);}
-.flex {display:flex;flex-direction:column;align-items: center;}			
-.config {display:flex;flex-direction:column;align-items: left;}		
+.flex {display:flex;flex-direction:column;align-items: center;}
+.config {display:flex;flex-direction:column;align-items: left;}
+.wrapper {margin-left:auto;margin-right:auto;display: block; position: relative; width: 150px; height: 150px;}
 input, select {margin-bottom: 20px;width:150px;}
 button {margin:5px;}
-#id_msgbox{font-family:arial,sans-serif;font-weight:bold;display:none;position:fixed;padding:15px;left:50%;margin-left:-150px;top:50%;margin-top:-100px;box-shadow:10px 10px #555;z-index:1;}
+#id_msgbox{font-family:arial,sans-serif;font-weight:bold;text-align:center;display:none;position:absolute;padding:15px;left:50%;margin-left:-150px;top:50%;margin-top:-100px;background:#FFF;box-shadow:10px 10px #555;border:2px solid black;z-index:1;}
 #id_msgbox button{width:100px;margin:10px;margin-bottom:0;font-weight:bold;font-size:120%;}
 #id_msgbox:after{position:fixed;content:"";top:0;left:0;bottom:0;right:0;background:rgba(0,0,0,0.5);z-index:-2;}
 #id_msgbox:before{position:absolute;content:"";top:0;left:0;bottom:0;right:0;background:white;border:2px solid black;z-index:-1;}

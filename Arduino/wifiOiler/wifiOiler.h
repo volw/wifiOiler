@@ -1,6 +1,6 @@
 /************************************************************************
  * wifiOiler, an automatic distance depending motorbike chain oiler
- * Copyright (C) 2019-2022, volw
+ * Copyright (C) 2019-2023, volw
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 // _NO_PUMP_: nur während Entwicklung sinnvoll: Pumpe wird dauerhaft deaktiviert, damit's nicht ständig piept
 // _CAPTIVE_PORTAL_: Access Point wird als Captive Portal erstellt (wie Anmeldeseite eines Hotspots z.B. in Hotels)
 
-#define VERSION "4.2.028"
+#define VERSION "4.2.029"
 #define _DISPLAY_AVAILABLE_
 //#define _NO_PUMP_
 #define _CAPTIVE_PORTAL_

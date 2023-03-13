@@ -1,6 +1,6 @@
 /************************************************************************
  * wifiOiler, an automatic distance depending motorbike chain oiler
- * Copyright (C) 2019-2022, volw
+ * Copyright (C) 2019-2023, volw
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -319,6 +319,7 @@ uint8_t deleteUpdateFiles(void){
 void handleUpdate(void)
 {
   uint32_t wait;
+  int httpResult;
   if (GVwebServer.hasArg(F("update")))
   {
     GVupdateMessage = "";
@@ -327,8 +328,11 @@ void handleUpdate(void)
   
     //erst mal sollte gecheckt werden, ob der Server überhaupt erreichbar ist...
     DEBUG_OUT.printf(PSTR(MSG_DBG_UPD_CONNECT_INIT));
-    if (!isServerAvailable())
-    {
+   
+    httpResult = isServerAvailable();
+    if (httpResult == 401) {
+      return GVwebServer.send( 500, TEXT_HTML, MSG_DBG_CHECK_URL_HTTP_ERR_401);
+    } else if (httpResult != 200) {
       return GVwebServer.send( 500, TEXT_HTML, MSG_HTTP_UPD_SERVER_CONNECT_ERROR);
     }
 

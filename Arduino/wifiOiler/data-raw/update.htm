@@ -2,23 +2,22 @@
 <html lang="de">
 <head><title>Update</title>
 	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<meta name="validator:url" content="https://validator.w3.org/nu/">
+	<meta name="validator:date" content="2023-03-13">
 <link rel="stylesheet" href="wifiOiler.css">
-<style>
-	.wrapper {margin-left:auto;margin-right:auto;
-    display: block; position: relative; width: 150px; height: 150px;}
-</style>
+<style>body {text-align: center;}</style>
 <script src="/animation.js"></script>
 <script>
 var animation = new Animation();
-function init(){animation.init(ge("wrapper"));animation.run();doUpdate();}
-function ge(s){return document.getElementById(s)}
+const $ = function(id){return document.getElementById(id);}
+function init(){animation.init($("wrapper"));animation.run();doUpdate();}
 function doUpdate(){
 	xmlHttp = new XMLHttpRequest();
   xmlHttp.timeout = 10000;
 	xmlHttp.onreadystatechange = function(){
 	  if (xmlHttp.readyState == 4) {  // 4 = done
       if (xmlHttp.status == 500){
-        ge("status").innerHTML = xmlHttp.responseText;
+        $("status").innerHTML = xmlHttp.responseText;
         updateEnd();
       }
       else requestAnimationFrame(()=>checkResult());
@@ -26,11 +25,11 @@ function doUpdate(){
 	xmlHttp.open("GET", "/update?update", true);
 	xmlHttp.send(null);
 }
-function updateEnd(){animation.stop();ge("button").hidden=false;}
+function updateEnd(){animation.stop();$("button").hidden=false;}
 function checkResult(){
 	xmlHttp = new XMLHttpRequest();
 	xmlHttp.ontimeout = function(){
-		ge("status").innerHTML = "<b>FEHLER: &Ouml;ler konnte nicht erreicht werden.<br>WiFi anschalten oder neu booten</b>"
+		$("status").innerHTML = "<b>FEHLER: &Ouml;ler konnte nicht erreicht werden.<br>WiFi anschalten oder neu booten</b>"
 		  + "<br>Update sollte erneut durchgef&uuml;hrt werden<br>(neue Versionsnummer erkennbar?)";
     updateEnd();		
 	}
@@ -39,21 +38,21 @@ function checkResult(){
 	    if(xmlHttp.status == 200) {
         var result = xmlHttp.responseText;
         if (result == "NOUPDATE"){
-          ge("status").innerHTML = "Kein Update aktiv!";
+          $("status").innerHTML = "Kein Update aktiv!";
           updateEnd();
         } else if (result.startsWith("UPDATEOK:")) {
-          ge("status").innerHTML = result.substr("UPDATEOK:".length) + "<br>Update abgeschlossen!<br>";
+          $("status").innerHTML = result.substr("UPDATEOK:".length) + "<br>Update abgeschlossen!<br>";
           updateEnd();
         } else if (result.startsWith("REBOOT:")){
-          ge("status").innerHTML = result.substr("REBOOT:".length) + "<br>Datei(en) hochgeladen<br>Die neue Firmware wird jetzt eingespielt.<br>Danach wird der &Ouml;ler automatisch neu gestartet...<br>";
+          $("status").innerHTML = result.substr("REBOOT:".length) + "<br>Datei(en) hochgeladen<br>Die neue Firmware wird jetzt eingespielt.<br>Danach wird der &Ouml;ler automatisch neu gestartet...<br>";
           updateEnd();
         } else if (result.startsWith("UPDERROR:")){
-          ge("status").innerHTML = result.substr("UPDERROR:".length) + "<br>Update leider fehlgeschlagen<br>Update Dateien wurden gelöscht.<br>";
+          $("status").innerHTML = result.substr("UPDERROR:".length) + "<br>Update leider fehlgeschlagen<br>Update Dateien wurden gelöscht.<br>";
           updateEnd();
         } else {
-          ge("status").innerHTML = "Update aktiv - uploading files:<br>" + result;
+          $("status").innerHTML = "Update aktiv - uploading files:<br>" + result;
           window.setTimeout(checkResult, 1500);
-	} } } };
+	}}}};
 	xmlHttp.open("GET", "/update?result", true);
 	xmlHttp.send(null);
 }
@@ -61,14 +60,9 @@ document.addEventListener("DOMContentLoaded", init);
 </script>
 </head>
 <body>
-	<center>
-		<h2>wifiOiler Update<br>Bitte warten...<br></h2>
-		<div id="wrapper" class="wrapper">
-		</div>
-		<b><div id="status" name="status"></div></b>
-    <div id="button" name="button" hidden>
-      <a href=/><button type="button" class="myButton">Zur&uuml;ck</button></a>
-    </div>
-	</center>
+  <h2>wifiOiler Update<br>Bitte warten...<br></h2>
+  <div id="wrapper" class="wrapper"></div>
+	<b id="status"></b>
+	<br><button id="button" class="myButton" onclick="window.location.href = '/';" hidden>Zur&uuml;ck</button>
 </body>
 </html>

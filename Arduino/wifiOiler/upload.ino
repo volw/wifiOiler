@@ -1,6 +1,6 @@
 /************************************************************************
  * wifiOiler, an automatic distance depending motorbike chain oiler
- * Copyright (C) 2019-2022, volw
+ * Copyright (C) 2019-2023, volw
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,12 +24,12 @@ const String boundary = "------------------------15c028380c8415a6"; // Länge 40
  * Check, ob konfigurierter Upload-/Update server 
  * erreichbar ist.
  *************************************************/ 
-bool isServerAvailable(void) {
+int isServerAvailable(void) {
   String cURL = getOilerbaseURL();
 
   GVhttp.setAuthorization(GVoilerConf.bac.c_str());
   GVhttp.begin(GVwifiClient, cURL);
-  int httpCode = GVhttp.GET();
+  int httpCode = GVhttp.GET();  // +++ check return codes in source
   GVhttp.end();
   
   DEBUG_OUT.printf(PSTR(MSG_DBG_CHECK_URL_START), cURL.c_str());
@@ -38,17 +38,15 @@ bool isServerAvailable(void) {
   {
     DEBUG_OUT.printf(PSTR(MSG_DBG_CHECK_URL_SERVER_IP), GVoilerConf.uhn.c_str(), remoteHostIP.toString().c_str());
   }
-  if (httpCode == 401) DEBUG_OUT.println(F(MSG_DBG_CHECK_URL_HTTP_ERR_401));
-  else if (httpCode <= 0) DEBUG_OUT.printf(PSTR(MSG_DBG_CHECK_URL_ERROR), GVhttp.errorToString(httpCode).c_str());
-  else {
+  if (httpCode == 401) {
+    DEBUG_OUT.println(F(MSG_DBG_CHECK_URL_HTTP_ERR_401));
+  } else if (httpCode <= 0) {
+    DEBUG_OUT.printf(PSTR(MSG_DBG_CHECK_URL_ERROR), GVhttp.errorToString(httpCode).c_str());
+  } else {
     DEBUG_OUT.print("httpCode = ");
     DEBUG_OUT.println(httpCode);
   }
-    
-  if (httpCode <= 0){
-    DEBUG_OUT.printf(PSTR(MSG_DBG_CHECK_URL_ERROR), GVhttp.errorToString(httpCode).c_str());
-  }
-  return (httpCode==200);
+  return (httpCode);
 }
 
 /*************************************************
@@ -163,6 +161,7 @@ String uploadResponse;  // can't be local
 
 void handleUpload(void)
 {
+  int httpResult = 0;
   if (GVwebServer.hasArg(F("result")))
   {
     GVwebServer.send(200, TEXT_PLAIN, uploadResponse);
@@ -182,8 +181,9 @@ void handleUpload(void)
     uint32_t wait = millis();
     // 1s warten und webServer damit Zeit für Aktion zu geben
     while (wait + 1000 > millis()) GVwebServer.handleClient();
-      
-    if (isServerAvailable())
+
+    httpResult = isServerAvailable();
+    if (httpResult == 200)
     {
       uint8_t uploadOK = 0;
       uint8_t uploadFailed = 0;
@@ -221,20 +221,20 @@ void handleUpload(void)
           DEBUG_OUT.printf(PSTR(MSG_DBG_TRACK_FILE_FOUND_NO), fname.c_str());
         }
       }
-      if ((uploadOK + uploadFailed) == 0)
-      {
-        uploadResponse = F(MSG_HTTP_NO_TRACKS_FOUND); GVwebServer.handleClient();
+      if ((uploadOK + uploadFailed) == 0) {
+        uploadResponse = F(MSG_HTTP_NO_TRACKS_FOUND);
       }
       else
       {
         uploadResponse += "\nUpload beendet\nTracks hochgeladen: " + String(uploadOK);
         uploadResponse += "\nUpload Fehler: "+String(uploadFailed) + "\n-END-";
-        GVwebServer.handleClient();
         if (uploadOK > 0) checkFilesystemSpace();
       }
+    } else if (httpResult == 401) {   
+      uploadResponse = String(MSG_DBG_CHECK_URL_HTTP_ERR_401) + "\n-END-";
     } else {
       uploadResponse = String(MSG_DBG_UPLOAD_SERVER_ERROR) + "\n-END-";
-      GVwebServer.handleClient();
     }
+    GVwebServer.handleClient();
   }
 }

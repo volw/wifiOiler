@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html><head><title>Upload track files</title>
+<html lang="de">
+<head><title>Upload track files</title>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="validator:url" content="https://validator.w3.org/nu/">
+<meta name="validator:date" content="2023-03-13">
 <link rel="stylesheet" href="wifiOiler.css">
-<style>
-	.wrapper {margin-left:auto;margin-right:auto;
-    display: block; position: relative; width: 150px; height: 150px;}
-</style>
+<style>body {text-align: center;}</style>
 <script src="/animation.js"></script>
-<script type="text/javascript">
+<script>
 cUrl = "/upload?result";
 var animation = new Animation();
-function init(){animation.init(ge("wrapper"));animation.run();getResult();}
-function ge(s){return document.getElementById(s)}
+const $ = function(id){return document.getElementById(id);}
+function init(){animation.init($("wrapper"));animation.run();getResult();}
 function getResult(){
 	xmlHttp = new XMLHttpRequest();
   xmlHttp.onreadystatechange = function(){
@@ -20,11 +20,11 @@ function getResult(){
   		lEnde = result.endsWith("-END-");
   		if (lEnde){
   		  result = result.substring(0, result.length - "-END-".length);
-    		animation.stop();ge("button").hidden=false;
+    		animation.stop();$("button").hidden=false;
   		} else {
-				window.setTimeout(function() { getResult() }, 1000)
+				window.setTimeout(function() {getResult()},1000)
   		}
-  		document.getElementById("result").innerText=result;
+  		$("result").innerText=result;
   	}
 	};
   xmlHttp.open("GET", cUrl, true);
@@ -33,12 +33,10 @@ function getResult(){
 document.addEventListener("DOMContentLoaded", init);
 </script>
 </head>
-<body><center>
+<body>
 	<div id="wrapper" class="wrapper"></div>
 	<h2>Uploading Tracks</h2>
-	<div id="result" name="result"></div>
-  <div id="button" name="button" hidden>
-  	<a href=/><button type="button" class="myButton">Zur&uuml;ck</button></a>
-	</div>
-</center></body>
+	<div id="result"></div>
+	<br><button id="button" class="myButton" onclick="window.location.href = '/';" hidden>Zur&uuml;ck</button>
+</body>
 </html>
