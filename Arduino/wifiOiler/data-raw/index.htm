@@ -1,46 +1,55 @@
-<!DOCTYPE html><html lang="de">
+<!DOCTYPE html>
+<html lang="de">
 <head>
-	<meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="validator:url" content="https://validator.w3.org/nu/">
-	<meta name="validator:date" content="2023-03-12">
-	<title>Main Page</title>
-	<link rel="stylesheet" href="wifiOiler.css">
-	<script>
-		const $ = function(id){return document.getElementById(id);}
-		function msgBase(msg,tpl,func){$("id_msgbox").innerHTML = msg;$("id_msgbox").appendChild($(tpl).content.cloneNode(true));$("id_msgbox").style.display = "block";$("mb_btnYes").onclick = function(){$('id_msgbox').style.display='none';if (typeof(func)=='function') func();}}
-		function meldung(msg, func){msgBase(msg,"onebtn",func);}
-		function frage(msg, func){msgBase(msg,"twobtn",func);$("mb_btnNo").onclick = function(){$('id_msgbox').style.display="none";}}
-	  function getVersion(){
-	    xmlHttp=new XMLHttpRequest();
-	    xmlHttp.onreadystatechange=function(){if(xmlHttp.readyState==4){$("version").innerHTML=xmlHttp.responseText;}};
-	    xmlHttp.open("GET","/version",true);
-	    xmlHttp.send(null);
-	  }
-	  function callLink(l,m){
-	    xmlHttp=new XMLHttpRequest();
-	    xmlHttp.onreadystatechange = function(){if (xmlHttp.readyState == 4 && xmlHttp.status == 200) meldung(m);};
-	    xmlHttp.open("GET",l,true);
-	    xmlHttp.send(null);
-	  }
-	</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="validator:url" content="https://validator.w3.org/nu/">
+<meta name="validator:date" content="2023-03-13">	
+<title>wifiOiler Startseite</title>
+<link rel="stylesheet" href="wifiOiler.css">
+<script>
+	const $ = function(id){return document.getElementById(id);}
+	function msgBase(msg,tpl,func){
+		$("id_msgbox").innerHTML = msg;
+		$("id_msgbox").appendChild($(tpl).content.cloneNode(true));
+		$("id_msgbox").style.display = "block";
+		$("mb_btnYes").onclick = function(){$('id_msgbox').style.display='none';if (typeof(func)=='function') func();}
+	}
+	function message(msg, func){
+		msgBase(msg,"onebtn",func);
+	}
+	function confirm(msg, func){
+		msgBase(msg,"twobtn",func);
+		$("mb_btnNo").onclick = function(){$('id_msgbox').style.display="none";}
+	}
+	function getVersion(){
+	  xmlHttp=new XMLHttpRequest();
+	  xmlHttp.onreadystatechange=function(){if(xmlHttp.readyState==4){$("version").innerHTML=xmlHttp.responseText;}};
+	  xmlHttp.open("GET","/version",true);
+	  xmlHttp.send(null);
+	}
+	function callLink(l,m){
+	  xmlHttp=new XMLHttpRequest();
+	  xmlHttp.onreadystatechange = function(){if (xmlHttp.readyState == 4 && xmlHttp.status == 200) message(m);};
+	  xmlHttp.open("GET",l,true);
+	  xmlHttp.send(null);
+	}
+</script>	
 </head>
 <body onload="getVersion();">
-<div class="flex">
-<h2 id='version'>Version</h2>
-<button class="myButton" onclick="window.location.href='/pumpmode.htm';">Modus Pumpe</button>
-<button class="myButton" onclick="window.location.href='/config.htm';">Konfiguration</button>
-<button class="myButton" onclick="window.location.href='/edit';">File Browser</button>
-<button class="myButton" onclick="window.location.href='/info.htm';">Runtime Info</button>
-<button class="myButton" onclick="callLink('/pumptest','Pumpentest gestartet...');">Test Pumpe</button>
-<button class="myButton" onclick="callLink('/ledtest','LED Test gestartet, wenn die LED <br>3 x gr&uuml;n und 3 x rot leuchtet, ist alles OK');">Test LED</button>
-<button class="myButton" onclick="window.location.href='/upload';">Upload Tracks</button>
-&nbsp;
-<button class="myButton" onclick="frage('wifiOiler aktualisieren?<br>(Kontakt zur oilerbase notwendig)',(function(){window.location.href='/update.htm';}));">Update Oiler</button>
-<button class="myButton" onclick="frage('wifiOiler neu starten?',(function(){window.location.href='/reboot.htm';}));">Soft Reboot</button>
-</div>
+	<h2 id="version">Version</h2>
+	<a href='/pumpmode.htm'>Modus Pumpe</a>
+	<a href='/config.htm'>Konfiguration</a>
+	<a href='/edit'>File Browser</a>
+	<a href='/info.htm'>Runtime Info</a>
+	<a onclick="callLink('/pumptest','Pumpentest gestartet...');">Test Pumpe</a>
+	<a onclick="callLink('/ledtest','LED Test: 3 x gr&uuml;n und 3 x rot');">Test LED</a>
+	<a href='/upload'>Upload Tracks</a>
+	&nbsp;
+	<a onclick="confirm('wifiOiler aktualisieren?<br>(Kontakt zur oilerbase notwendig)',(function(){window.location.href='/update.htm';}));">Update Oiler</a>
+	<a onclick="confirm('wifiOiler neu starten?',(function(){window.location.href='/reboot.htm';}));">Soft Reboot</a>
 <div id="id_msgbox"></div>
-<template id="onebtn"><br><br><button id="mb_btnYes">OK</button></template>
-<template id="twobtn"><br><br><button id="mb_btnYes">Ja</button><button id="mb_btnNo">Nein</button></template>
+<template id="onebtn"><br><button id="mb_btnYes">OK</button></template>
+<template id="twobtn"><br><button id="mb_btnYes">Ja</button><button id="mb_btnNo">Nein</button></template>
 </body>
 </html>

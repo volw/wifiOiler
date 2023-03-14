@@ -5,7 +5,6 @@
 	<meta name="validator:url" content="https://validator.w3.org/nu/">
 	<meta name="validator:date" content="2023-03-13">
 <link rel="stylesheet" href="wifiOiler.css">
-<style>body {text-align: center;}</style>
 <script src="/animation.js"></script>
 <script>
 var animation = new Animation();
@@ -25,7 +24,7 @@ function doUpdate(){
 	xmlHttp.open("GET", "/update?update", true);
 	xmlHttp.send(null);
 }
-function updateEnd(){animation.stop();$("button").hidden=false;}
+function updateEnd(){animation.stop();$("button").style.display="block";}
 function checkResult(){
 	xmlHttp = new XMLHttpRequest();
 	xmlHttp.ontimeout = function(){
@@ -60,9 +59,9 @@ document.addEventListener("DOMContentLoaded", init);
 </script>
 </head>
 <body>
-  <h2>wifiOiler Update<br>Bitte warten...<br></h2>
-  <div id="wrapper" class="wrapper"></div>
+  <h2>wifiOiler Update<br>Bitte warten...</h2>
+  <div id="wrapper"></div>
 	<b id="status"></b>
-	<br><button id="button" class="myButton" onclick="window.location.href = '/';" hidden>Zur&uuml;ck</button>
+	<a id="button" onclick="window.location.href = '/';" style="display:none;">Zur&uuml;ck</a>
 </body>
 </html>

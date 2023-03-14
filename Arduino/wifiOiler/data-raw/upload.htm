@@ -5,7 +5,6 @@
 <meta name="validator:url" content="https://validator.w3.org/nu/">
 <meta name="validator:date" content="2023-03-13">
 <link rel="stylesheet" href="wifiOiler.css">
-<style>body {text-align: center;}</style>
 <script src="/animation.js"></script>
 <script>
 cUrl = "/upload?result";
@@ -20,7 +19,7 @@ function getResult(){
   		lEnde = result.endsWith("-END-");
   		if (lEnde){
   		  result = result.substring(0, result.length - "-END-".length);
-    		animation.stop();$("button").hidden=false;
+    		animation.stop();$("button").style.display="block";
   		} else {
 				window.setTimeout(function() {getResult()},1000)
   		}
@@ -34,9 +33,9 @@ document.addEventListener("DOMContentLoaded", init);
 </script>
 </head>
 <body>
-	<div id="wrapper" class="wrapper"></div>
+	<div id="wrapper"></div>
 	<h2>Uploading Tracks</h2>
 	<div id="result"></div>
-	<br><button id="button" class="myButton" onclick="window.location.href = '/';" hidden>Zur&uuml;ck</button>
+	<a id="button" onclick="window.location.href = '/';" style="display:none;">Zur&uuml;ck</a>
 </body>
 </html>

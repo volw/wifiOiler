@@ -25,7 +25,7 @@ function Retry(){
 	retries--;
 	if (retries <= 0){
 		$("status").innerHTML = "<b>FEHLER: &Ouml;ler konnte nicht erreicht werden.<br>WiFi anschalten oder neu booten</b>";
-    animation.stop();$("button").hidden=false;
+    animation.stop();$("button").style.display="block";
 	} else {
     if (retries<=7) $("status").innerHTML = "<b>TimeOut in " + (3*retries) + "s";
 		requestAnimationFrame(()=>checkResultNew());}}
@@ -51,8 +51,8 @@ document.addEventListener("DOMContentLoaded", init);
   <h2>Neustart des &Ouml;lers</h2>
   <p>Nach dem Neustart wird automatisch zum Hauptmen&uuml; weitergeleitet.</p>
   <p>Bitte warten...</p>
-  <div id="wrapper" class="wrapper"></div>
-  <b id="status"></b><br>
-  <button id="button" class="myButton" onclick="window.location.href = '/';" hidden>Zur&uuml;ck</button>
+  <div id="wrapper"></div>
+  <b id="status"></b>
+  <a id="button" onclick="window.location.href = '/';" style="display:none;">Zur&uuml;ck</a>
 </body>
 </html>

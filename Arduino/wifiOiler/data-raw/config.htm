@@ -55,7 +55,7 @@
 			xmlHttp = new XMLHttpRequest();
 			xmlHttp.onreadystatechange = function(){if(this.readyState==4&&this.status==200) {aniStop();window.location.href = "/";}};
 			xmlHttp.open("GET", theUrl+"?"+parms, true);xmlHttp.send(null);
-}
+    }
 		function getConfig(){
 			aniStart();
 			xmlHttp = new XMLHttpRequest();
@@ -70,44 +70,88 @@
 			else o.setAttribute('class', '');}
 		</script>
 	</head>
+
 <body onload="onBodyLoad();">
-<div id=form class="config">
-<b>Ge&auml;nderte Werte werden rot hinterlegt...</b><br>
-<label for="wts">Wartezeit Simulation</label><input type="number" id="wts" name="wts">
-<label for="nmm">Normal Mode Meter </label><input type="number" id="nmm" name="nmm">
-<label for="rmm">Rain Mode Meter</label><input type="number" id="rmm" name="rmm">
-<label for="omm">Offroad Mode Meter </label><input type="number" id="omm" name="omm">
-<label for="sim">Meter/s bei Simulation </label>
-<span><input type="number" id="sim" name="sim"><label id="kmh"></label></span>
-<label for="pac">Anzahl Pumpaktionen pro &Ouml;lvorgang</label><input type="number" id="pac" name="pac">
-<label for="glf">GPS Low-Filter (cm)</label><input type="number" id="glf" name="glf">
-<label for="otk">&Ouml;ltank Kapazit&auml;t</label><input type="number" id="otk" name="otk">
-<label for="use">...davon verbraucht</label><span><input type="number" id="use" name="use">
-<input type="button" value="reset" style="width:60px;" onclick="resUse();"></span>
-<label for="ffn">Name neuer Firmware Datei</label><input type="text" id="ffn" name="ffn">
-<label for="fpw">Sek. zw. GPS Trackpoints <br>(0 = no tracks)</label><input type="number" id="fpw" name="fpw">
-<label for="apn">eigener Host/Access Point Name</label><input type="text" id="apn" name="apn">
-<label for="app">Access Point Passwort</label><input type="text" id="app" name="app">
-<label for="uhn">Upload Host Name</label><input type="text" id="uhn" name="uhn">
-<label for="uhp">Upload Host Port</label><input type="number" id="uhp" name="uhp">
-<label for="url">Upload Host URL</label><input type="text" id="url" name="url">
-<label for="bac">User:Password for basic authentication at oilerbase<br>
-(empty for no basic auth.)</label><input type="text" id="bac" name="bac">
+<p>Ge&auml;nderte Werte werden rot hinterlegt...</p><br>
+
+<div id="form">
+<!-- Anzahl Sekunden, nach der das Notlaufprogramm starten soll, wenn kein GPS Empfang m&ouml;glich ist. -->
+<label for="wts">Wartezeit Simulation</label>
+<input type="number" id="wts">
+
+<!-- Anzahl Meter (bei Pumpenmodus 'Normal'), nach der die Pumpe ausgelöst werden soll. -->
+<label for="nmm">Normal Mode Meter</label>
+<input type="number" id="nmm">
+
+<!-- Anzahl Meter (bei Pumpenmodus 'Regen'), nach der die Pumpe ausgelöst werden soll. -->
+<label for="rmm">Rain Mode Meter</label>
+<input type="number" id="rmm">
+
+<!-- Anzahl Meter (bei Pumpenmodus 'Offroad'), nach der die Pumpe ausgelöst werden soll. -->
+<label for="omm">Offroad Mode Meter</label>
+<input type="number" id="omm">
+
+<!-- Bestimmt die angenommene Geschwindigkeit während des Notlaufprogramms (zusammen mit den Meterangaben oben den Abstand zwischen den Ölvorgängen) -->
+<label>Meter/s bei Simulation</label>
+<input type="number" id="sim"><div id="kmh"></div>
+
+<label for="pac">Anzahl Pumpaktionen pro &Ouml;lvorgang</label>
+<input type="number" id="pac">
+
+<label for="glf">GPS Low-Filter (cm)</label>
+<input type="number" id="glf">
+
+<label for="otk">&Ouml;ltank Kapazit&auml;t</label>
+<input type="number" id="otk">
+
+<label for="use">...davon verbraucht</label>
+<input type="number" id="use">
+<button onclick="resUse();">reset</button>
+
+<label for="ffn">Name neuer Firmware Datei</label>
+<input type="text" id="ffn">
+
+<label for="fpw">Sek. zw. GPS Trackpoints <br>(0 = no tracks)</label>
+<input type="number" id="fpw">
+
+<label for="apn">eigener Host/Access Point Name</label>
+<input type="text" id="apn">
+
+<label for="app">Access Point Passwort</label>
+<input type="text" id="app">
+
+<label for="uhn">Upload Host Name</label>
+<input type="text" id="uhn">
+
+<label for="uhp">Upload Host Port</label>
+<input type="number" id="uhp">
+
+<label for="url">Upload Host URL</label>
+<input type="text" id="url">
+
+<label for="bac">User:Password for basic authentication at oilerbase (empty for no basic auth).</label>
+<input type="text" id="bac">
+
 <label for="lgf">Logging to file?</label>
-<select name="lgf" id="lgf" ><option value=1>Ja</option><option value=0>Nein</option></select>
+<select id="lgf" ><option value=1>Ja</option><option value=0>Nein</option></select>
+
 <label for="lgs">Logging to Serial?</label>
-<select name="lgs" id="lgs" ><option value=1>Ja</option><option value=0>Nein</option></select>
+<select id="lgs" ><option value=1>Ja</option><option value=0>Nein</option></select>
+
 <label for="gdl">GPS Logging to File?</label>
-<select name="gdl" id="gdl" ><option value=1>Ja</option><option value=0>Nein</option></select>
+<select id="gdl" ><option value=1>Ja</option><option value=0>Nein</option></select>
+
 <label for="wso">WiFi automatisch starten?</label>
-<select name="wso" id="wso" ><option value=1>Ja</option><option value=0>Nein</option></select>
-<label for="gts">GPS track file: Zusatz vor Dateiname (max. 10 Zeichen)<br>
-Ohne Zusatz werden die Namen wie folgt gebildet: YYMMDD-HHMM.dat
-(upload all track files before changing it)</label><input type="text" id="gts" name="gts" maxlength="10">
-<input type="button" value="Speichern" class="myButton" onclick="putConfig()">
-<input type="button" value="Abbruch"   class="myButton" onclick="history.back()">
+<select id="wso" ><option value=1>Ja</option><option value=0>Nein</option></select>
+
+<label for="gts">GPS track file: Zusatz vor Dateiname (max. 10 Zeichen). Ohne Zusatz werden die Namen wie folgt gebildet: YYMMDD-HHMM.dat (vor &Auml;nderung alle Dateien herunterladen</label>
+<input type="text" id="gts" maxlength="10">
+</div>
+
+<a onclick="putConfig()">Speichern</a>
+<a onclick="history.back()">Abbruch</a>
 <div id="overlay"><div id="overlay_content"><span id="spinner"></span></div></div>
 <div id="id_msgbox"></div>
 <template id="onebtn"><br><br><button id="mb_btnYes">OK</button></template>
 <template id="twobtn"><br><br><button id="mb_btnYes">Ja</button><button id="mb_btnNo">Nein</button></template>
-</div></body></html>
+</body></html>
