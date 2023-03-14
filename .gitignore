@@ -22,6 +22,8 @@ fp-info-cache
 *.pdf
 # Uebersetzung erst mal nicht...
 **/docs_E/
+# altes html theme nicht:
+**/data-raw-old/
 
 
 ## Ignore Visual Studio temporary files, build results, and
