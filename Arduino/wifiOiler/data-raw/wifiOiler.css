@@ -47,8 +47,77 @@ label {
   display: block;
   width: 300px;
 }
-.changed {background:#F5A9BC;}
-#out, #files {display: inline-block;}
+/* File Browser */
+table {
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+#_fsb_tb_ {
+	width: 100vw;
+	text-align: left;
+  border-bottom: 2px solid black;
+	background: AliceBlue;
+}
+#_fsb_tb_ a {		/* smaller buttons */
+	display: inline-block;
+	font-size: 0.8em;
+	width: auto;
+	padding: 7px;
+}
+#_fsb_tb_ input {
+	margin: 5px;
+}
+#_fsb_f_list_ {
+	font-weight:normal;
+	width: 8vw;
+	height: 90vh;
+  text-align: left;
+	background: #E2E2E2;
+  vertical-align: top;
+  padding-top: 18px;
+  border-right: 2px solid black;
+}
+#_fsb_f_list_ span {	/* file entries */
+  margin-bottom: 5px;
+  padding: 0 0 0 18px;
+  cursor: pointer;
+  display: inline-block;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADoSURBVBgZBcExblNBGAbA2ceegTRBuIKOgiihSZNTcC5LUHAihNJR0kGKCDcYJY6D3/77MdOinTvzAgCw8ysThIvn/VojIyMjIyPP+bS1sUQIV2s95pBDDvmbP/mdkft83tpYguZq5Jh/OeaYh+yzy8hTHvNlaxNNczm+la9OTlar1UdA/+C2A4trRCnD3jS8BB1obq2Gk6GU6QbQAS4BUaYSQAf4bhhKKTFdAzrAOwAxEUAH+KEM01SY3gM6wBsEAQB0gJ+maZoC3gI6iPYaAIBJsiRmHU0AALOeFC3aK2cWAACUXe7+AwO0lc9eTHYTAAAAAElFTkSuQmCC) no-repeat;
+  background-position: 0 0;
+}
+#_fsb_f_list_ ul, #flist li {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+#_fsb_editor_ {
+	width: 75vw;
+	height: 90vh;
+  text-align: left;
+	background: #E2E2E2;
+  vertical-align: top;
+}
+#_fsb_edit_ta_ {
+	font-family: monospace;
+	height: inherit;
+	width: 100%;
+	resize: none;
+  border:none;
+  outline:none;
+  padding: 3px;
+  margin:0;
+  white-space: pre;
+  tab-size: 2;
+  scroll-behavior: auto;
+  box-sizing: border-box;
+}
+li[data-is-active="1"] {
+	color: white;
+	background: gray;
+}
+.lastentry { background: gray; color: #FFFFFF; font-weight:bold; } /* marked file entry */
+.changed {background:#F5A9BC;}	/* config */
+#out, #files {display: inline-block;}	/* runtime info */
 #wrapper {margin:auto;display: block; position: relative; width: 150px; height: 150px;}
 #overlay {display:none;left: 0;top: 0;width: 100%;height: 100%;position: fixed;background: rgba(0,0,0,0.5);}
 #overlay_content {left: 50%;position: absolute;top: 50%;transform: translate(-50%, -50%);}

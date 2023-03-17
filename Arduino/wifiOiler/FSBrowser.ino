@@ -65,7 +65,10 @@ void handleFileList() {
     if (output != "[") output += ',';
     //im SPIFFS FS wird Dateiname mit leitendem "/" zurückgegeben (dir.filename())
     //im LittleFS NICHT!
-    output += "{\"type\":\"file\",\"name\":\""+dir.fileName()+"\",\"size\":"+dir.fileSize()+"}";
+    if (dir.isDirectory())
+      output += "{\"type\":\"dir\",\"name\":\""+dir.fileName()+"\",\"size\":0}";
+    else
+      output += "{\"type\":\"file\",\"name\":\""+dir.fileName()+"\",\"size\":"+dir.fileSize()+"}";
   }
   output += "]";
   GVwebServer.send(200, F("text/json"), output);

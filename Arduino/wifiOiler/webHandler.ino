@@ -108,6 +108,8 @@ bool handleFileRead(String path)
 
   String contentType = getContentType(path);
   String pathWithGz = path + ".gz";
+
+  if (contentType == "application/x-gzip") contentType = TEXT_HTML;
   
   if (_FILESYS.exists(pathWithGz) || _FILESYS.exists(path)) {
     File file;  
