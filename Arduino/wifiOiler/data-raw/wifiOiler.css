@@ -128,7 +128,7 @@ li[data-is-active="1"] {
 	color: white;
 	background: gray;
 }
-.lastentry { background: gray; color: #FFFFFF; font-weight:bold; } /* marked file entry */
+#_fsb_dl_frame_ {display:none;}
 .changed {background:#F5A9BC;}	/* config */
 #out, #files {display: inline-block;}	/* runtime info */
 #wrapper {margin:auto;display: block; position: relative; width: 150px; height: 150px;}
