@@ -40,30 +40,23 @@
 		function aniStop(){$('overlay').style.display = 'none';}
 		function createInfoTable(json){
 			var table=document.createElement('table'),row,cell;
-      table.style="text-align:right;border-collapse:collapse;";
       JSON.parse(json,function(key,value){
         if (key.length > 0){
-				  let row=table.insertRow();
-				  let cell=row.insertCell();
-          //cell.style="border:1px solid black; text-align:right;padding:3px;spacing:3px;";
-          cell.style="border:1px solid black;padding:3px;";
-				  cell.appendChild(document.createTextNode(value));
+				  row=table.insertRow();
 				  cell=row.insertCell();
-          cell.style="border:1px solid black;text-align:left;padding:3px;";
-				  cell.appendChild(document.createTextNode(ta[key]));}
-				$("out").appendChild(table);})}
+				  cell.appendChild(document.createTextNode(ta[key]));
+				  cell=row.insertCell();
+				  cell.appendChild(document.createTextNode(value));}
+				$("infos").appendChild(table);})}
 		function createFileTable(json){
 			var table = document.createElement('table'),row,cell;
       var oFiles = JSON.parse(json);
       oFiles.forEach(function(item){
 			  let row=table.insertRow();
-        //row.style="border:1px solid black;";
         let cell=row.insertCell();
-        cell.style="border:1px solid black;";
   			cell.appendChild(document.createTextNode(item["name"]));
 				cell=row.insertCell();
-        cell.style="border:1px solid black;text-align:right;";
-				cell.appendChild(document.createTextNode(item["size"]));});
+				cell.appendChild(document.createTextNode(item["size"].toLocaleString("de-DE",{style:"decimal"})));});
 			$("files").appendChild(table);}
 	  function getInfo(){
 	  	aniStart();
@@ -84,7 +77,7 @@
 </head>
 <body onload="getContent();">
 <h2>Runtime Infos:</h2>
-<div id="out"></div>
+<div id="infos"></div>
 <h2>Filesystem content:</h2>
 <div id="files"></div>
 <div id="overlay"><div id="overlay_content"><span id="spinner"></span></div></div>
