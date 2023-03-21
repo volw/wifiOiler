@@ -77,6 +77,9 @@ table {
 #_fsb_tb_ input {
 	margin: 5px;
 }
+#_fsb_finp_ {
+  width: 260px;
+}
 #_fsb_f_list_ {
 	font-weight:normal;
 	width: 8vw;
