@@ -63,7 +63,7 @@
 	    var xmlHttp=new XMLHttpRequest();
 			xmlHttp.onreadystatechange=function(){
       if(this.readyState==4&&this.status==200) {createInfoTable(xmlHttp.responseText);aniStop();}
-      };xmlHttp.open("GET","/info?test",true);
+      };xmlHttp.open("GET","/info",true);
 	    xmlHttp.send(null);}
 	  function getFiles(){
 	  	aniStart();
