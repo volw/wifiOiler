@@ -36,6 +36,8 @@
 #define MSG_DBG_RECORDING_CONTINUED       "[checkFilesystemSpace] track Aufzeichnung fortgesetzt"
 #define MSG_HTML_TARGET_FILE_EXISTS       "Zieldatei existiert bereits"
 #define MSG_HTML_SOURCE_FILE_NOT_EXISTS   "Quelldatei existiert nicht"
+#define MSG_HTML_ERROR_OPEN_SOURCE        "FEHLER: Quelldatei konnte nicht geöffnet werden"
+#define MSG_HTML_ERROR_OPEN_TARGET        "FEHLER: Zieldatei konnte nicht geöffnet werden"
 #define MSG_HTML_ERROR_RENAMING_FILE      "FEHLER: Datei konnte nicht umbenannt werden"
 #define MSG_HTML_ERROR_CREATING_FILE      "FEHLER: Datei konnte nicht erstellt werden"
 #define MSG_DBG_HANDLEFILEDELETE_PATH     "[handleFileDelete] "       // followed by path/name of file to delete

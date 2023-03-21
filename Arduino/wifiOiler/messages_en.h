@@ -36,6 +36,8 @@
 #define MSG_DBG_RECORDING_CONTINUED       "[checkFilesystemSpace] track recording continued"
 #define MSG_HTML_TARGET_FILE_EXISTS       "Target file exists"
 #define MSG_HTML_SOURCE_FILE_NOT_EXISTS   "Source file does'nt exist"
+#define MSG_HTML_ERROR_OPEN_SOURCE        "ERROR: could not open source file"
+#define MSG_HTML_ERROR_OPEN_TARGET        "ERROR: could not open target file"
 #define MSG_HTML_ERROR_RENAMING_FILE      "Could'nt rename file"
 #define MSG_HTML_ERROR_CREATING_FILE      "Could'nt create file"
 #define MSG_DBG_HANDLEFILEDELETE_PATH     "[handleFileDelete] "       // followed by path/name of file to delete
