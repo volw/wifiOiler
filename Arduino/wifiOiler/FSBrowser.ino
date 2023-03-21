@@ -172,3 +172,54 @@ void handleFileUpload() {
     checkFilesystemSpace();
   }
 }
+/***********************************************
+ * webHandler für das Kopieren einer Datei
+ * danach Check auf Firmware und Speicherplatz
+ ***********************************************/
+void handleCopyFile(){
+  DEBUG_OUT.println("handleCopyFile: enter function");
+  if (GVwebServer.args() != 2) {
+    return GVwebServer.send(500, TEXT_PLAIN, BAD_ARGS);
+  }
+  DEBUG_OUT.println("handleCopyFile: Anzahl args stimmt wohl");
+  String fsource = GVwebServer.arg(0);
+  String ftarget = GVwebServer.arg(1);
+  DEBUG_OUT.print("handleCopyFile: fsource = ");DEBUG_OUT.println(fsource);
+  DEBUG_OUT.print("handleCopyFile: ftarget = ");DEBUG_OUT.println(ftarget);
+    
+  if (fsource == "" || fsource == "/") {
+    return GVwebServer.send(500, TEXT_PLAIN, BAD_PATH);
+  }
+  if (ftarget == "" || ftarget == "/") {
+    return GVwebServer.send(500, TEXT_PLAIN, BAD_PATH);
+  }
+  if (_FILESYS.exists(ftarget)) {
+    return GVwebServer.send(500, TEXT_PLAIN, F(MSG_HTML_TARGET_FILE_EXISTS));
+  }
+  if (!_FILESYS.exists(fsource)) {
+    return GVwebServer.send(500, TEXT_PLAIN, F(MSG_HTML_SOURCE_FILE_NOT_EXISTS));
+  }
+  DEBUG_OUT.println("handleCopyFile: öffne Eingabedatei");
+  File fin = _FILESYS.open(fsource, "r");
+  if (!fin) {
+    return GVwebServer.send(500, TEXT_PLAIN, F("Error opening source file!"));
+  } else {
+    DEBUG_OUT.println("handleCopyFile: öffne Ausgabedatei");
+    File fout = _FILESYS.open(ftarget, "w");
+    if (!fout) {
+      return GVwebServer.send(500, TEXT_PLAIN, F("Error opening target file!"));
+    } else {
+      DEBUG_OUT.println("handleCopyFile: start copy...");
+      char buffer[256];
+      while (fin.available()) {
+        byte bytesRead = fin.readBytes(buffer, sizeof(buffer));
+        fout.write(buffer, bytesRead);
+      }
+      fin.close();
+      fout.close();
+      DEBUG_OUT.println("handleCopyFile: Kopie erstellt...");
+      checkFilesystemSpace();
+      return GVwebServer.send(200, TEXT_PLAIN, "");
+    }
+  }
+}  

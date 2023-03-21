@@ -32,6 +32,7 @@ void setupWebServer(void) {
   GVwebServer.on(F("/reboot"), HTTP_GET, handleReboot);
   GVwebServer.on(F("/update"), HTTP_GET, handleUpdate);
   GVwebServer.on(F("/version"), HTTP_GET, handleVersion);
+  GVwebServer.on(F("/copyfile"), HTTP_PUT, handleCopyFile);
   
   //LittleFS Browser & editor:
   GVwebServer.on(F("/edit"), HTTP_GET, []() {
