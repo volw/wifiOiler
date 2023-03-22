@@ -2,6 +2,9 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Filebrowser</title>
 <link rel="stylesheet" href="wifiOiler.css">
+<style>
+</style>
+
 <script>
   var cUrl="/list", scrollPos=0, activeEntry = null;
   var texts=["bak","c","cpp","css","h","htm","html","ini","js","json","md","txt","xml","ino"];
@@ -88,9 +91,10 @@
   }
   function createFilelistEntry(path, name, size){
     var entry = document.createElement("li");
-    entry.dataset.fileName = name;
     entry.className = "listentry";
+    entry.dataset.fileName = name;
     entry.dataset.isActive="0";
+    entry.dataset.isZipped=name.endsWith(".gz");
     var label = document.createElement("span");
     //label.textContent = name + " (" + size + ")";
     label.textContent = name;
