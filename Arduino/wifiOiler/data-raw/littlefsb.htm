@@ -10,7 +10,7 @@
 	function msgBase(msg,tpl,func){var mb=$("id_msgbox");mb.innerHTML=msg;mb.appendChild($(tpl).content.cloneNode(true));mb.style.display = "block";mb.addEventListener("keydown", function(e){if (e.keyCode == 27){e.preventDefault();var bno=$("mb_btnNo");if (bno===null) bno=$("mb_btnYes");if (bno!==null) bno.click();}});$("mb_btnYes").focus();$("mb_btnYes").onclick=function(){mb.style.display='none';if (typeof(func)=='function') func();}}
 	function meldung(msg, func){msgBase(msg,"onebtn",func);}
 	function frage(msg, func){msgBase(msg,"twobtn",func);$("mb_btnNo").onclick = function(){$('id_msgbox').style.display="none";}}
-	function aniStart(){$('overlay').style.display = 'block';}
+	function aniStart(){$('progress').innerText="";$('overlay').style.display = 'block';}
 	function aniStop(){$('overlay').style.display = 'none';}
   function init() {
     getList();
@@ -166,6 +166,13 @@
    		frage("Datei '"+fname+"' existiert bereits! Datei überschreiben?",(function(){uploadFile();}));
     } else uploadFile();
   }
+  function updProgress(e) {
+    if (e.lengthComputable) {
+      const perc = Math.floor((e.loaded / e.total) * 100);
+      if (perc ==100) $("progress").innerText="Transfer complete!";
+      else $("progress").innerText=perc+"%";
+    }
+  }  
   function uploadFile() {
   	aniStart();
     var datei = $("_fsb_finp_");
@@ -179,6 +186,7 @@
 	        $("_fsb_t_file_").value = "";
 	        $("_fsb_finp_").value = "";
 	  }}}
+    xmlHttp.upload.addEventListener("progress",updProgress);
     var formData = new FormData();
     formData.append("data", datei.files[0], $("_fsb_t_file_").value);
     xmlHttp.open("POST", "/edit");
@@ -374,7 +382,7 @@
 	</tr>
 </table>
 <iframe id="_fsb_dl_frame_"></iframe>
-<div id="overlay"><div id="overlay_content"><span id="spinner"></span></div></div>
+<div id="overlay"><div id="overlay_content"><span id="spinner"></span><div id="progress"></div></div></div>
 <div id="id_msgbox"></div>
 <template id="onebtn"><br><button id="mb_btnYes">OK</button></template>
 <template id="twobtn"><br><button id="mb_btnYes">Ja</button><button id="mb_btnNo">Nein</button></template>
