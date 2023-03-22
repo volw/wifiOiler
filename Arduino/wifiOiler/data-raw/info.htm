@@ -72,10 +72,9 @@
         if(this.readyState==4&&this.status==200) {createFileTable(xmlHttp.responseText);aniStop();}};
 	    xmlHttp.open("GET","/list?dir",true);
 	    xmlHttp.send(null);}
-    function getContent(){getInfo();getFiles();}
 	</script>
 </head>
-<body onload="getContent();">
+<body onload="getInfo();getFiles();">
 <h2>Runtime Infos:</h2>
 <div id="infos"></div>
 <h2>Filesystem content:</h2>

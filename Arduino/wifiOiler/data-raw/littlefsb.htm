@@ -6,384 +6,318 @@
 </style>
 
 <script>
-  var cUrl="/list", scrollPos=0, activeEntry = null;
-  var texts=["bak","c","cpp","css","h","htm","html","ini","js","json","md","txt","xml","ino"];
-	const $ = function(id){return document.getElementById(id);}
-	function validFName(fname){return(/^(?!com[0-9]$)(?!con$)(?!lpt[0-9]$)(?!nul$)(?!prn$)\/?[^\\\?\s\|\/\*:<>"]*[^\\\?\s\|\/\.\*:<>"]+$/i.test(fname))}
-	function msgBase(msg,tpl,func){var mb=$("id_msgbox");mb.innerHTML=msg;mb.appendChild($(tpl).content.cloneNode(true));mb.style.display = "block";mb.addEventListener("keydown", function(e){if (e.keyCode == 27){e.preventDefault();var bno=$("mb_btnNo");if (bno===null) bno=$("mb_btnYes");if (bno!==null) bno.click();}});$("mb_btnYes").focus();$("mb_btnYes").onclick=function(){mb.style.display='none';if (typeof(func)=='function') func();}}
-	function meldung(msg, func){msgBase(msg,"onebtn",func);}
-	function frage(msg, func){msgBase(msg,"twobtn",func);$("mb_btnNo").onclick = function(){$('id_msgbox').style.display="none";}}
-	function aniStart(){$('progress').innerText="";$('overlay').style.display = 'block';}
-	function aniStop(){$('overlay').style.display = 'none';}
-  function init() {
-    getList();
-    $("_fsb_t_file_").value = "";
-    $("_fsb_finp_").onchange = function(e){
-      var input = $("_fsb_finp_");
-      var path = $("_fsb_t_file_");
-      if(input.files.length === 0) return;
-      var filename = input.files[0].name;
-      var ext = /(?:\.([^.]+))?$/.exec(filename)[1];
-      var name = /(.*)\.[^.]+$/.exec(filename)[1];
-      if(typeof name !== 'undefined') filename = name;
-      if(typeof ext !== 'undefined') filename = filename + "." + ext;
-      path.value = filename;
-    }
-    document.addEventListener("keydown", function(e){
-			if (e.ctrlKey && e.key === 's'){e.preventDefault();doSave();}
-			if (e.ctrlKey && e.key === 'd'){e.preventDefault();doDelete();}
-			if (e.ctrlKey && e.key === 'r'){e.preventDefault();doRename();}
-    });
-    var edit = $("_fsb_edit_ta_");
-    edit.value="--- please choose file from the list ---";
-    edit.disabled=true;
-    // prevent strange scroll behaviour of chrome/edge
-    // https://stackoverflow.com/questions/56329625
-    edit.addEventListener("keydown", function(e){
-      if (e.keyCode == 13) {
-        e.preventDefault();
-        var ed = $("_fsb_edit_ta_");
-        //e.stopPropagation();
-        var indent = getIndentation(ed);
-        document.execCommand('insertText',true,'\n'+' '.repeat(indent));
-        ed.scrollTop = scrollPos;
-        ed.scrollLeft = 0;
-      } else if (e.keyCode == 9) {
-        //Position ermitteln:
-        e.preventDefault();
-        var ed=$("_fsb_edit_ta_");
-        var pos=ed.selectionStart-1;
-        var cc = 0;
-        while (pos >=0 && ed.value.charCodeAt(pos) != 10) {cc++;pos--;}
-        document.execCommand('insertText',true,' '.repeat(2-(cc%2)));
-      }
-    });
-    edit.addEventListener("scroll", function(){scrollPos = $("_fsb_edit_ta_").scrollTop;});
-    edit.addEventListener("paste", function(e){
-      e.preventDefault();
-      var cbbin = e.clipboardData;
-      document.execCommand('insertText', true, cbbin.getData("Text"));
-    });
-  }
-  function getList(fname = ""){
-  	activeEntry = null;
-  	aniStart();
-    xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function(){
-      if (xmlHttp.readyState == 4) {  // 4 = done
-      	aniStop();
-        if(xmlHttp.status == 200) {
-          var strJSON = xmlHttp.responseText;
-          if (strJSON != null) addList($("_fsb_f_list_"), "/", JSON.parse(strJSON));
-          setActiveEntry(fname);
-        }
-        else meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
-    }};
-    xmlHttp.open("GET", cUrl+"?dir");
-    xmlHttp.send(null);
-  }
-  function addList(parent, path, items){
-    // falls Liste existiert, diese leeren:
-    parent.childNodes.forEach(child=>{parent.removeChild(child);});
-    var list = document.createElement("ul");
-    parent.appendChild(list);
-    items.forEach(f=>{if(f.type==="file") list.appendChild(createFilelistEntry(path,f.name,f.size));});
-  }
-  function createFilelistEntry(path, name, size){
-    var entry = document.createElement("li");
-    entry.className = "listentry";
-    entry.dataset.fileName = name;
-    entry.dataset.isActive="0";
-    entry.dataset.isZipped=name.endsWith(".gz");
-    var label = document.createElement("span");
-    //label.textContent = name + " (" + size + ")";
-    label.textContent = name;
-    entry.appendChild(label);
-    entry.onclick = function(e){
-    	if (activeEntry != null) activeEntry.dataset.isActive="0";
-    	activeEntry = entry;
-    	activeEntry.dataset.isActive="1";
-    	loadFile(name);
-    };
-    return entry;
-  }
-// *************** Helper functions ***************
-  function getIndentation(obj){
-    var start = obj.selectionStart - 1;
-    var ind = 0;
-    while (start > 0 && obj.value.charCodeAt(start) != 10){
-      if (start >= 0){
-        if (obj.value.charCodeAt(start) == 32) ind++;
-        else if (obj.value.charCodeAt(start) == 9) ind+=2;	// $("_fsb_edit_ta_").style.tabSize liefert leider '' zurück...(?)
-        else ind = 0;
-      }
-      start--;
-    }
-    return ind;
-  }
-  function isTextFile(path){
-    var ext = /(?:\.([^.]+))?$/.exec(path)[1];
-    if(typeof ext === 'undefined') return false;
-		return (texts.indexOf(ext) > -1);
-  }
-  function fileExists(fname){
-  	if (fname.startsWith("/")) fname=fname.substring(1);
-    var fExists = false;
-    document.querySelectorAll("#_fsb_f_list_ li[data-file-name='"+fname+"']").forEach(c=>{fExists=true;});
-    return( fExists );
-  }
-  function setActiveEntry(fname = $("_fsb_label_").innerText){
-    if (fname.length < 1 || fname === "/") return;
-    if (fname[0] == '/') fname = fname.substring(1);
-    activeEntry = null;
-    var entries = document.querySelectorAll("#_fsb_f_list_ li[data-file-name='"+fname+"']")
-    entries.forEach(c=>{c.dataset.isActive="1";activeEntry=c;});
-    if (entries.length <= 0) console.log("setActiveEntry - FEHLER: Eintrag '"+fname+"' nicht gefunden!");
-    else if (entries.length > 1) console.log("setActiveEntry - FEHLER: Mehr als ein Eintrag für '"+fname+"' gefunden!");
-    else loadFile(fname);
-  }
-// *************** file operations ***************
-  function loadFile(fname) {
-    $("_fsb_edit_ta_").value = "";
-    $("_fsb_label_").innerText = "";
-    $("_fsb_edit_ta_").disabled = true;
-    if(isTextFile(fname)||fname.endsWith(".gz")){
-	    xmlHttp = new XMLHttpRequest();
-	    xmlHttp.onreadystatechange = function(){
-	      if (xmlHttp.readyState == 4){
-	        if(xmlHttp.status == 200) {
-    				$("_fsb_edit_ta_").disabled = fname.endsWith(".gz");  //don't edit zipped file
-	          $("_fsb_edit_ta_").value = xmlHttp.responseText;
-	          $("_fsb_label_").innerText = fname;
-	          $("_fsb_edit_ta_").focus();
-	    }}}
-	    xmlHttp.open("GET", fname);
-	    xmlHttp.send(null);
-	  }
-  }
-  function doUpload() {
-    var datei = $("_fsb_finp_");
-    if(datei.files.length === 0) {meldung("Bitte Datei ausw&auml;hlen (s.Button),<br> die hochgeladen werden soll");return;}
-    var fname=$("_fsb_t_file_").value;
-    if (!validFName(fname)) {meldung("Angegebener Dateiname ist ungültig - bitte anpassen (keine Sonderzeichen)!");return;}
-    if (fileExists(fname)){
-   		frage("Datei '"+fname+"' existiert bereits! Datei überschreiben?",(function(){uploadFile();}));
-    } else uploadFile();
-  }
-  function updProgress(e) {
-    if (e.lengthComputable) {
-      const perc = Math.floor((e.loaded / e.total) * 100);
-      if (perc ==100) $("progress").innerText="Transfer complete!";
-      else $("progress").innerText=perc+"%";
-    }
-  }  
-  function uploadFile() {
-  	aniStart();
-    var datei = $("_fsb_finp_");
-    xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function () {
-	    if (xmlHttp.readyState == 4) {
-	      aniStop();
-	      if(xmlHttp.status != 200) meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
-	      else {
-	        getList($("_fsb_t_file_").value);
-	        $("_fsb_t_file_").value = "";
-	        $("_fsb_finp_").value = "";
-	  }}}
-    xmlHttp.upload.addEventListener("progress",updProgress);
-    var formData = new FormData();
-    formData.append("data", datei.files[0], $("_fsb_t_file_").value);
-    xmlHttp.open("POST", "/edit");
-    xmlHttp.send(formData);
-  }
-  function doSave() {
-    var fname = "/" + $("_fsb_label_").innerText;
-    if (fname === "/") {meldung("Keine Datei aktiv, die gesichert werden kann");return;}
-    aniStart();
-    var ed = $("_fsb_edit_ta_");
-    xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function () {
-      if (xmlHttp.readyState == 4){
-        aniStop();
-        if(xmlHttp.status != 200) meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
-        else if (!fileExists(fname)) {getList(fname);}
-    }}
-    var formData = new FormData();
-    formData.append("data", new Blob([ed.value],{type:"text/plain"}),fname);
-    xmlHttp.open("POST", "/edit");
-    xmlHttp.send(formData);
-  }
-  function doDelete() {
-  	if (activeEntry === null) {
-  		meldung("Bitte Datei in Liste markieren,<br>die gel&ouml;scht werden soll");
-  	} else {
-    	frage("Datei '"+activeEntry.dataset.fileName + "' endg&uuml;ltig l&ouml;schen?",(function(){deleteFile(activeEntry.dataset.fileName);}));
-    }
-  }
-  function deleteFile(file) {
-    aniStart();
-    xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function () {
-    if (xmlHttp.readyState == 4) {
-      aniStop();
-      if(xmlHttp.status != 200) meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
-      else getList();
-    }}
-    var formData = new FormData();
-    formData.append("path", file);
-    xmlHttp.open("DELETE", "/edit");
-    xmlHttp.send(formData);
-  }
-  function doNewFile() {
-    var fname = $("_fsb_t_file_").value;
-    if (fname === "" || fname === "/"){meldung("Bitte Dateinamen links im Feld angeben");return;}
-    if (!validFName(fname)){meldung("Bitte gültigen Dateinamen angeben (keine Sonderzeichen)!");return;}
-    aniStart();
-    xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function () {
-      if (xmlHttp.readyState == 4){
-        aniStop();
-        if(xmlHttp.status != 200) meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
-        else {
-          $("_fsb_t_file_").value = "";
-          getList(fname);
-    }}}
-    if (!fname.startsWith("/")){fname = "/" + fname;}
-    var formData = new FormData();
-    formData.append("path", fname);
-    xmlHttp.open("PUT", "/edit");
-    xmlHttp.send(formData);
-  }
-  function doCopy() {
-  	if (activeEntry === null) {
-  		meldung("Bitte die Datei in Liste markieren,<br>die kopiert werden soll");
-  		return;
-  	}
-    var oldName = activeEntry.dataset.fileName;
-    if (oldName === "" || oldName === "/") {meldung("Dateiname ist leer(?)");return;}
-    if (!oldName.startsWith("/")) oldName = "/" + oldName;
-    var newName = $("_fsb_t_file_").value;
-    if (newName === "" || newName === "/") {meldung("Bitte Dateinamen der Kopie im Eingabefeld angeben");return;}
-    if (!validFName(newName)){meldung("Bitte gültigen Dateinamen angeben (keine Sonderzeichen)!");return;}
-    if (!newName.startsWith("/")) newName = "/" + newName;
-    if (newName === oldName) {meldung("Alter und neuer Dateiname sind gleich...?");return;}
-    frage("Kopieren von Datei '" + oldName + "' nach '" + newName + "'?",(function(){copyFile(oldName,newName);}));
-  }
-  function copyFile(oldf,newf) {
-    aniStart();
-    xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function () {
-      if (xmlHttp.readyState == 4){
-        aniStop();
-        if(xmlHttp.status != 200) meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
-        else {
-          $("_fsb_t_file_").value = "/";
-          getList(newf);
-    }}}
-    var formData = new FormData();
-    formData.append("source", oldf);
-    formData.append("target", newf);
-    xmlHttp.open("PUT", "/copyfile");
-    xmlHttp.send(formData);
-  }  
-  function doRename() {
-  	if (activeEntry === null) {
-  		meldung("Bitte die Datei in Liste markieren,<br>die umbenannt werden soll");
-  		return;
-  	}
-    var oldName = activeEntry.dataset.fileName;
-    if (oldName === "" || oldName === "/") {meldung("Dateiname ist leer(?)");return;}
-    if (!oldName.startsWith("/")) oldName = "/" + oldName;
-    var newName = $("_fsb_t_file_").value;
-    if (newName === "" || newName === "/") {meldung("Bitte neuen Dateinamen im Eingabefeld angeben");return;}
-    if (!validFName(newName)){meldung("Bitte gültigen Dateinamen angeben (keine Sonderzeichen)!");return;}
-    if (!newName.startsWith("/")) newName = "/" + newName;
-    if (newName === oldName) {meldung("Alter und neuer Dateiname sind gleich...?");return;}
-    frage("Umbenennen von Datei '" + oldName + "' in '" + newName + "'?",(function(){renameFile(oldName,newName);}));
-  }
-  function renameFile(oldf,newf) {
-    aniStart();
-    xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function () {
-      if (xmlHttp.readyState == 4){
-        aniStop();
-        if(xmlHttp.status != 200) meldung("ERROR["+xmlHttp.status+"]: "+xmlHttp.responseText);
-        else {
-          $("_fsb_t_file_").value = "/";
-          getList(newf);
-    }}}
-    var formData = new FormData();
-    formData.append("path", newf);
-    formData.append("old", oldf);
-    xmlHttp.open("PUT", "/edit");
-    xmlHttp.send(formData);
-  }
-  function doDownload() {
-    if (activeEntry === null ) {meldung("Bitte Datei in Liste markieren");return;}
-    var path = activeEntry.dataset.fileName;
-    $('_fsb_dl_frame_').src = path+"?download=true";
-  }
-  function doExtract() {
-  	if (activeEntry === null) {
-    	meldung("Bitte Archivdatei in der Liste markieren");
-    	return;
-    }
-    var filename = activeEntry.dataset.fileName;
-    var ext = /(?:\.([^.]+))?$/.exec(filename)[1].toLowerCase();
+var scrollPos=0, activeEntry = null;
+var texts=["bak","c","cpp","css","h","htm","html","ini","js","json","md","txt","xml","ino"];
+const $ = function(id){return document.getElementById(id);}
+function validFName(fname){return(/^(?!com[0-9]$)(?!con$)(?!lpt[0-9]$)(?!nul$)(?!prn$)\/?[^\\\?\s\|\/\*:<>"]*[^\\\?\s\|\/\.\*:<>"]+$/i.test(fname))}
+function msgBase(msg,tpl,func){var mb=$("id_msgbox");mb.innerHTML=msg;mb.appendChild($(tpl).content.cloneNode(true));mb.style.display = "block";mb.addEventListener("keydown", function(e){if (e.keyCode == 27){e.preventDefault();var bno=$("mb_btnNo");if (bno===null) bno=$("mb_btnYes");if (bno!==null) bno.click();}});$("mb_btnYes").focus();$("mb_btnYes").onclick=function(){mb.style.display='none';if (typeof(func)=='function') func();}}
+function meldung(msg, func){msgBase(msg,"onebtn",func);}
+function frage(msg, func){msgBase(msg,"twobtn",func);$("mb_btnNo").onclick = function(){$('id_msgbox').style.display="none";}}
+function aniStart(){$('progress').innerText="";$('overlay').style.display = 'block';}
+function aniStop(){$('overlay').style.display = 'none';}
+function init() {
+  getList();
+  $("_fsb_t_file_").value = "";
+  $("_fsb_finp_").onchange = function(e){
+    var input = $("_fsb_finp_");
+    var path = $("_fsb_t_file_");
+    if(input.files.length === 0) return;
+    var filename = input.files[0].name;
+    var ext = /(?:\.([^.]+))?$/.exec(filename)[1];
     var name = /(.*)\.[^.]+$/.exec(filename)[1];
-    if(typeof ext === 'undefined' || ext != "gz") {
-    	meldung("Datei ist kein Archiv und kann nicht ausgepackt werden");
-    	return;
-    }
-    //if(typeof name !== 'undefined') filename = name;
-    if (fileExists(name)) {
-			frage(name + " existiert bereits. Datei überschreiben?",(function(){extractFile(filename, name);}));
-    } else {
-    	extractFile(filename, name);
-    }
+    if(typeof name !== 'undefined') filename = name;
+    if(typeof ext !== 'undefined') filename = filename + "." + ext;
+    path.value = filename;
   }
-  function extractFile(fname,fexname) {
-    aniStart();
-    xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function(){
-      if (xmlHttp.readyState == 4){
-        aniStop();
-        if(xmlHttp.status == 200) {
-          $("_fsb_edit_ta_").value = xmlHttp.responseText;
-          $("_fsb_label_").innerText = fexname; // async doSave() will do the rest
-          doSave();
-          aniStop();	//sometimes ani does'nt stop (timing?)
-          getList(fexname);
-    }}}
-    xmlHttp.open("GET", fname);
-    xmlHttp.send(null);
-  }
+  document.addEventListener("keydown", function(e){
+		if (e.ctrlKey && e.key === 's'){e.preventDefault();doSave();}
+		if (e.ctrlKey && e.key === 'd'){e.preventDefault();doDelete();}
+		if (e.ctrlKey && e.key === 'r'){e.preventDefault();doRename();}
+  });
+  var edit = $("_fsb_edit_ta_");
+  edit.value="--- please choose file from the list ---";
+  edit.disabled=true;
+  // prevent strange scroll behaviour of chrome/edge
+  // https://stackoverflow.com/questions/56329625
+  edit.addEventListener("keydown", function(e){
+    if (e.keyCode == 13) {
+      e.preventDefault();
+      var ed = $("_fsb_edit_ta_");
+      //e.stopPropagation();
+      var indent = getIndentation(ed);
+      document.execCommand('insertText',true,'\n'+' '.repeat(indent));
+      ed.scrollTop = scrollPos;
+      ed.scrollLeft = 0;
+    } else if (e.keyCode == 9) {
+      //Position ermitteln:
+      e.preventDefault();
+      var ed=$("_fsb_edit_ta_");
+      var pos=ed.selectionStart-1;
+      var cc = 0;
+      while (pos >=0 && ed.value.charCodeAt(pos) != 10) {cc++;pos--;}
+      document.execCommand('insertText',true,' '.repeat(2-(cc%2)));
+    }
+  });
+  edit.addEventListener("scroll", function(){scrollPos = $("_fsb_edit_ta_").scrollTop;});
+  edit.addEventListener("paste", function(e){
+    e.preventDefault();
+    var cbbin = e.clipboardData;
+    document.execCommand('insertText', true, cbbin.getData("Text"));
+  });
+}
+function getList(fname = ""){
+	console.log("enter getList(\""+fname+"\")");
+	activeEntry = null;
+	aniStart();
+  xhr = new XMLHttpRequest();
+  xhr.onload = (e) => {
+    var strJSON = xhr.responseText;
+    if (strJSON == "") {meldung("getList: strJSON ist leer - wie kann das denn?");return;}
+    if (strJSON != null) addList($("_fsb_f_list_"), "/", JSON.parse(strJSON));
+    setActiveEntry(fname);}
+  xhr.onloadend=(e)=>{aniStop();}
+  xhr.onerror=(e)=>{meldung("FEHLER: "+xhr.statusText);}
+  xhr.open("GET", "/list?dir", true);
+  xhr.send(null);}
+function addList(parent, path, items){
+  // falls Liste existiert, diese leeren:
+  parent.childNodes.forEach(child=>{parent.removeChild(child);});
+  var list = document.createElement("ul");
+  parent.appendChild(list);
+  items.forEach(f=>{if(f.type==="file") list.appendChild(createFilelistEntry(path,f.name,f.size));});}
+function createFilelistEntry(path, name, size){
+  var entry = document.createElement("li");
+  entry.className = "listentry";
+  entry.dataset.fileName = name;
+  entry.dataset.isActive="0";
+  entry.dataset.isZipped=name.endsWith(".gz");
+  var label = document.createElement("span");
+  //label.textContent = name + " (" + size + ")";
+  label.textContent = name;
+  entry.appendChild(label);
+  entry.onclick = function(e){
+  	if (activeEntry != null) activeEntry.dataset.isActive="0";
+  	activeEntry = entry;
+  	activeEntry.dataset.isActive="1";
+  	loadFile(name);};
+  return entry;}
+// *************** Helper functions ***************
+function getIndentation(obj){
+  var start = obj.selectionStart - 1;
+  var ind = 0;
+  while (start > 0 && obj.value.charCodeAt(start) != 10){
+    if (start >= 0){
+      if (obj.value.charCodeAt(start) == 32) ind++;
+      else if (obj.value.charCodeAt(start) == 9) ind+=2;	// $("_fsb_edit_ta_").style.tabSize liefert leider '' zurück...(?)
+      else ind = 0;}
+    start--;}
+  return ind;}
+function isTextFile(path){
+  var ext = /(?:\.([^.]+))?$/.exec(path)[1];
+  if(typeof ext === 'undefined') return false;
+	return (texts.indexOf(ext) > -1);}
+function fileExists(fname){
+	if (fname.startsWith("/")) fname=fname.substring(1);
+  var fExists = false;
+  document.querySelectorAll("#_fsb_f_list_ li[data-file-name='"+fname+"']").forEach(c=>{fExists=true;});
+  return(fExists);}
+function setActiveEntry(fname = $("_fsb_label_").innerText){
+  if (fname.length < 1 || fname === "/") return;
+  if (fname[0] == '/') fname = fname.substring(1);
+  activeEntry = null;
+  var entries = document.querySelectorAll("#_fsb_f_list_ li[data-file-name='"+fname+"']")
+  entries.forEach(c=>{c.dataset.isActive="1";activeEntry=c;});
+  if (entries.length <= 0) console.log("setActiveEntry - FEHLER: Eintrag '"+fname+"' nicht gefunden!");
+  else if (entries.length > 1) console.log("setActiveEntry - FEHLER: Mehr als ein Eintrag für '"+fname+"' gefunden!");
+  else loadFile(fname);}
+// *************** file operations ***************
+function loadFile(fname) {
+  $("_fsb_edit_ta_").value = "";
+  $("_fsb_label_").innerText = "";
+  $("_fsb_edit_ta_").disabled = true;
+  if(isTextFile(fname)||fname.endsWith(".gz")){
+    xhr = new XMLHttpRequest();
+    xhr.onload=()=>{
+      $("_fsb_edit_ta_").disabled = fname.endsWith(".gz");  //don't edit zipped file
+      $("_fsb_edit_ta_").value = xhr.responseText;
+      $("_fsb_label_").innerText = fname;
+      $("_fsb_edit_ta_").focus();}
+    xhr.open("GET", fname, true);
+    xhr.send(null);}}
+function doUpload() {
+  var datei = $("_fsb_finp_");
+  if(datei.files.length === 0) {meldung("Bitte Datei ausw&auml;hlen (s.Button),<br> die hochgeladen werden soll");return;}
+  var fname=$("_fsb_t_file_").value;
+  if (!validFName(fname)) {meldung("Angegebener Dateiname ist ungültig - bitte anpassen (keine Sonderzeichen)!");return;}
+  if (fileExists(fname)){
+ 		frage("Datei '"+fname+"' existiert bereits! Datei überschreiben?",(function(){uploadFile();}));
+  } else uploadFile();}
+function updProgress(e) {
+  if (e.lengthComputable) {
+    const perc = Math.floor((e.loaded / e.total) * 100);
+    if (perc ==100) $("progress").innerText="Transfer complete!";
+    else $("progress").innerText=perc+"%";}}  
+function uploadFile() {
+	aniStart();
+  var datei = $("_fsb_finp_");
+  xhr = new XMLHttpRequest();
+  xhr.onload=()=>{
+    getList($("_fsb_t_file_").value);
+    $("_fsb_t_file_").value = "";
+    $("_fsb_finp_").value = "";}
+  xhr.onloadend=()=>{aniStop();}
+  xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
+  xhr.upload.onprogress=(e)=>{updProgress(e);}
+  //xhr.upload.addEventListener("progress",updProgress);
+  var formData = new FormData();
+  formData.append("data", datei.files[0], $("_fsb_t_file_").value);
+  xhr.open("POST", "/edit", true);
+  xhr.send(formData);
+}
+function doSave() {
+  var fname = $("_fsb_label_").innerText;
+  if (!fname.startsWith("/")) fname="/"+fname;
+  if (fname === "/") {meldung("Keine Datei aktiv, die gesichert werden kann");return;}
+  aniStart();
+  var ed = $("_fsb_edit_ta_");
+  xhr = new XMLHttpRequest();
+  xhr.onload=()=>{if (!fileExists(fname)){getList(fname);}}
+  xhr.onloadend=()=>{aniStop();}
+  xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
+  var formData = new FormData();
+  formData.append("data", new Blob([ed.value],{type:"text/plain"}),fname);
+  xhr.open("POST", "/edit", true);
+  xhr.send(formData);
+}
+function doDelete() {
+	if (activeEntry === null) {
+		meldung("Bitte Datei in Liste markieren,<br>die gel&ouml;scht werden soll");
+	} else {
+  	frage("Datei '"+activeEntry.dataset.fileName + "' endg&uuml;ltig l&ouml;schen?",(function(){deleteFile(activeEntry.dataset.fileName);}));}}
+function deleteFile(file) {
+  aniStart();
+  xhr = new XMLHttpRequest();
+  xhr.onload=()=>{getList();}
+  xhr.onloadend=()=>{aniStop();}
+  xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
+  var formData = new FormData();
+  formData.append("path", file);
+  xhr.open("DELETE", "/edit", true);
+  xhr.send(formData);}
+function doNewFile() {
+  var fname = $("_fsb_t_file_").value;
+  if (fname === "" || fname === "/"){meldung("Bitte Dateinamen links im Feld angeben");return;}
+  if (!validFName(fname)){meldung("Bitte gültigen Dateinamen angeben (keine Sonderzeichen)!");return;}
+  aniStart();
+  xhr = new XMLHttpRequest();
+  xhr.onload=()=>{$("_fsb_t_file_").value = "";getList(fname);}
+  xhr.onloadend=()=>{aniStop();}
+  xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
+  if (!fname.startsWith("/")){fname = "/" + fname;}
+  var formData = new FormData();
+  formData.append("path", fname);
+  xhr.open("PUT", "/edit", true);
+  xhr.send(formData);}
+function doCopy() {
+	if (activeEntry === null) {
+		meldung("Bitte die Datei in Liste markieren,<br>die kopiert werden soll");
+		return;}
+  var oldName = activeEntry.dataset.fileName;
+  if (oldName === "" || oldName === "/") {meldung("Dateiname ist leer(?)");return;}
+  if (!oldName.startsWith("/")) oldName = "/" + oldName;
+  var newName = $("_fsb_t_file_").value;
+  if (newName === "" || newName === "/") {meldung("Bitte Dateinamen der Kopie im Eingabefeld angeben");return;}
+  if (!validFName(newName)){meldung("Bitte gültigen Dateinamen angeben (keine Sonderzeichen)!");return;}
+  if (!newName.startsWith("/")) newName = "/" + newName;
+  if (newName === oldName) {meldung("Alter und neuer Dateiname sind gleich...?");return;}
+  frage("Kopieren von Datei '" + oldName + "' nach '" + newName + "'?",(()=>{copyFile(oldName,newName);}));}
+function copyFile(oldf,newf) {
+  aniStart();
+  xhr = new XMLHttpRequest();
+  xhr.onload=()=>{$("_fsb_t_file_").value = "/";getList(newf);}
+  xhr.onloadend=()=>{aniStop();}
+  xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
+  var formData = new FormData();
+  formData.append("source", oldf);
+  formData.append("target", newf);
+  xhr.open("PUT", "/copyfile", true);
+  xhr.send(formData);}  
+function doRename() {
+	if (activeEntry === null) {
+		meldung("Bitte die Datei in Liste markieren,<br>die umbenannt werden soll");
+		return;}
+  var oldName = activeEntry.dataset.fileName;
+  if (oldName === "" || oldName === "/") {meldung("Dateiname ist leer(?)");return;}
+  if (!oldName.startsWith("/")) oldName = "/" + oldName;
+  var newName = $("_fsb_t_file_").value;
+  if (newName === "" || newName === "/") {meldung("Bitte neuen Dateinamen im Eingabefeld angeben");return;}
+  if (!validFName(newName)){meldung("Bitte gültigen Dateinamen angeben (keine Sonderzeichen)!");return;}
+  if (!newName.startsWith("/")) newName = "/" + newName;
+  if (newName === oldName) {meldung("Alter und neuer Dateiname sind gleich...?");return;}
+  frage("Umbenennen von Datei '" + oldName + "' in '" + newName + "'?",(function(){renameFile(oldName,newName);}));}
+function renameFile(oldf,newf) {
+  aniStart();
+  xhr = new XMLHttpRequest();
+  xhr.onload=()=>{$("_fsb_t_file_").value = "/";getList(newf);}
+  xhr.onloadend=()=>{aniStop();}
+  xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
+  var formData = new FormData();
+  formData.append("path", newf);
+  formData.append("old", oldf);
+  xhr.open("PUT", "/edit", true);
+  xhr.send(formData);}
+function doDownload() {
+  if (activeEntry === null ) {meldung("Bitte Datei in Liste markieren");return;}
+  var path = activeEntry.dataset.fileName;
+  $('_fsb_dl_frame_').src = path+"?download=true";}
+function doExtract() {
+	if (activeEntry === null) {
+  	meldung("Bitte Archivdatei in der Liste markieren");
+  	return;}
+  var filename = activeEntry.dataset.fileName;
+  var ext = /(?:\.([^.]+))?$/.exec(filename)[1].toLowerCase();
+  var name = /(.*)\.[^.]+$/.exec(filename)[1];
+  if(typeof ext === 'undefined' || ext != "gz") {
+  	meldung("Datei ist kein Archiv und kann nicht ausgepackt werden");
+  	return;}
+  if (fileExists(name)) {
+		frage(name + " existiert bereits. Datei überschreiben?",(function(){extractFile(filename, name);}));
+  } else {
+  	extractFile(filename, name);}}
+function extractFile(fname,fexname) {
+  aniStart();
+  xhr = new XMLHttpRequest();
+  xhr.onload=()=>{
+		$("_fsb_edit_ta_").value = xhr.responseText;
+		$("_fsb_label_").innerText = fexname; 
+		doSave();	// async doSave() will do the rest
+		//getList(fexname);
+		}
+  xhr.onloadend=()=>{aniStop();}
+  xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
+  xhr.open("GET", fname, true);
+  xhr.send(null);
+}
 </script>
 </head>
 <body onload="init();">
-
 <table>
-	<tr>
-		<td id="_fsb_tb_" colspan="2">
-	    <input id="_fsb_finp_" type="file">
-	    <input id="_fsb_t_file_">
-	    <a onclick="doUpload();">Upload</a>
-	    <a onclick="doSave();">Save</a>
-	    <a onclick="doNewFile();">New File</a>
-	    <a onclick="doRename();">Rename</a>
-	    <a onclick="doDelete();">Delete</a>
-	    <a onclick="doDownload();">Download</a>
-	    <a onclick="doExtract();">Extract</a>
-	    <a onclick="doCopy();">Copy</a>
-		</td>
-	</tr>
-	<tr>
-		<td id="_fsb_f_list_"></td>
-		<td id="_fsb_editor_">
-      <div id="_fsb_label_"></div><div id="_fsb_scroll_pos_"></div>
-      <textarea id="_fsb_edit_ta_" spellcheck="false"></textarea>
-    </td>
-	</tr>
+	<tr><td id="_fsb_tb_" colspan="2">
+    <input id="_fsb_finp_" type="file">
+    <input id="_fsb_t_file_">
+    <a onclick="doUpload();">Upload</a>
+    <a onclick="doSave();">Save</a>
+    <a onclick="doNewFile();">New File</a>
+    <a onclick="doRename();">Rename</a>
+    <a onclick="doDelete();">Delete</a>
+    <a onclick="doDownload();">Download</a>
+    <a onclick="doExtract();">Extract</a>
+    <a onclick="doCopy();">Copy</a>
+	</td></tr>
+	<tr><td id="_fsb_f_list_"></td><td id="_fsb_editor_">
+    <div id="_fsb_label_"></div><div id="_fsb_scroll_pos_"></div>
+    <textarea id="_fsb_edit_ta_" spellcheck="false"></textarea>
+  </td></tr>
 </table>
 <iframe id="_fsb_dl_frame_"></iframe>
 <div id="overlay"><div id="overlay_content"><span id="spinner"></span><div id="progress"></div></div></div>
