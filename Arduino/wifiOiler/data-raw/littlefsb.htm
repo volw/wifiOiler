@@ -66,13 +66,13 @@ function init() {
   });
 }
 function getList(fname = ""){
-	console.log("enter getList(\""+fname+"\")");
+	//console.log("enter getList(\""+fname+"\")");
 	activeEntry = null;
 	aniStart();
   xhr = new XMLHttpRequest();
   xhr.onload = (e) => {
     var strJSON = xhr.responseText;
-    if (strJSON == "") {meldung("getList: strJSON ist leer - wie kann das denn?");return;}
+    //if (strJSON == "") {meldung("getList: strJSON ist leer - wie kann das denn?");return;}
     if (strJSON != null) addList($("_fsb_f_list_"), "/", JSON.parse(strJSON));
     setActiveEntry(fname);}
   xhr.onloadend=(e)=>{aniStop();}
@@ -174,14 +174,14 @@ function uploadFile() {
   xhr.open("POST", "/edit", true);
   xhr.send(formData);
 }
-function doSave() {
+function doSave(forceLoad=false) {
   var fname = $("_fsb_label_").innerText;
   if (!fname.startsWith("/")) fname="/"+fname;
   if (fname === "/") {meldung("Keine Datei aktiv, die gesichert werden kann");return;}
   aniStart();
   var ed = $("_fsb_edit_ta_");
   xhr = new XMLHttpRequest();
-  xhr.onload=()=>{if (!fileExists(fname)){getList(fname);}}
+  xhr.onload=()=>{if (!fileExists(fname)||forceLoad){getList(fname);}}
   xhr.onloadend=()=>{aniStop();}
   xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
   var formData = new FormData();
@@ -281,7 +281,7 @@ function doExtract() {
   	meldung("Datei ist kein Archiv und kann nicht ausgepackt werden");
   	return;}
   if (fileExists(name)) {
-		frage(name + " existiert bereits. Datei überschreiben?",(function(){extractFile(filename, name);}));
+ 		frage(name + " existiert bereits. Datei überschreiben?",(function(){extractFile(filename, name);}));
   } else {
   	extractFile(filename, name);}}
 function extractFile(fname,fexname) {
@@ -290,7 +290,7 @@ function extractFile(fname,fexname) {
   xhr.onload=()=>{
 		$("_fsb_edit_ta_").value = xhr.responseText;
 		$("_fsb_label_").innerText = fexname; 
-		doSave();	// async doSave() will do the rest
+		doSave(true);	// async doSave() will do the rest
 		//getList(fexname);
 		}
   xhr.onloadend=()=>{aniStop();}
