@@ -3,7 +3,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="validator:url" content="https://validator.w3.org/nu/">
-	<meta name="validator:date" content="2023-03-13">
+	<meta name="validator:date" content="2023-03-23">
 	<title>Runtime info</title>
   <link rel="stylesheet" href="wifiOiler.css">
 	<script>
@@ -60,18 +60,20 @@
 			$("files").appendChild(table);}
 	  function getInfo(){
 	  	aniStart();
-	    var xmlHttp=new XMLHttpRequest();
-			xmlHttp.onreadystatechange=function(){
-      if(this.readyState==4&&this.status==200) {createInfoTable(xmlHttp.responseText);aniStop();}
-      };xmlHttp.open("GET","/info",true);
-	    xmlHttp.send(null);}
+	    var xhr=new XMLHttpRequest();
+			xhr.onload=()=>{createInfoTable(xhr.responseText);}
+  		xhr.onloadend=(e)=>{aniStop();}
+  		xhr.onerror=(e)=>{meldung("FEHLER: "+xhr.statusText);}
+      xhr.open("GET","/info",true);
+	    xhr.send(null);}
 	  function getFiles(){
 	  	aniStart();
-	    var xmlHttp=new XMLHttpRequest();
-			xmlHttp.onreadystatechange=function(){
-        if(this.readyState==4&&this.status==200) {createFileTable(xmlHttp.responseText);aniStop();}};
-	    xmlHttp.open("GET","/list?dir",true);
-	    xmlHttp.send(null);}
+	    var xhr=new XMLHttpRequest();
+			xhr.onload=()=>{createFileTable(xhr.responseText)}
+  		xhr.onloadend=(e)=>{aniStop();}
+  		xhr.onerror=(e)=>{meldung("FEHLER: "+xhr.statusText);}
+	    xhr.open("GET","/list?dir",true);
+	    xhr.send(null);}
 	</script>
 </head>
 <body onload="getInfo();getFiles();">
