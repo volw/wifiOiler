@@ -269,9 +269,17 @@ bool renameUpdateFiles(void){
       DEBUG_OUT.print(F(MSG_DBG_OLD_FILE_REMOVE_ERROR));
       DEBUG_OUT.println(fname+".old");
     } else {
-      if (_FILESYS.exists(fname)) result = _FILESYS.rename(fname, fname+".old");
+      #ifdef _NO_OLD_FILES_      
+        if (_FILESYS.exists(fname)) result = _FILESYS.remove(fname);
+      #else      
+        if (_FILESYS.exists(fname)) result = _FILESYS.rename(fname, fname+".old");
+      #endif      
       if (!result){
-        DEBUG_OUT.printf(PSTR(MSG_DBG_OLD_FILE_RENAME_ERROR), fname.c_str(), fname.c_str());
+        #ifdef _NO_OLD_FILES_      
+          DEBUG_OUT.print(F(MSG_DBG_OLD_FILE_REMOVE_ERROR));DEBUG_OUT.println(fname);
+        #else
+          DEBUG_OUT.printf(PSTR(MSG_DBG_OLD_FILE_RENAME_ERROR), fname.c_str(), fname.c_str());
+        #endif
       } else {
         result = _FILESYS.rename(fname+"$", fname);
         if (!result)

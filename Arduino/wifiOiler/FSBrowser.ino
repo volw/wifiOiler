@@ -189,12 +189,10 @@ void handleCopyFile(){
   if (ftarget == "" || ftarget == "/") {
     return GVwebServer.send(500, TEXT_PLAIN, BAD_PATH);
   }
-  if (_FILESYS.exists(ftarget)) {
-    return GVwebServer.send(500, TEXT_PLAIN, F(MSG_HTML_TARGET_FILE_EXISTS));
-  }
   if (!_FILESYS.exists(fsource)) {
     return GVwebServer.send(500, TEXT_PLAIN, F(MSG_HTML_SOURCE_FILE_NOT_EXISTS));
   }
+  // no overwrite test, check in html
   File fin = _FILESYS.open(fsource, "r");
   if (!fin) {
     return GVwebServer.send(500, TEXT_PLAIN, F(MSG_HTML_ERROR_OPEN_SOURCE));
@@ -203,7 +201,7 @@ void handleCopyFile(){
     if (!fout) {
       return GVwebServer.send(500, TEXT_PLAIN, F(MSG_HTML_ERROR_OPEN_TARGET));
     } else {
-      char buffer[256];
+      char buffer[128];
       while (fin.available()) {
         byte bytesRead = fin.readBytes(buffer, sizeof(buffer));
         fout.write(buffer, bytesRead);

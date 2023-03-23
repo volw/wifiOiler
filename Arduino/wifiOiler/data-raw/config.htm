@@ -41,7 +41,9 @@
             } else if (o.value != ""||key=="gts"){	// gts darf leer sein
               parms += key+"="+ o.value;}}});
 			xhr = new XMLHttpRequest();
-			xhr.onload=()=>{window.location.href = "/";}
+			xhr.onload=()=>{
+				if (xhr.status!=200) meldung("FEHLER "+xhr.responseText);
+				window.location.href = "/";}
 		  xhr.onloadend=(e)=>{aniStop();}
 		  xhr.onerror=(e)=>{meldung("FEHLER: "+xhr.statusText);}
 			xhr.open("GET", theUrl+"?"+parms, true);
@@ -49,7 +51,12 @@
 		function getConfig(){
 			aniStart();
 			xhr = new XMLHttpRequest();
-			xhr.onload=()=>{configVal=xhr.responseText;setValues();calc();}
+			xhr.onload=()=>{
+				if (xhr.status==200){
+					configVal=xhr.responseText;
+					setValues();
+					calc();
+				} else meldung("FEHLER "+xhr.responseText);}
 		  xhr.onloadend=(e)=>{aniStop();}
 		  xhr.onerror=(e)=>{meldung("FEHLER: "+xhr.statusText);}
 			xhr.open("GET", theUrl, true);

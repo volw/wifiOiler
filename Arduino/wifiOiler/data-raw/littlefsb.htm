@@ -68,10 +68,12 @@ function getList(fname = ""){
 	activeEntry = null;
 	aniStart();
   xhr = new XMLHttpRequest();
-  xhr.onload = (e) => {
-    var strJSON = xhr.responseText;
-    if (strJSON != null) addList($("_fsb_f_list_"), "/", JSON.parse(strJSON));
-    setActiveEntry(fname);}
+  xhr.onload =()=>{
+  	if (xhr.status==200){
+    	var strJSON = xhr.responseText;
+    	if (strJSON != null) addList($("_fsb_f_list_"), "/", JSON.parse(strJSON));
+    	setActiveEntry(fname);
+    } else meldung("FEHLER: "+xhr.responseText);}
   xhr.onloadend=(e)=>{aniStop();}
   xhr.onerror=(e)=>{meldung("FEHLER: "+xhr.statusText);}
   xhr.open("GET", "/list?dir", true);
@@ -135,10 +137,12 @@ function loadFile(fname) {
   if(isTextFile(fname)||fname.endsWith(".gz")){
     xhr = new XMLHttpRequest();
     xhr.onload=()=>{
-      $("_fsb_edit_ta_").disabled = fname.endsWith(".gz");  //don't edit zipped file
-      $("_fsb_edit_ta_").value = xhr.responseText;
-      $("_fsb_label_").innerText = fname;
-      $("_fsb_edit_ta_").focus();}
+    	if (xhr.status==200){
+      	$("_fsb_edit_ta_").disabled = fname.endsWith(".gz");  //don't edit zipped file
+      	$("_fsb_edit_ta_").value = xhr.responseText;
+      	$("_fsb_label_").innerText = fname;
+      	$("_fsb_edit_ta_").focus();
+      } else meldung("FEHLER: "+xhr.responseText);}
     xhr.open("GET", fname, true);
     xhr.send(null);}}
 function doUpload() {
@@ -159,9 +163,11 @@ function uploadFile() {
   var datei = $("_fsb_finp_");
   xhr = new XMLHttpRequest();
   xhr.onload=()=>{
-    getList($("_fsb_t_file_").value);
-    $("_fsb_t_file_").value = "";
-    $("_fsb_finp_").value = "";}
+  	if (xhr.status==200){
+    	getList($("_fsb_t_file_").value);
+    	$("_fsb_t_file_").value = "";
+    	$("_fsb_finp_").value = "";
+    } else meldung("FEHLER: "+xhr.responseText);}
   xhr.onloadend=()=>{aniStop();}
   xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
   xhr.upload.onprogress=(e)=>{updProgress(e);}
@@ -177,7 +183,10 @@ function doSave(forceLoad=false) {
   aniStart();
   var ed = $("_fsb_edit_ta_");
   xhr = new XMLHttpRequest();
-  xhr.onload=()=>{if (!fileExists(fname)||forceLoad){getList(fname);}}
+  xhr.onload=()=>{
+		if (xhr.status==200){
+			if (!fileExists(fname)||forceLoad) getList(fname);
+		} else meldung("FEHLER: "+xhr.responseText);}
   xhr.onloadend=()=>{aniStop();}
   xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
   var formData = new FormData();
@@ -193,7 +202,9 @@ function doDelete() {
 function deleteFile(file) {
   aniStart();
   xhr = new XMLHttpRequest();
-  xhr.onload=()=>{getList();}
+  xhr.onload=()=>{
+		if (xhr.status==200) getList();
+		else meldung("FEHLER: "+xhr.responseText);}  
   xhr.onloadend=()=>{aniStop();}
   xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
   var formData = new FormData();
@@ -206,7 +217,11 @@ function doNewFile() {
   if (!validFName(fname)){meldung("Bitte gültigen Dateinamen angeben (keine Sonderzeichen)!");return;}
   aniStart();
   xhr = new XMLHttpRequest();
-  xhr.onload=()=>{$("_fsb_t_file_").value = "";getList(fname);}
+  xhr.onload=()=>{
+		if (xhr.status==200){
+			$("_fsb_t_file_").value = "";
+			getList(fname);
+		} else meldung("FEHLER: "+xhr.responseText);}  
   xhr.onloadend=()=>{aniStop();}
   xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
   if (!fname.startsWith("/")){fname = "/" + fname;}
@@ -226,11 +241,19 @@ function doCopy() {
   if (!validFName(newName)){meldung("Bitte gültigen Dateinamen angeben (keine Sonderzeichen)!");return;}
   if (!newName.startsWith("/")) newName = "/" + newName;
   if (newName === oldName) {meldung("Alter und neuer Dateiname sind gleich...?");return;}
-  frage("Kopieren von Datei '" + oldName + "' nach '" + newName + "'?",(()=>{copyFile(oldName,newName);}));}
+  if (fileExists(newName)) {
+ 		frage(newName + " existiert bereits. Datei überschreiben?",(function(){copyFile(oldName,newName);}));
+  } else {
+  	frage("Kopieren von Datei '" + oldName + "' nach '" + newName + "'?",(()=>{copyFile(oldName,newName);}));
+  }}
 function copyFile(oldf,newf) {
   aniStart();
   xhr = new XMLHttpRequest();
-  xhr.onload=()=>{$("_fsb_t_file_").value = "/";getList(newf);}
+  xhr.onload=()=>{
+  	if (xhr.status==200){
+  		$("_fsb_t_file_").value = "";
+  		getList(newf);
+  	} else meldung("FEHLER: "+xhr.responseText);}
   xhr.onloadend=()=>{aniStop();}
   xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
   var formData = new FormData();
@@ -254,7 +277,11 @@ function doRename() {
 function renameFile(oldf,newf) {
   aniStart();
   xhr = new XMLHttpRequest();
-  xhr.onload=()=>{$("_fsb_t_file_").value = "/";getList(newf);}
+  xhr.onload=()=>{
+		if (xhr.status==200){
+			$("_fsb_t_file_").value = "";
+			getList(newf);
+		} else meldung("FEHLER: "+xhr.responseText);}  
   xhr.onloadend=()=>{aniStop();}
   xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
   var formData = new FormData();
@@ -284,9 +311,11 @@ function extractFile(fname,fexname) {
   aniStart();
   xhr = new XMLHttpRequest();
   xhr.onload=()=>{
-		$("_fsb_edit_ta_").value = xhr.responseText;
-		$("_fsb_label_").innerText = fexname; 
-    doSave(true);}	// async doSave() will do the rest
+		if (xhr.status==200){
+			$("_fsb_edit_ta_").value = xhr.responseText;
+			$("_fsb_label_").innerText = fexname; 
+    	doSave(true);  // async doSave() will do the rest
+    } else meldung("FEHLER: "+xhr.responseText);}  
   xhr.onloadend=()=>{aniStop();}
   xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
   xhr.open("GET", fname, true);

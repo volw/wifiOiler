@@ -22,12 +22,12 @@
 // _DISPLAY_AVAILABLE_: wenn undefiniert, wird etwas Speicherplatz (7 KB) gespart - ansonsten keine Auswirkung (auch wenn kein Display angeschl. ist)
 // _NO_PUMP_: nur während Entwicklung sinnvoll: Pumpe wird dauerhaft deaktiviert, damit's nicht ständig piept
 // _CAPTIVE_PORTAL_: Access Point wird als Captive Portal erstellt (wie Anmeldeseite eines Hotspots z.B. in Hotels)
-
+// _NO_OLD_FILES_: wenn definiert, wird beim Update keine vorh. Datei mit Endung .old gesichert
 #define VERSION "4.2.030"
 #define _DISPLAY_AVAILABLE_
 //#define _NO_PUMP_
 #define _CAPTIVE_PORTAL_
-
+#define _NO_OLD_FILES_
 
 #define LOG_FILE_NAME "/myLogger.txt"
 // Log wird nicht "rund"-geschrieben - wenn größer (check beim Start), dann wird gelöscht!

@@ -61,7 +61,9 @@
 	  function getInfo(){
 	  	aniStart();
 	    var xhr=new XMLHttpRequest();
-			xhr.onload=()=>{createInfoTable(xhr.responseText);}
+			xhr.onload=()=>{
+				if (xhr.status==200) createInfoTable(xhr.responseText);
+				else meldung("FEHLER "+xhr.responseText);}
   		xhr.onloadend=(e)=>{aniStop();}
   		xhr.onerror=(e)=>{meldung("FEHLER: "+xhr.statusText);}
       xhr.open("GET","/info",true);
@@ -69,7 +71,9 @@
 	  function getFiles(){
 	  	aniStart();
 	    var xhr=new XMLHttpRequest();
-			xhr.onload=()=>{createFileTable(xhr.responseText)}
+			xhr.onload=()=>{
+				if (xhr.status==200) createFileTable(xhr.responseText)
+				else meldung("FEHLER "+xhr.responseText);}
   		xhr.onloadend=(e)=>{aniStop();}
   		xhr.onerror=(e)=>{meldung("FEHLER: "+xhr.statusText);}
 	    xhr.open("GET","/list?dir",true);

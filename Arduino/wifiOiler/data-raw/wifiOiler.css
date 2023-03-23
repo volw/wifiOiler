@@ -20,8 +20,6 @@ a {
 	color: white;
 	text-decoration: none;
 	font-size: 1.3em;
-}
-a:hover {
 	cursor: pointer;
 }
 a:active {
