@@ -43,7 +43,6 @@ function init() {
     if (e.keyCode == 13) {
       e.preventDefault();
       var ed = $("_fsb_edit_ta_");
-      //e.stopPropagation();
       var indent = getIndentation(ed);
       document.execCommand('insertText',true,'\n'+' '.repeat(indent));
       ed.scrollTop = scrollPos;
@@ -66,13 +65,11 @@ function init() {
   });
 }
 function getList(fname = ""){
-	//console.log("enter getList(\""+fname+"\")");
 	activeEntry = null;
 	aniStart();
   xhr = new XMLHttpRequest();
   xhr.onload = (e) => {
     var strJSON = xhr.responseText;
-    //if (strJSON == "") {meldung("getList: strJSON ist leer - wie kann das denn?");return;}
     if (strJSON != null) addList($("_fsb_f_list_"), "/", JSON.parse(strJSON));
     setActiveEntry(fname);}
   xhr.onloadend=(e)=>{aniStop();}
@@ -168,7 +165,6 @@ function uploadFile() {
   xhr.onloadend=()=>{aniStop();}
   xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
   xhr.upload.onprogress=(e)=>{updProgress(e);}
-  //xhr.upload.addEventListener("progress",updProgress);
   var formData = new FormData();
   formData.append("data", datei.files[0], $("_fsb_t_file_").value);
   xhr.open("POST", "/edit", true);
@@ -290,9 +286,7 @@ function extractFile(fname,fexname) {
   xhr.onload=()=>{
 		$("_fsb_edit_ta_").value = xhr.responseText;
 		$("_fsb_label_").innerText = fexname; 
-		doSave(true);	// async doSave() will do the rest
-		//getList(fexname);
-		}
+    doSave(true);}	// async doSave() will do the rest
   xhr.onloadend=()=>{aniStop();}
   xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
   xhr.open("GET", fname, true);
