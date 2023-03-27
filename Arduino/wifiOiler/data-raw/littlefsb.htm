@@ -90,6 +90,7 @@ function createFilelistEntry(path, name, size){
   entry.dataset.fileName = name;
   entry.dataset.isActive="0";
   entry.dataset.isZipped=name.endsWith(".gz");
+  entry.dataset.fileSize = size;
   var label = document.createElement("span");
   //label.textContent = name + " (" + size + ")";
   label.textContent = name;
@@ -144,7 +145,11 @@ function loadFile(fname) {
       	$("_fsb_edit_ta_").focus();
       } else meldung("FEHLER: "+xhr.responseText);}
     xhr.open("GET", fname, true);
-    xhr.send(null);}}
+    xhr.send(null);}
+  else if (fname.endsWith(".dat") && activeEntry != null){
+    $("_fsb_edit_ta_").value = "- Aufgezeichnete Wegstrecke mit " + ((activeEntry.dataset.fileSize/54).toLocaleString("de-DE",{style:"decimal"})) + " Wegpunkten -";
+    $("_fsb_label_").innerText = fname;
+  }}
 function doUpload() {
   var datei = $("_fsb_finp_");
   if(datei.files.length === 0) {meldung("Bitte Datei ausw&auml;hlen (s.Button),<br> die hochgeladen werden soll");return;}
@@ -180,6 +185,7 @@ function doSave(forceLoad=false) {
   var fname = $("_fsb_label_").innerText;
   if (!fname.startsWith("/")) fname="/"+fname;
   if (fname === "/") {meldung("Keine Datei aktiv, die gesichert werden kann");return;}
+  if (!isTextFile(fname)) {meldung("Datei kann nicht geändert und nicht gesichert werden!");return;}
   aniStart();
   var ed = $("_fsb_edit_ta_");
   xhr = new XMLHttpRequest();
