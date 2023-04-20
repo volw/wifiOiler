@@ -133,6 +133,7 @@
 
 // webhandler
 #define MSG_DBG_WEB_FILE_READ_ERROR       "[handleFileRead] error reading file " // followed by file name (path)
+#define MSG_HTTP_WEB_FILE_NOT_FOUND       "File or link not found: " // followed by file name (path)
 
 // configuration
 #define MSG_DBG_MISSING_CONF_OPTION       "[fworker] missing parameter in ini file: %s\n"   // printf (name of option)

@@ -85,12 +85,15 @@ String getContentType(String fname) {
  *************************************************/
 void handleNotFound(void) {
   if (!handleFileRead(GVwebServer.uri())) {
+    String msg=F(MSG_HTTP_WEB_FILE_NOT_FOUND)+GVwebServer.uri();
     DEBUG_OUT.print(C_FILENOTFOUND);
 #ifdef _CAPTIVE_PORTAL_
     if (GVwifiAPmode && !handleFileRead("index.htm")) {
-      GVwebServer.send(404, TEXT_PLAIN, F("Error serving index.htm"));
-    }
-#endif    
+      GVwebServer.send(404, TEXT_PLAIN, msg);
+    } 
+    else 
+#endif
+    GVwebServer.send(404, TEXT_PLAIN, msg);
   } else DEBUG_OUT.print(C_SERVEFILE);
   DEBUG_OUT.println(GVwebServer.uri());
 }
@@ -204,28 +207,28 @@ void handleConfigPage(void) {
   if (GVwebServer.args() > 0)
   {
     // Konfiguration aus den Argumenten lesen
-    if (GVwebServer.hasArg(F("wts"))) GVoilerConf.wts = GVwebServer.arg(F("wts")).toInt();   // Wartezeit Simulation (s)
-    if (GVwebServer.hasArg(F("nmm"))) GVoilerConf.nmm = GVwebServer.arg(F("nmm")).toInt();   // Normal Mode Meters
-    if (GVwebServer.hasArg(F("rmm"))) GVoilerConf.rmm = GVwebServer.arg(F("rmm")).toInt();   // Regen Mode Meters
-    if (GVwebServer.hasArg(F("omm"))) GVoilerConf.omm = GVwebServer.arg(F("omm")).toInt();   // Offroad Mode Meters
-    if (GVwebServer.hasArg(F("sim"))) GVoilerConf.sim = GVwebServer.arg(F("sim")).toInt();   // Simulation Meter (Notprogramm)
-    if (GVwebServer.hasArg(F("pac"))) GVoilerConf.pac = GVwebServer.arg(F("pac")).toInt();   // Pump Action Count
-    if (GVwebServer.hasArg(F("glf"))) GVoilerConf.glf = GVwebServer.arg(F("glf")).toInt();   // GPS Low-Filter
-    if (GVwebServer.hasArg(F("otk"))) GVoilerConf.otk = GVwebServer.arg(F("otk")).toInt();   // Tank Kapazität
-    if (GVwebServer.hasArg(F("use"))) GVoilerConf.use = GVwebServer.arg(F("use")).toInt();   // ..davon verbraucht
-    if (GVwebServer.hasArg(F("ffn"))) GVoilerConf.ffn = GVwebServer.arg(F("ffn"));           // Firmware FileName
-    if (GVwebServer.hasArg(F("fpw"))) GVoilerConf.fpw = GVwebServer.arg(F("fpw")).toInt();   // Abstand zwischen GPS writes (s)
     if (GVwebServer.hasArg(F("apn"))) GVoilerConf.apn = GVwebServer.arg(F("apn"));           // Access Point Name
     if (GVwebServer.hasArg(F("app"))) GVoilerConf.app = GVwebServer.arg(F("app"));           // Access Point Passwort
+    if (GVwebServer.hasArg(F("bac"))) GVoilerConf.bac = GVwebServer.arg(F("bac"));           // Basic Authentication Credentials "user:password"
+    if (GVwebServer.hasArg(F("ffn"))) GVoilerConf.ffn = GVwebServer.arg(F("ffn"));           // Firmware FileName
+    if (GVwebServer.hasArg(F("fpw"))) GVoilerConf.fpw = GVwebServer.arg(F("fpw")).toInt();   // Abstand zwischen GPS writes (s)
+    if (GVwebServer.hasArg(F("gdl"))) GVoilerConf.gdl = GVwebServer.arg(F("gdl"))=="1";      // Bool: GPS logging
+    if (GVwebServer.hasArg(F("glf"))) GVoilerConf.glf = GVwebServer.arg(F("glf")).toInt();   // GPS Low-Filter
+    if (GVwebServer.hasArg(F("gts"))) GVoilerConf.gts = GVwebServer.arg(F("gts"));           // GPS Track Filename Suffix
+    if (GVwebServer.hasArg(F("lgf"))) GVoilerConf.lgf = GVwebServer.arg(F("lgf"))=="1";      // Bool: logging to file
+    if (GVwebServer.hasArg(F("lgs"))) GVoilerConf.lgs = GVwebServer.arg(F("lgs"))=="1";      // Bool: logging to Serial
+    if (GVwebServer.hasArg(F("nmm"))) GVoilerConf.nmm = GVwebServer.arg(F("nmm")).toInt();   // Normal Mode Meters
+    if (GVwebServer.hasArg(F("omm"))) GVoilerConf.omm = GVwebServer.arg(F("omm")).toInt();   // Offroad Mode Meters
+    if (GVwebServer.hasArg(F("otk"))) GVoilerConf.otk = GVwebServer.arg(F("otk")).toInt();   // Tank Kapazität
+    if (GVwebServer.hasArg(F("pac"))) GVoilerConf.pac = GVwebServer.arg(F("pac")).toInt();   // Pump Action Count
+    if (GVwebServer.hasArg(F("rmm"))) GVoilerConf.rmm = GVwebServer.arg(F("rmm")).toInt();   // Regen Mode Meters
+    if (GVwebServer.hasArg(F("sim"))) GVoilerConf.sim = GVwebServer.arg(F("sim")).toInt();   // Simulation Meter (Notprogramm)
     if (GVwebServer.hasArg(F("uhn"))) GVoilerConf.uhn = GVwebServer.arg(F("uhn"));           // Upload Host Name
     if (GVwebServer.hasArg(F("uhp"))) GVoilerConf.uhp = GVwebServer.arg(F("uhp")).toInt();   // Upload Host Port
     if (GVwebServer.hasArg(F("url"))) GVoilerConf.url = GVwebServer.arg(F("url"));           // Upload Host URL
-    if (GVwebServer.hasArg(F("bac"))) GVoilerConf.bac = GVwebServer.arg(F("bac"));           // Basic Authentication Credentials "user:password"
-    if (GVwebServer.hasArg(F("lgf"))) GVoilerConf.lgf = GVwebServer.arg(F("lgf"))=="1";      // Bool: logging to file
-    if (GVwebServer.hasArg(F("lgs"))) GVoilerConf.lgs = GVwebServer.arg(F("lgs"))=="1";      // Bool: logging to Serial
-    if (GVwebServer.hasArg(F("gdl"))) GVoilerConf.gdl = GVwebServer.arg(F("gdl"))=="1";      // Bool: GPS logging
+    if (GVwebServer.hasArg(F("use"))) GVoilerConf.use = GVwebServer.arg(F("use")).toInt();   // ..davon verbraucht
     if (GVwebServer.hasArg(F("wso"))) GVoilerConf.wso = GVwebServer.arg(F("wso"))=="1";      // Bool: autom. WiFi-Start
-    if (GVwebServer.hasArg(F("gts"))) GVoilerConf.gts = GVwebServer.arg(F("gts"));           // GPS Track Filename Suffix
+    if (GVwebServer.hasArg(F("wts"))) GVoilerConf.wts = GVwebServer.arg(F("wts")).toInt();   // Wartezeit Simulation (s)
     GVoilerConf.write();
     checkFilesystemSpace(); // GVcurrentfpw wird dort ggf. korrigiert
   }
