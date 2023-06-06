@@ -81,8 +81,6 @@
 #define MSG_DBG_ERROR_OPEN_OILCNT_FILE    "[TriggerPump] Fehler beim Öffnen der OilCounter Datei"
 
 // update
-#define MSG_DBG_FILE_CHECK_REMOVE_ERROR   "[checkOldFiles] Fehler beim Löschen alter Update Datei: "
-#define MSG_DBG_FILE_CHECK_REMOVE_SUCCESS "[checkOldFiles] Alte Update Datei gelöscht: "
 #define MSG_DBG_UPDATE_INIT               "[checkforUpdate] suche Firmware Datei " // followed by name of firmware file
 #define MSG_DBG_UPDATE_START              "[checkforUpdate] Firmware gefunden - starte Update.."
 #define MSG_DBG_UPDATE_ERROR              "[checkforUpdate] FEHLER"

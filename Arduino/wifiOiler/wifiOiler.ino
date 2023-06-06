@@ -41,6 +41,7 @@ void setup()
   digitalWrite(BUTTON_PIN, LOW);
     
   Serial.begin(9600);
+  delay(100); // = less garbage...
   Serial.println();
 
   GVmyDisplay.Init();
