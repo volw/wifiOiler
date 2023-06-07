@@ -23,7 +23,7 @@ void setupGPS(void)
 {
   // GPS initialisieren:
   if (!GVmaintenanceMode) {
-    DEBUG_OUT.println(F(MSG_DBG_SETUP_GPS_INIT));
+    debugPrintf(PSTR(MSG_DBG_SETUP_GPS_INIT));
     gpsSerial.begin(9600);  // einige GPS Module senden nur mit 4800 baud...
     delay(100);
   }
@@ -213,7 +213,7 @@ bool createDateFilename(uint32_t date, uint32_t time) {
 
   time /= 10000;  // Sekunden und Millisekunden raus...
   GVgpsTrackFilename = GVoilerConf.gts + String(buffer) + "-" + ((time < 1000) ? "0" + String(time) : String(time));
-  DEBUG_OUT.print(F(MSG_DBG_GPS_DATE_TIME)); DEBUG_OUT.println(GVgpsTrackFilename);
+  debugPrintf(PSTR(MSG_DBG_GPS_DATE_TIME), GVgpsTrackFilename);
   GVgpsTrackFilename = "/" + GVgpsTrackFilename + ".dat";
  
   return true;
@@ -247,12 +247,12 @@ void checkMovement()
     if (isMoving() && !GVlastMovingState)
     {
       GVlastMovingState = true;
-      DEBUG_OUT.println(F(MSG_DBG_MOVEMENT_MOTO_MOVING));
+      debugPrintf(PSTR(MSG_DBG_MOVEMENT_MOTO_MOVING));
     }
     if (isHalting() && GVlastMovingState)
     {
       GVlastMovingState = false;
-      DEBUG_OUT.println(F(MSG_DBG_MOVEMENT_MOTO_STOPPED));
+      debugPrintf(PSTR(MSG_DBG_MOVEMENT_MOTO_STOPPED));
     }    
     GVmyDisplay.PrintMoveState(GVlastMovingState);
   }

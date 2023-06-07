@@ -32,16 +32,16 @@ int isServerAvailable(void) {
   int httpCode = GVhttp.GET();  // +++ check return codes in source
   GVhttp.end();
   
-  DEBUG_OUT.printf(PSTR(MSG_DBG_CHECK_URL_START), cURL.c_str());
+  debugPrintf(PSTR(MSG_DBG_CHECK_URL_START), cURL.c_str());
   IPAddress remoteHostIP;
   if (WiFi.hostByName(GVoilerConf.uhn.c_str(), remoteHostIP, 5000))
   {
-    DEBUG_OUT.printf(PSTR(MSG_DBG_CHECK_URL_SERVER_IP), GVoilerConf.uhn.c_str(), remoteHostIP.toString().c_str());
+    infoPrintf(PSTR(MSG_DBG_CHECK_URL_SERVER_IP), GVoilerConf.uhn.c_str(), remoteHostIP.toString().c_str());
   }
   if (httpCode == 401) {
-    DEBUG_OUT.println(F(MSG_DBG_CHECK_URL_HTTP_ERR_401));
+    errorPrintf(PSTR(MSG_DBG_CHECK_URL_HTTP_ERR_401));
   } else if (httpCode <= 0) {
-    DEBUG_OUT.printf(PSTR(MSG_DBG_CHECK_URL_ERROR), GVhttp.errorToString(httpCode).c_str());
+    errorPrintf(PSTR(MSG_DBG_CHECK_URL_ERROR), GVhttp.errorToString(httpCode).c_str());
   } else {
     DEBUG_OUT.print("httpCode = ");
     DEBUG_OUT.println(httpCode);
@@ -60,7 +60,7 @@ bool isFileThere(String fname) {
   while (httpCode != 200 && numTrials > 0) {
     GVhttp.begin(GVwifiClient ,getOilerbaseURL() + "?filename="+fname);
     httpCode = GVhttp.GET();
-    DEBUG_OUT.printf(PSTR(MSG_DBG_FILECHECK_RESULT), httpCode);
+    debugPrintf(PSTR(MSG_DBG_FILECHECK_RESULT), httpCode);
     GVhttp.end();
     numTrials--;
   }
@@ -78,7 +78,7 @@ bool sendFile(String fname) {
   GVoutFile = _FILESYS.open("/"+fname, "r");
   if (GVoutFile) {
     if (GVwifiClient.connect(GVoilerConf.uhn, GVoilerConf.uhp)) {
-      DEBUG_OUT.println(F(MSG_DBG_SEND_FILE_START));
+      debugPrintf(PSTR(MSG_DBG_SEND_FILE_START));
       //------------------- Header -------------------------------------
       GVwifiClient.println("POST " + GVoilerConf.url + " HTTP/1.1");
       GVwifiClient.println("Host: " + GVoilerConf.uhn+":"+GVoilerConf.uhp);
@@ -108,7 +108,7 @@ bool sendFile(String fname) {
       // read response (avoid http 'error' 499 on nginx)
       while (GVwifiClient.available()) GVwifiClient.read();
       GVwifiClient.stop();
-      DEBUG_OUT.println(F(MSG_DBG_SEND_FILE_COMPLETED));
+      debugPrintf(PSTR(MSG_DBG_SEND_FILE_COMPLETED));
       success = isFileThere(fname);
       if (success) {
         // Datei ist angekommen und kann gelöscht werden:
@@ -117,13 +117,13 @@ bool sendFile(String fname) {
     }
     else 
     {
-      DEBUG_OUT.printf(PSTR(MSG_DBG_SEND_FILE_CONNECT_ERROR), GVoilerConf.uhn.c_str(), GVoilerConf.uhp);
+      errorPrintf(PSTR(MSG_DBG_SEND_FILE_CONNECT_ERROR), GVoilerConf.uhn.c_str(), GVoilerConf.uhp);
     }
     GVoutFile.close();
   }
   else 
   {
-    DEBUG_OUT.printf(PSTR(MSG_DBG_SEND_FILE_FOPEN_ERROR), fname.c_str());
+    errorPrintf(PSTR(MSG_DBG_SEND_FILE_FOPEN_ERROR), fname.c_str());
   }
   return success;
 }
@@ -187,7 +187,7 @@ void handleUpload(void)
     {
       uint8_t uploadOK = 0;
       uint8_t uploadFailed = 0;
-      DEBUG_OUT.println(F(MSG_DBG_TRACK_UPLOAD_START));
+      infoPrintf(PSTR(MSG_DBG_TRACK_UPLOAD_START));
       uploadResponse += F("searching track files...\n"); GVwebServer.handleClient();
       // Track file names: <prefix>yymmdd-hhmm.dat
       Dir dir = _FILESYS.openDir("/"+GVoilerConf.gts);  // GVoilerConf.gts = prefix
@@ -197,32 +197,32 @@ void handleUpload(void)
         
         if (fname.endsWith(".dat") && (fname.length() == (GVoilerConf.gts.length() + 15)))
         {
-          DEBUG_OUT.printf(PSTR(MSG_DBG_TRACK_FILE_FOUND_YES), fname.c_str());
+          debugPrintf(PSTR(MSG_DBG_TRACK_FILE_FOUND_YES), fname.c_str());
           uploadResponse += "...uploading " + fname + "..."; GVwebServer.handleClient();
           GVmyLedx.on(LED_GRUEN);
           if (sendFile(fname))
           {
             GVmyLedx.start LED_TRACK_UPLOAD_SUCCESS;
             uploadOK++;
-            DEBUG_OUT.println(F(MSG_DBG_TRACK_UPLOAD_OK));
+            debugPrintf(PSTR(MSG_DBG_TRACK_UPLOAD_OK));
             uploadResponse += F("OK\n"); GVwebServer.handleClient();
           }
           else 
           {
             GVmyLedx.start LED_TRACK_UPLOAD_FAILED;
             uploadFailed++;
-            DEBUG_OUT.println(F(MSG_DBG_TRACK_UPLOAD_FAILED));
+            errorPrintf(PSTR(MSG_DBG_TRACK_UPLOAD_FAILED));
             uploadResponse += F("FAILED\n"); GVwebServer.handleClient();
           }
           GVmyLedx.delay();
         }
         else
         {
-          DEBUG_OUT.printf(PSTR(MSG_DBG_TRACK_FILE_FOUND_NO), fname.c_str());
+          debugPrintf(PSTR(MSG_DBG_TRACK_FILE_FOUND_NO), fname.c_str());
         }
       }
       if ((uploadOK + uploadFailed) == 0) {
-        uploadResponse = F(MSG_HTTP_NO_TRACKS_FOUND);
+        uploadResponse = String(MSG_HTTP_NO_TRACKS_FOUND)+"-END-";
       }
       else
       {
@@ -231,9 +231,9 @@ void handleUpload(void)
         if (uploadOK > 0) checkFilesystemSpace();
       }
     } else if (httpResult == 401) {   
-      uploadResponse = String(MSG_DBG_CHECK_URL_HTTP_ERR_401) + "\n-END-";
+      uploadResponse = String(MSG_DBG_CHECK_URL_HTTP_ERR_401) + "-END-";
     } else {
-      uploadResponse = String(MSG_DBG_UPLOAD_SERVER_ERROR) + "\n-END-";
+      uploadResponse = String(MSG_DBG_UPLOAD_SERVER_ERROR) + "-END-";
     }
     GVwebServer.handleClient();
   }

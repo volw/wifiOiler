@@ -35,14 +35,13 @@ bool checkforUpdate(bool justCheck, bool reboot) {
 
   String FirmwareFilename = GVoilerConf.ffn;
   if (!FirmwareFilename.startsWith("/")) FirmwareFilename = "/" + GVoilerConf.ffn;
-  DEBUG_OUT.print(F(MSG_DBG_UPDATE_INIT));
-  DEBUG_OUT.println(FirmwareFilename);
+  debugPrintf(PSTR(MSG_DBG_UPDATE_INIT), FirmwareFilename.c_str());
   if (justCheck) return(_FILESYS.exists(FirmwareFilename));
   
   // ist justCheck == false, wird Firmware eingespielt
   if (_FILESYS.exists(FirmwareFilename))
   {
-    DEBUG_OUT.println(F(MSG_DBG_UPDATE_START));
+    infoPrintf(PSTR(MSG_DBG_UPDATE_START));
     GVmyDisplay.PrintMessage("Firmware\nfound:\nupdating..");
     File file = _FILESYS.open(FirmwareFilename, "r");
 
@@ -50,31 +49,29 @@ bool checkforUpdate(bool justCheck, bool reboot) {
       Update.onProgress(updateCallback);
       if (!Update.begin(file.size(), U_FLASH)) {
         Update.printError(DEBUG_OUT);
-        DEBUG_OUT.println(F(MSG_DBG_UPDATE_ERROR));
+        errorPrintf(PSTR(MSG_DBG_UPDATE_ERROR));
       } else {
         GVmyLedx.on(LED_ROT);
         Update.writeStream(file);
         update = Update.end();
         if (update){
-          DEBUG_OUT.println(F(MSG_DBG_UPDATE_SUCCESS));
+          infoPrintf(PSTR(MSG_DBG_UPDATE_SUCCESS));
         } else {
-          DEBUG_OUT.print(F(MSG_DBG_UPDATE_GETERROR));
-          DEBUG_OUT.println(Update.getError());
+          errorPrintf(PSTR(MSG_DBG_UPDATE_GETERROR), Update.getError());
         }
       }
       file.close();      
       GVmyLedx.off();
     }
 
-    DEBUG_OUT.print(F(MSG_DBG_REMOVING_FIRMWARE_FILE));
-    DEBUG_OUT.println(FirmwareFilename);
+    debugPrintf(PSTR(MSG_DBG_REMOVING_FIRMWARE_FILE), FirmwareFilename.c_str());
     if (!_FILESYS.remove(FirmwareFilename)) 
-      DEBUG_OUT.println(F(MSG_DBG_ERROR_DEL_FIRMWARE_FILE));
+      errorPrintf(PSTR(MSG_DBG_ERROR_DEL_FIRMWARE_FILE));
 
     if (update && reboot)
     {
       GVmyDisplay.PrintMessage(F("Reboot..."));
-      DEBUG_OUT.println(F(MSG_DBG_BOOT_AFTER_UPDATE));
+      infoPrintf(PSTR(MSG_DBG_BOOT_AFTER_UPDATE));
       delay(10);
       oilerReboot();
     }
@@ -82,7 +79,7 @@ bool checkforUpdate(bool justCheck, bool reboot) {
   }
   else 
   {
-    DEBUG_OUT.println(MSG_DBG_NO_FIRMWARE_FILE);
+    debugPrintf(PSTR(MSG_DBG_NO_FIRMWARE_FILE));
   }
   return update;
 }
@@ -103,8 +100,8 @@ bool getUpdateInfo(void)
   GVhttp.begin(GVwifiClient, url);
 
   int httpCode = GVhttp.GET();
-  DEBUG_OUT.printf(PSTR(MSG_DBG_UPDATE_SERVER_URL), url.c_str());
-  DEBUG_OUT.printf(PSTR(MSG_DBG_UPD_INFO_GET_RET_CODE), httpCode);
+  debugPrintf(PSTR(MSG_DBG_UPDATE_SERVER_URL), url.c_str());
+  debugPrintf(PSTR(MSG_DBG_UPD_INFO_GET_RET_CODE), httpCode);
   if (httpCode > 0) {
     // HTTP header has been send and Server response header has been handled
     result = GVhttp.getString();
@@ -118,8 +115,7 @@ bool getUpdateInfo(void)
       while (result.charAt(nPos) < 32) nPos--;
       if (nPos < nStart) result = result.substring(0, nPos+1);
       
-      DEBUG_OUT.print(F(MSG_DBG_UPD_INFO_GET_RET_TEXT));
-      DEBUG_OUT.println(result);
+      debugPrintf(PSTR(MSG_DBG_UPD_INFO_GET_RET_TEXT), result);
 
       while ((nPos=result.indexOf(';')) > 0) {
         GVupdateFiles.push_back({result.substring(0, nPos),_UF_INITIAL});
@@ -130,7 +126,7 @@ bool getUpdateInfo(void)
   }
   else
   {
-    DEBUG_OUT.printf(PSTR(MSG_DBG_UPD_INFO_GET_ERROR), GVhttp.errorToString(httpCode).c_str());
+    errorPrintf(PSTR(MSG_DBG_UPD_INFO_GET_ERROR), GVhttp.errorToString(httpCode).c_str());
   }
   GVhttp.end(); 
   return (GVupdateFiles.size() > 0);
@@ -146,12 +142,12 @@ bool downloadFile(String subPath)
   int nPos = subPath.lastIndexOf("/");
   //save file to temp. name (to be sure, that complete update has been uploaded):
   String fname = subPath.substring(nPos)+"$";
-  DEBUG_OUT.printf(PSTR(MSG_DBG_UPD_DOWNLOAD_INFO), subPath.c_str(), fname.c_str());
+  debugPrintf(PSTR(MSG_DBG_UPD_DOWNLOAD_INFO), subPath.c_str(), fname.c_str());
 
   GVhttp.begin(GVwifiClient, url);
   // start connection and send HTTP header
   int httpCode = GVhttp.GET();
-  DEBUG_OUT.printf(PSTR(MSG_DBG_UPD_DOWNLOAD_RET_CODE), httpCode);
+  debugPrintf(PSTR(MSG_DBG_UPD_DOWNLOAD_RET_CODE), httpCode);
   
   if (httpCode > 0) {
     // HTTP header has been send and Server response header has been handled
@@ -204,11 +200,11 @@ bool downloadFile(String subPath)
         GVmyLedx.delay();
         result = true;
       } else {
-        DEBUG_OUT.println(F(MSG_DBG_UPD_DOWNLOAD_OPEN_ERROR));
+        errorPrintf(PSTR(MSG_DBG_UPD_DOWNLOAD_OPEN_ERROR));
       }
     }
     else if (httpCode <= 0)
-      DEBUG_OUT.printf(PSTR(MSG_DBG_UPD_DOWNLOAD_GET_ERROR), GVhttp.errorToString(httpCode).c_str());
+      errorPrintf(PSTR(MSG_DBG_UPD_DOWNLOAD_GET_ERROR), GVhttp.errorToString(httpCode).c_str());
   }
   GVhttp.end();  
   return result;
@@ -231,13 +227,12 @@ bool handleUpdateFiles(void){
   
       if (downloadFile(GVupdateFiles[i].fileName)){
         GVupdateFiles[i].state = _UF_UPLOADOK;
-        DEBUG_OUT.print(F(MSG_DBG_UPD_DOWNLOAD_COMPLETE));
-        DEBUG_OUT.println(GVupdateFiles[i].fileName);
+        debugPrintf(PSTR(MSG_DBG_UPD_DOWNLOAD_COMPLETE), GVupdateFiles[i].fileName.c_str());
         GVupdateMessage += " (OK)<br>"; 
         GVwebServer.handleClient();
       } else {
         GVupdateFiles[i].state = _UF_UPLOAD_ERROR;
-        DEBUG_OUT.println(F(MSG_DBG_UPD_DOWNLOAD_ERROR));
+        errorPrintf(PSTR(MSG_DBG_UPD_DOWNLOAD_ERROR));
         GVupdateMessage += " (ERROR)<br>"; 
         GVwebServer.handleClient();
         result = false;
@@ -259,15 +254,13 @@ bool renameUpdateFiles(void){
   for (uint8_t i = 0; i < GVupdateFiles.size() && result; i++){
     int16_t nPos = GVupdateFiles[i].fileName.lastIndexOf("/");
     String fname = GVupdateFiles[i].fileName.substring(nPos);
-    DEBUG_OUT.print(MSG_DBG_RENAME_FILE_INIT);
-    DEBUG_OUT.println(fname);
+    debugPrintf(PSTR(MSG_DBG_RENAME_FILE_INIT), fname.c_str());
     
     if (_FILESYS.exists(fname+".old"))
       result = (_FILESYS.remove(fname+".old"));
 
     if (!result){
-      DEBUG_OUT.print(F(MSG_DBG_OLD_FILE_REMOVE_ERROR));
-      DEBUG_OUT.println(fname+".old");
+      errorPrintf(PSTR(MSG_DBG_OLD_FILE_REMOVE_ERROR), fname.c_str());
     } else {
       #ifdef _NO_OLD_FILES_      
         if (_FILESYS.exists(fname)) result = _FILESYS.remove(fname);
@@ -276,14 +269,14 @@ bool renameUpdateFiles(void){
       #endif      
       if (!result){
         #ifdef _NO_OLD_FILES_      
-          DEBUG_OUT.print(F(MSG_DBG_OLD_FILE_REMOVE_ERROR));DEBUG_OUT.println(fname);
+          errorPrintf(PSTR(MSG_DBG_OLD_FILE_REMOVE_ERROR), fname.c_str());
         #else
-          DEBUG_OUT.printf(PSTR(MSG_DBG_OLD_FILE_RENAME_ERROR), fname.c_str(), fname.c_str());
+          errorPrintf(PSTR(MSG_DBG_OLD_FILE_RENAME_ERROR), fname.c_str(), fname.c_str());
         #endif
       } else {
         result = _FILESYS.rename(fname+"$", fname);
         if (!result)
-          DEBUG_OUT.printf(PSTR(MSG_DBG_TMP_FILE_RENAME_ERROR), fname.c_str(), fname.c_str());
+          errorPrintf(PSTR(MSG_DBG_TMP_FILE_RENAME_ERROR), fname.c_str(), fname.c_str());
       }
     }
   }
@@ -299,8 +292,7 @@ uint8_t deleteUpdateFiles(void){
   for (uint8_t i = 0; i < GVupdateFiles.size(); i++){
     int16_t nPos = GVupdateFiles[i].fileName.lastIndexOf("/");
     String fname = "/" + GVupdateFiles[i].fileName.substring(nPos) + "$";
-    DEBUG_OUT.print(F(MSG_DBG_UPD_FILE_DELETE_INIT));
-    DEBUG_OUT.print(fname);
+    debugPrintf(PSTR(MSG_DBG_UPD_FILE_DELETE_INIT), fname.c_str());
     if (_FILESYS.exists(fname))
       if (!_FILESYS.remove(fname))
         delErrorCount++;
@@ -335,7 +327,7 @@ void handleUpdate(void)
     GVupdateResult = UPD_NOT_ACTIVE;
   
     //erst mal sollte gecheckt werden, ob der Server überhaupt erreichbar ist...
-    DEBUG_OUT.printf(PSTR(MSG_DBG_UPD_CONNECT_INIT));
+    debugPrintf(PSTR(MSG_DBG_UPD_CONNECT_INIT));
    
     httpResult = isServerAvailable();
     if (httpResult == 401) {
@@ -345,8 +337,7 @@ void handleUpdate(void)
     }
 
     // Update Infos vom Server besorgen:
-    DEBUG_OUT.print(F(MSG_DBG_GET_UPDATE_INFO));
-    DEBUG_OUT.println(GVoilerConf.uhn);
+    debugPrintf(PSTR(MSG_DBG_GET_UPDATE_INFO), GVoilerConf.uhn.c_str());
 
     if (!getUpdateInfo())
     {

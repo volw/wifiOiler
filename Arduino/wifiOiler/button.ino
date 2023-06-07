@@ -29,9 +29,9 @@ void setupButton(void)
   {
     GVmaintenanceMode = true;
     GVmyDisplay.setMaintenanceMode(true);
-    DEBUG_OUT.println(F(MSG_DBG_BUTTON_PRESSED_ON_START));
+    debugPrintf(PSTR(MSG_DBG_BUTTON_PRESSED_ON_START));
     GVmyLedx.start LED_START_BUTTON_PRESSED;
-    DEBUG_OUT.println(F(MSG_DBG_ENTER_MAINTENANCE_MODE));
+    infoPrintf(PSTR(MSG_DBG_ENTER_MAINTENANCE_MODE));
     //GVmyLedx.printInfo(DEBUG_OUT);
     GVmyLedx.delay();
     while (digitalRead(BUTTON_PIN) == HIGH) yield();  // warten, bis Button losgelassen wird
@@ -65,12 +65,12 @@ void checkButton()
       {
         if (GVmillisPressed + BUTTON_LONG_DURATION < millis())
         {
-          DEBUG_OUT.print(F(MSG_DBG_BUTTON_LONG_PRESSED));
+          debugPrintf(PSTR(MSG_DBG_BUTTON_LONG_PRESSED));
           toggleWiFi();
         }
         else
         {
-          DEBUG_OUT.println(F(MSG_DBG_BUTTON_SHORT_PRESSED));
+          debugPrintf(PSTR(MSG_DBG_BUTTON_SHORT_PRESSED));
           if (!GVmyDisplay.Acknowledge())
             setNewMode((tPumpMode)(GVpumpMode + 1)); // check in setNewMode()    
         }

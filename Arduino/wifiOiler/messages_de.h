@@ -23,115 +23,115 @@
 // wifiOiler.ino
 #define MSG_ERROR_INITIALISING_FILESYSTEM "Fehler bei Initialisierung des Dateisystems!"
 #define MSG_ERROR_INITIALISING_LOGGER     "Fehler bei Initialisierung des (LittleFS) Logger!"
-#define MSG_CHECK_LOG_SIZE_DELETE         "[setup] Log-Datei war zu groß und musste gelöscht werden"
-#define MSG_PROGRESS_STARTING_INIT        "********** Starting..."
-#define MSG_PROGRESS_STARTING_END         "-------- Initialisierung beendet."
-#define MSG_VERSION_MESSAGE_1             "wifiOiler, Version "       // followed by version + MSG_VERSION_MESSAGE_2
-#define MSG_VERSION_MESSAGE_2             " auf MCU "                 // followed by board type
-#define MSG_ATT_PUMP_DEACTIVATED          "ACHTUNG: Pumpe dauerhaft deaktiviert!!"
+#define MSG_CHECK_LOG_SIZE_DELETE         "Log-Datei war zu groß und musste gelöscht werden\n"
+#define MSG_PROGRESS_STARTING_INIT        "********** Starting...\n"
+#define MSG_PROGRESS_STARTING_END         "-------- Initialisierung beendet.\n"
+#define MSG_VERSION_MESSAGE               "wifiOiler, Version %s auf MCU %s\n"        // version, board type
+#define MSG_ATT_PUMP_DEACTIVATED          "ACHTUNG: Pumpe dauerhaft deaktiviert!!\n"
 
 // FSBrowser
-#define MSG_DBG_FS_FREE_SPACE_INFO        "[checkFilesystemSpace] LittleFS free: %d bytes = %d GPS records (%dh:%02d)\n" // freespace, gpsrec, gpsmin/60, gpsmin%60
-#define MSG_DBG_RECORDING_STOPPED         "[checkFilesystemSpace] track Aufzeichnung gestoppt"
-#define MSG_DBG_RECORDING_CONTINUED       "[checkFilesystemSpace] track Aufzeichnung fortgesetzt"
-#define MSG_HTML_TARGET_FILE_EXISTS       "Zieldatei existiert bereits"
-#define MSG_HTML_SOURCE_FILE_NOT_EXISTS   "Quelldatei existiert nicht"
+#define MSG_DBG_FS_FREE_SPACE_INFO        "LittleFS free: %d bytes = %d GPS records (%dh:%02d)\n" // freespace, gpsrec, gpsmin/60, gpsmin%60
+#define MSG_DBG_RECORDING_STOPPED         "track Aufzeichnung gestoppt\n"
+#define MSG_DBG_RECORDING_CONTINUED       "track Aufzeichnung fortgesetzt\n"
+#define MSG_HTML_TARGET_FILE_EXISTS       "Zieldatei existiert bereits\n"
+#define MSG_HTML_SOURCE_FILE_NOT_EXISTS   "Quelldatei existiert nicht\n"
 #define MSG_HTML_ERROR_OPEN_SOURCE        "FEHLER: Quelldatei konnte nicht geöffnet werden"
 #define MSG_HTML_ERROR_OPEN_TARGET        "FEHLER: Zieldatei konnte nicht geöffnet werden"
 #define MSG_HTML_ERROR_RENAMING_FILE      "FEHLER: Datei konnte nicht umbenannt werden"
 #define MSG_HTML_ERROR_CREATING_FILE      "FEHLER: Datei konnte nicht erstellt werden"
-#define MSG_DBG_HANDLEFILEDELETE_PATH     "[handleFileDelete] "       // followed by path/name of file to delete
-#define MSG_DBG_HANDLEFILEUPLOAD_URI      "[handleFileUpload] GVwebServer.uri() != /edit"
-#define MSG_DBG_HANDLEFILEUPLOAD_NAME     "[handleFileUpload] Name: " // followed by (upload) filename
-#define MSG_DBG_HANDLEFILEUPLOAD_SIZE     "[handleFileUpload] Größe: " // followed by total (upload) file size
+#define MSG_DBG_HANDLEFILEDELETE_PATH     "%s\n"       // followed by path/name of file to delete
+#define MSG_DBG_HANDLEFILEUPLOAD_URI      "GVwebServer.uri() != /edit\n"
+#define MSG_DBG_HANDLEFILEUPLOAD_NAME     "Name: %s\n" // followed by (upload) filename
+#define MSG_DBG_HANDLEFILEUPLOAD_SIZE     "Größe: %d\n" // followed by total (upload) file size
 
 // GPS
-#define MSG_DBG_SETUP_GPS_INIT            "[setupGPS] GPS Modul wird initialisiert..."
-#define MSG_DBG_GPS_SWITCH_OFF_PUMP       "[checkGPSdata] Dauerpumpen wird ausgeschaltet..."
-#define MSG_DBG_GPS_DATE_TIME             "[createDateFilename] Datum/Zeit: " // followed by recently created track file name
-#define MSG_DBG_MOVEMENT_MOTO_MOVING      "[checkMovement] Info: Fahrzeug bewegt sich jetzt."
-#define MSG_DBG_MOVEMENT_MOTO_STOPPED     "[checkMovement] Info: Fahrzeug wurde gestoppt."
+#define MSG_DBG_SETUP_GPS_INIT            "GPS Modul wird initialisiert...\n"
+#define MSG_DBG_GPS_SWITCH_OFF_PUMP       "Dauerpumpen wird ausgeschaltet...\n"
+#define MSG_DBG_GPS_DATE_TIME             "Datum/Zeit: %s\n"    // followed by recently created track file name
+#define MSG_DBG_MOVEMENT_MOTO_MOVING      "Info: Fahrzeug bewegt sich jetzt.\n"
+#define MSG_DBG_MOVEMENT_MOTO_STOPPED     "Info: Fahrzeug wurde gestoppt.\n"
 
 // WiFi
-#define MSG_DBG_ADD_WIFI_TO_MULTIWIFI     "[readWifiData] folgendes WLAN wird gesucht: " // followed by SSID from file "/wifi.ini"
-#define MSG_DBG_START_SEARCHING_WIFI      "[setupWiFi] suche WLAN.."
-#define MSG_DBG_TRY_CONNECT_WIFI          "[setupWiFi] versuche, mit bekanntem WLAN zu verbinden "
-#define MSG_DBG_WIFI_NOT_CONNECTED        "[setupWiFi] Keine WLAN Verbindung"
-#define MSG_DBG_NO_WIFI_CONFIGS_FOUND     "[setupWiFi] Keine WLAN Konfiguration(en) gefunden"
-#define MSG_DBG_CONNECT_SUCCESS           "[setupWiFi] verbunden mit '%s', IP:%s\n"  // printf(), SSID, local IP
-#define MSG_DBG_START_ACCCESS_POINT       "[setupWiFi] Erstelle WLAN Access Point '%s' - Kennwort: '%s'\n"	// printf()
-#define MSG_DBG_ACCESS_POINT_IP           "[setupWiFi] IP-Adresse: " // followed by Access Point IP
-#define MSG_DBG_ACCESS_POINT_FAILED       "[setupWiFi] FEHLER: WLAN Access Point konnte nicht erstellt werden!!"
-#define MSG_DBG_MDNS_ERROR                "[setupMDNS] FEHLER: Initialisierung des mDNS Service fehlgeschlagen"
-#define MSG_DBG_MDNS_STARTED              "[setupMDNS] mDNS Service gestartet, verbinde mit 'http://%s.local'\n"
-#define MSG_DBG_STARTING_WIFI             "[toggleWiFi] starte WiFi ..."
-#define MSG_DBG_STOPPING_WIFI             "[toggleWiFi] stoppe WiFi..."
+#define MSG_DBG_ADD_WIFI_TO_MULTIWIFI     "folgendes WLAN wird gesucht: %s\n" // SSID from file "/wifi.ini"
+#define MSG_DBG_START_SEARCHING_WIFI      "suche WLAN..\n"
+#define MSG_DBG_TRY_CONNECT_WIFI          "versuche, mit bekanntem WLAN zu verbinden...\n"
+#define MSG_DBG_WIFI_NOT_CONNECTED        "Keine WLAN Verbindung!\n"
+#define MSG_DBG_NO_WIFI_CONFIGS_FOUND     "Keine WLAN Konfiguration(en) gefunden\n"
+#define MSG_DBG_CONNECT_SUCCESS           "verbunden mit '%s', IP:%s\n"  // SSID, local IP
+#define MSG_DBG_START_ACCCESS_POINT       "Erstelle WLAN Access Point '%s' - Kennwort: '%s'\n"
+#define MSG_DBG_ACCESS_POINT_IP           "IP-Adresse: %s\n" // followed by Access Point IP
+#define MSG_DBG_ACCESS_POINT_FAILED       "FEHLER: WLAN Access Point konnte nicht erstellt werden!!\n"
+#define MSG_DBG_MDNS_ERROR                "FEHLER: Initialisierung des mDNS Service fehlgeschlagen\n"
+#define MSG_DBG_MDNS_STARTED              "mDNS Service gestartet, verbinde mit 'http://%s.local'\n"
+#define MSG_DBG_STARTING_WIFI             "starte WiFi ...\n"
+#define MSG_DBG_STOPPING_WIFI             "stoppe WiFi...\n"
 
 // button
-#define MSG_DBG_BUTTON_PRESSED_ON_START   "[setupButton] Button während des Starts gedrückt.."
-#define MSG_DBG_ENTER_MAINTENANCE_MODE    "[setupButton] Wartungsmodus wird gestartet.."
-#define MSG_DBG_BUTTON_LONG_PRESSED       "[checkButton] WiFi-Umschaltung ausgelöst.."
-#define MSG_DBG_BUTTON_SHORT_PRESSED      "[checkButton] Aktivierung des nächsten Pumpenmodus.."
+#define MSG_DBG_BUTTON_PRESSED_ON_START   "Button während des Starts gedrückt..\n"
+#define MSG_DBG_ENTER_MAINTENANCE_MODE    "Wartungsmodus wird gestartet..\n"
+#define MSG_DBG_BUTTON_LONG_PRESSED       "WiFi-Umschaltung ausgelöst..\n"
+#define MSG_DBG_BUTTON_SHORT_PRESSED      "Aktivierung des nächsten Pumpenmodus..\n"
 
 // oiler
-#define MSG_DBG_NEW_PUMP_MODE             "Neuer Pumpemmodus ist >%s< - nächster Pumpvorgang in (Meter): " // printf: no eol, followed by meters
+#define MSG_DBG_NEW_PUMP_MODE             "Neuer Pumpemmodus ist >%s< - nächster Pumpvorgang in (Meter): %s\n" // pump mode, meter as string
 #define MSG_DBG_PUMP_DEACTIVATED          "(Pumpe deaktiviert)"
-#define MSG_DBG_OIL_TANK_EMPTY            "[checkTank] Tank leer? - Öl nachfüllen und Zähler zurücksetzen (s. Konfiguration)"
-#define MSG_DBG_TRIGGER_PUMP              "[TriggerPump] pumpen nach (s): %d, Pumpenmodus ist >%s<\n"
-#define MSG_DBG_ERROR_OPEN_OILCNT_FILE    "[TriggerPump] Fehler beim Öffnen der OilCounter Datei"
+#define MSG_DBG_OIL_TANK_EMPTY            "Tank leer? - Öl nachfüllen und Zähler zurücksetzen (s. Konfiguration)\n"
+#define MSG_DBG_TRIGGER_PUMP              "pumpen nach (s): %d, Pumpenmodus ist >%s<\n"
+#define MSG_DBG_ERROR_OPEN_OILCNT_FILE    "Fehler beim Öffnen der OilCounter Datei\n"
 
 // update
-#define MSG_DBG_UPDATE_INIT               "[checkforUpdate] suche Firmware Datei " // followed by name of firmware file
-#define MSG_DBG_UPDATE_START              "[checkforUpdate] Firmware gefunden - starte Update.."
-#define MSG_DBG_UPDATE_ERROR              "[checkforUpdate] FEHLER"
-#define MSG_DBG_UPDATE_SUCCESS            "[checkforUpdate] Update erfolgreich eingespielt"
-#define MSG_DBG_UPDATE_GETERROR           "[checkforUpdate] Update.getError():" // followed by Update.getError()
-#define MSG_DBG_REMOVING_FIRMWARE_FILE    "[checkforUpdate] lösche Firmware Datei " // followed by name of firmware file
-#define MSG_DBG_ERROR_DEL_FIRMWARE_FILE   "[checkforUpdate] FEHLER: löschen der Firmware Datei fehlgeschlagen!!"
-#define MSG_DBG_BOOT_AFTER_UPDATE         "[checkforUpdate] Neustart nach Update.."
-#define MSG_DBG_NO_FIRMWARE_FILE          "[checkforUpdate] keine neue Firmware gefunden"
-#define MSG_DBG_UPDATE_SERVER_URL         "[getUpdateInfo] URL = %s\n"	// printf
-#define MSG_DBG_UPD_INFO_GET_RET_CODE     "[getUpdateInfo] http.GET() response: %d\n" // printf
-#define MSG_DBG_UPD_INFO_GET_RET_TEXT     "[getUpdateInfo] http.GET() returned: " // followed by result of http.getString()
-#define MSG_DBG_UPD_INFO_GET_ERROR        "[getUpdateInfo] http.GET() Fehler: %s\n" // printf, %s = http.errorToString(httpCode)
-#define MSG_DBG_UPD_DOWNLOAD_INFO         "[downloadFile] downloading '%s' to '%s'\n" // printf, source, target
-#define MSG_DBG_UPD_DOWNLOAD_RET_CODE     "[downloadFile] GET return code: %d\n" // printf
-#define MSG_DBG_UPD_DOWNLOAD_OPEN_ERROR   "[downloadFile] Fehler beim Öffnen der Datei zum Schreiben!"
-#define MSG_DBG_UPD_DOWNLOAD_GET_ERROR    "[downloadFile] http.Get() Fehler: %s\n" // printf, http.errorToString(httpCode)
-#define MSG_DBG_UPD_DOWNLOAD_COMPLETE     "[handleUpdate] Download abgeschlossen:" // followed by filename
-#define MSG_DBG_UPD_DOWNLOAD_ERROR        "[handleUpdate] FEHLER: Download fehlgeschlagen"
-#define MSG_DBG_RENAME_FILE_INIT          "[renameUpdateFiles] fname = " // followed by name of update file
-#define MSG_DBG_OLD_FILE_REMOVE_ERROR     "[renameUpdateFiles] FEHLER beim Löschen von "  // followed by .old file
-#define MSG_DBG_OLD_FILE_RENAME_ERROR     "[renameUpdateFiles] FEHLER bei Umbenennung von '%s' in '%s.old'\n" // printf, source, target
-#define MSG_DBG_TMP_FILE_RENAME_ERROR     "[renameUpdateFiles] FEHLER bei Umbenennung von '%s$' in '%s'\n" // printf, source (tmp), target
-#define MSG_DBG_UPD_FILE_DELETE_INIT      "[deleteUpdateFiles] lösche "  // followed by name of file to delete
-#define MSG_DBG_UPD_CONNECT_INIT          "[handleUpdate] suche Update Server\n"
-#define MSG_HTTP_UPD_SERVER_CONNECT_ERROR "Update Server nicht erreichbar!"
-#define MSG_DBG_GET_UPDATE_INFO           "[handleUpdate] lese Update Infomationen vom Server " // followed by server name
-#define MSG_HTTP_NO_UPDATE_AVAILABLE      "Server meldet: kein Update vorhanden!"
+#define MSG_DBG_UPDATE_INIT               "suche Firmware Datei '%s'\n" // firmware file
+#define MSG_DBG_UPDATE_START              "Firmware gefunden - starte Update..\n"
+#define MSG_DBG_UPDATE_ERROR              "FEHLER in Update.begin()\n"
+#define MSG_DBG_UPDATE_SUCCESS            "Update erfolgreich eingespielt\n"
+#define MSG_DBG_UPDATE_GETERROR           "Update.getError():%d\n" // Update.getError(), uint_8t, s. defines in https://github.com/espressif/arduino-esp32/blob/master/libraries/Update/src/Update.h
+#define MSG_DBG_REMOVING_FIRMWARE_FILE    "lösche Firmware Datei '%s'\n" // name of firmware file
+#define MSG_DBG_ERROR_DEL_FIRMWARE_FILE   "FEHLER: löschen der Firmware Datei fehlgeschlagen!!\n"
+#define MSG_DBG_BOOT_AFTER_UPDATE         "Neustart nach Update..\n"
+#define MSG_DBG_NO_FIRMWARE_FILE          "keine neue Firmware gefunden\n"
+#define MSG_DBG_UPDATE_SERVER_URL         "URL = %s\n"
+#define MSG_DBG_UPD_INFO_GET_RET_CODE     "http.GET() response: %d\n"
+#define MSG_DBG_UPD_INFO_GET_RET_TEXT     "http.GET() returned: '%s'\n" // result of http.getString()
+#define MSG_DBG_UPD_INFO_GET_ERROR        "http.GET() Fehler: %s\n" // %s = http.errorToString(httpCode)
+#define MSG_DBG_UPD_DOWNLOAD_INFO         "downloading '%s' to '%s'\n" // source, target
+#define MSG_DBG_UPD_DOWNLOAD_RET_CODE     "GET return code: %d\n"
+#define MSG_DBG_UPD_DOWNLOAD_OPEN_ERROR   "Fehler beim Öffnen der Datei zum Schreiben!\n"
+#define MSG_DBG_UPD_DOWNLOAD_GET_ERROR    "http.Get() Fehler: %s\n" // http.errorToString(httpCode)
+#define MSG_DBG_UPD_DOWNLOAD_COMPLETE     "Download abgeschlossen: '%s'\n" // filename
+#define MSG_DBG_UPD_DOWNLOAD_ERROR        "FEHLER: Download fehlgeschlagen\n"
+#define MSG_DBG_RENAME_FILE_INIT          "fname = %s\n" // name of update file
+#define MSG_DBG_OLD_FILE_REMOVE_ERROR     "FEHLER beim Löschen von '%s.old'\n"  // .old file
+#define MSG_DBG_OLD_FILE_RENAME_ERROR     "FEHLER bei Umbenennung von '%s' in '%s.old'\n" // source, target
+#define MSG_DBG_TMP_FILE_RENAME_ERROR     "FEHLER bei Umbenennung von '%s$' in '%s'\n" // source (tmp), target
+#define MSG_DBG_UPD_FILE_DELETE_INIT      "lösche '%s'\n"  // name of file to delete
+#define MSG_DBG_UPD_CONNECT_INIT          "suche Update Server\n"
+#define MSG_HTTP_UPD_SERVER_CONNECT_ERROR "Update Server nicht erreichbar!\n"  // returned to web client
+#define MSG_DBG_GET_UPDATE_INFO           "lese Update Infomationen vom Server '%s'\n" // server name
+#define MSG_HTTP_NO_UPDATE_AVAILABLE      "Server meldet: kein Update vorhanden!"   // returned to web client
 
 // upload
-#define MSG_DBG_CHECK_URL_START           "[isServerAvailable] check URL (GET):%s\n"  // printf: complete url (server, port and url)
-#define MSG_DBG_CHECK_URL_SERVER_IP       "[isServerAvailable] IP-Adresse von '%s' ist %s\n"  // printf: server, ip
-#define MSG_DBG_CHECK_URL_ERROR           "[isServerAvailable] GET() fehlgeschlagen, error: %s\n" // printf: error message from get()
-#define MSG_DBG_CHECK_URL_HTTP_ERR_401    "[isServerAvailable] 401: fehlende Authorisierung (Basic Authentication nötig?)"
-#define MSG_DBG_FILECHECK_RESULT          "[isFileThere] httpCode = %d\n" // printf: http-code returned
-#define MSG_DBG_SEND_FILE_START           "[sendFile] Starte Übertragung der Datei..."
-//#define MSG_DBG_SEND_FILE_CONTENT         "[sendFile] >>> sending file content >>>"
-#define MSG_DBG_SEND_FILE_COMPLETED       "[sendFile] Übertragung beendet"
-#define MSG_DBG_SEND_FILE_CONNECT_ERROR   "[sendFile] Fehler beim Öffnen der Verbindung zu: '%s:%d'\n"  // printf: host name, port
-#define MSG_DBG_SEND_FILE_FOPEN_ERROR     "[sendFile] Fehler beim Öffnen der Datei: %s\n" 	// printf: file name
-#define MSG_DBG_TRACK_UPLOAD_START        "[handleUpload] searching track files:"
-#define MSG_DBG_TRACK_FILE_FOUND_YES      "[handleUpload] '%s' is a track file - will upload..."  // printf, followed by OK or FAILED (so no line feed)
-#define MSG_DBG_TRACK_FILE_FOUND_NO       "[handleUpload] '%s' is NO track file...\n"   // printf: file name
-#define MSG_DBG_UPLOAD_SERVER_ERROR       "[handleUpload] Upload Server nicht erreichbar! (s. Log)"
-#define MSG_DBG_TRACK_UPLOAD_OK           "[handleUpload] Hochladen erfolgreich."
-#define MSG_DBG_TRACK_UPLOAD_FAILED       "[handleUpload] Hochladen fehlgeschlagen."
-#define MSG_HTTP_NO_TRACKS_FOUND          "\nKeine Dateien zum Hochladen gefunden\n-END-"   // '-END-' must be at the end, it's a mark for javascript in upload.htm
+#define MSG_DBG_CHECK_URL_START           "check URL (GET):%s\n"  // complete url (server, port and url)
+#define MSG_DBG_CHECK_URL_SERVER_IP       "IP-Adresse von '%s' ist %s\n"  // server, ip
+#define MSG_DBG_CHECK_URL_ERROR           "GET() fehlgeschlagen, error: %s\n" // error message from get()
+#define MSG_DBG_CHECK_URL_HTTP_ERR_401    "401: fehlende Authorisierung (Basic Authentication nötig?)\n"
+#define MSG_DBG_FILECHECK_RESULT          "httpCode = %d\n" // printf: http-code returned
+#define MSG_DBG_SEND_FILE_START           "Starte Übertragung der Datei...\n"
+#define MSG_DBG_SEND_FILE_COMPLETED       "Übertragung beendet\n"
+#define MSG_DBG_SEND_FILE_CONNECT_ERROR   "Fehler beim Öffnen der Verbindung zu: '%s:%d'\n"  // host name, port
+#define MSG_DBG_SEND_FILE_FOPEN_ERROR     "Fehler beim Öffnen der Datei: %s\n"   // file name
+#define MSG_DBG_TRACK_UPLOAD_START        "searching track files:\n"
+#define MSG_DBG_TRACK_FILE_FOUND_YES      "'%s' is a track file - will upload...\n"
+#define MSG_DBG_TRACK_FILE_FOUND_NO       "'%s' is NO track file...\n"   // file name
+#define MSG_DBG_UPLOAD_SERVER_ERROR       "Upload Server nicht erreichbar! (s. Log)\n"
+#define MSG_DBG_TRACK_UPLOAD_OK           "Hochladen erfolgreich.\n"
+#define MSG_DBG_TRACK_UPLOAD_FAILED       "Hochladen fehlgeschlagen.\n"
+#define MSG_HTTP_NO_TRACKS_FOUND          "\nKeine Dateien zum Hochladen gefunden\n"
 
 // webhandler
-#define MSG_DBG_WEB_FILE_READ_ERROR       "[handleFileRead] FEHLER beim Lesen der Datei " // followed by file name (path)
-#define MSG_HTTP_WEB_FILE_NOT_FOUND       "Datei oder Link nicht vorhanden: " // followed by file name (path)
+#define MSG_DBG_WEB_FILE_READ_ERROR       "FEHLER beim Lesen der Datei '%s'\n" // file name
+#define MSG_HTTP_WEB_FILE_NOT_FOUND       "Datei oder Link nicht vorhanden: " // followed by link/file name
+#define MSG_DBG_LINK_NOT_FOUND_CAP        "serve index.htm, not found: '%s'\n"  // link
+#define MSG_DBG_LINK_NOT_FOUND            "not found: '%s'\n"                   // link
 
 // configuration
 #define MSG_DBG_MISSING_CONF_OPTION       "[fworker] Option nicht in ini Datei: %s\n"   // printf (name of option)

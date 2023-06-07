@@ -35,14 +35,15 @@ void setNewMode(tPumpMode newMode)
     GVoilCounter = 0;
   }
 
-  DEBUG_OUT.printf(PSTR(MSG_DBG_NEW_PUMP_MODE), getPumpModeStr(newMode).c_str());
   GVpumpMode = newMode;
+  String sTemp = "";
   if (newMode == MODE_OFF)
-    DEBUG_OUT.println(F(MSG_DBG_PUMP_DEACTIVATED));
+    sTemp = MSG_DBG_PUMP_DEACTIVATED;
   else if (getModeMeters(GVpumpMode) < GVmeterSincePump)
-    DEBUG_OUT.println(0);
+    sTemp = "0";
   else
-    DEBUG_OUT.println(getModeMeters(GVpumpMode) - GVmeterSincePump);
+    sTemp = String(getModeMeters(GVpumpMode) - GVmeterSincePump);
+  debugPrintf(PSTR(MSG_DBG_NEW_PUMP_MODE), getPumpModeStr(newMode).c_str(), sTemp.c_str());
   
   GVmyDisplay.PrintModeStr(getPumpModeStr(GVpumpMode));
   //LED Response einleiten:
@@ -63,7 +64,7 @@ void checkTank(void)
   {
     GVmyDisplay.PrintAckMessage("Refill\noil tank +");  //20200310i
     // dann ein bisschen Theater machen:
-    DEBUG_OUT.println(F(MSG_DBG_OIL_TANK_EMPTY));
+    warnPrintf(PSTR(MSG_DBG_OIL_TANK_EMPTY));
     GVmyLedx.add(LED_GRUEN, 175);
     GVmyLedx.add(LED_ROT, 150);
     GVmyLedx.start(10);
@@ -141,20 +142,20 @@ bool TriggerPump() {
   // damit bei Ziel 'Aus' über 'Permanent' nicht gleich gepumpt wird.
   if ((GVlastPressed + 1500) > millis()) return false;
 
-  DEBUG_OUT.printf(PSTR(MSG_DBG_TRIGGER_PUMP), int(millis()/1000), getPumpModeStr(GVpumpMode).c_str());
+  debugPrintf(PSTR(MSG_DBG_TRIGGER_PUMP), int(millis()/1000), getPumpModeStr(GVpumpMode).c_str());
  
   GVtotalPumpCount += GVoilerConf.pac;
   GVoilerConf.use += GVoilerConf.pac;
   // bei Dauerpumpen keine Aktualisierung (erst danach)
   if (GVpumpMode != MODE_PERMANENT) {
     if (!GVoilerConf.updateOilCounter()) {
-      DEBUG_OUT.println(F(MSG_DBG_ERROR_OPEN_OILCNT_FILE));
+      errorPrintf(PSTR(MSG_DBG_ERROR_OPEN_OILCNT_FILE));
     }
   } else {   // Check, ob Dauerpumpem abgeschaltet werden muss, da Moped fährt... (safety check)
     GVoilCounter++;
     if (isMoving() && (GVoilCounter >= MAX_PUMP_ACTION_WHEN_MOVING))
     {
-      DEBUG_OUT.println(F(MSG_DBG_GPS_SWITCH_OFF_PUMP));
+      debugPrintf(PSTR(MSG_DBG_GPS_SWITCH_OFF_PUMP));
       setNewMode(MODE_NORMAL);
     }
   }

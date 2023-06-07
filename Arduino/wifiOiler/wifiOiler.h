@@ -159,6 +159,20 @@ typedef PumpModes tPumpMode;
 #define _FILESYS LittleFS
 #include <LittleFS.h>
 
+// ********************* some logging Makros ************************************
+#define _LOG_CRITICAL_ 0  // Fehler, der eine weitere Bearbeitung unmöglich macht
+#define _LOG_ERROR_    1  // Fehler, der stört aber grundsätzlich die Funktionalität weiter ermöglicht
+#define _LOG_WARN_     2  // es kann weiter gehen - aber es könnte besser sein
+#define _LOG_INFO_     3  // einfach info
+#define _LOG_DEBUG_    4  // detaillierte Info
+// die geschweiften Klammern sind hier wichtig, da sonst Einzelanweisungen falsch interpretiert werden,
+// also nicht als Block, z.B. bei     if (condition) logPrintf(...);
+#define criticalPrintf(...) if(GVoilerConf.lvl>=_LOG_CRITICAL_){GVmyLogger.printf("[%s] ",__FUNCTION__);GVmyLogger.printf(__VA_ARGS__);}
+#define errorPrintf(...)    if(GVoilerConf.lvl>=_LOG_ERROR_)   {GVmyLogger.printf("[%s] ",__FUNCTION__);GVmyLogger.printf(__VA_ARGS__);}
+#define warnPrintf(...)     if(GVoilerConf.lvl>=_LOG_WARN_)    {GVmyLogger.printf("[%s] ",__FUNCTION__);GVmyLogger.printf(__VA_ARGS__);}
+#define infoPrintf(...)     if(GVoilerConf.lvl>=_LOG_INFO_)    {GVmyLogger.printf("[%s] ",__FUNCTION__);GVmyLogger.printf(__VA_ARGS__);}
+#define debugPrintf(...)    if(GVoilerConf.lvl>=_LOG_DEBUG_)   {GVmyLogger.printf("[%s] ",__FUNCTION__);GVmyLogger.printf(__VA_ARGS__);}
+
 //**************************************************************
 //***** forward declarations ***********************************
 //**************************************************************

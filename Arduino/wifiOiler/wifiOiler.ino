@@ -24,7 +24,7 @@
 #include <TinyGPS++.h>
 #include "src/biLedx/biLedx.h"  // lib für nicht-modales Blinken (zweifarbiger) LEDs
 #include "wifiOiler.h"
-#include "src/LittleFSlogger.h"
+#include "LittleFSlogger.h"
 #include "oilerDisplay.h"
 #include "messages_de.h"
 //#include "messages_en.h"
@@ -75,8 +75,8 @@ void setup()
   }
   GVmyDisplay.MessageAdd(".", 10000);
   
-  DEBUG_OUT.println(F(MSG_PROGRESS_STARTING_INIT));
-  if (deleteLog) DEBUG_OUT.println(MSG_CHECK_LOG_SIZE_DELETE);
+  infoPrintf(PSTR(MSG_PROGRESS_STARTING_INIT));
+  if (deleteLog) warnPrintf(PSTR(MSG_CHECK_LOG_SIZE_DELETE));
 
   setupButton();
 
@@ -101,10 +101,7 @@ void setup()
 
   checkTank();  // Öltank leer?
 
-  DEBUG_OUT.print(F(MSG_VERSION_MESSAGE_1));
-  DEBUG_OUT.print(VERSION);
-  DEBUG_OUT.print(F(MSG_VERSION_MESSAGE_2));
-  DEBUG_OUT.println(BOARD_TYPE);
+  infoPrintf(PSTR(MSG_VERSION_MESSAGE), VERSION, BOARD_TYPE);
 
   if (GVoilerConf.wso || GVmaintenanceMode) 
     toggleWiFi();
@@ -113,10 +110,10 @@ void setup()
   GVmyDisplay.PrintMessage("wifiOiler\n  v");
   GVmyDisplay.MessageAdd(VERSION,2000);
   #ifdef _NO_PUMP_
-    DEBUG_OUT.println(F(MSG_ATT_PUMP_DEACTIVATED));
+    warnPrintf(PSTR(MSG_ATT_PUMP_DEACTIVATED));
     GVmyDisplay.PrintAckMessage("Pumpe\ndeaktiv.\n(confirm)");
   #endif
-  DEBUG_OUT.println(F(MSG_PROGRESS_STARTING_END));
+  infoPrintf(PSTR(MSG_PROGRESS_STARTING_END));
 }
 
 /*******************************************************************

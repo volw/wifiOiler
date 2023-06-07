@@ -29,15 +29,15 @@ void checkFilesystemSpace(void)
       uint32_t gpsrec = freespace / GPS_RECORD_SIZE;    // Platz für (gpsrec) GPS Records
       uint32_t gpsmin = ((gpsrec * GVoilerConf.fpw) / 60) - MIN_MINUTES_FREE;     // Umrechnung in Gesamt-Minuten
 
-      DEBUG_OUT.printf(PSTR(MSG_DBG_FS_FREE_SPACE_INFO), freespace, gpsrec, gpsmin/60, gpsmin%60);
+      debugPrintf(PSTR(MSG_DBG_FS_FREE_SPACE_INFO), freespace, gpsrec, gpsmin/60, gpsmin%60);
       
       if (GVcurrentfpw > 0 && gpsmin < MIN_MINUTES_FREE) {  // Aufzeichnung aktiv aber zu wenig Platz?
         GVcurrentfpw = 0;                                   // Aufzeichnung deaktivieren
-        DEBUG_OUT.println(F(MSG_DBG_RECORDING_STOPPED));
+        infoPrintf(PSTR(MSG_DBG_RECORDING_STOPPED));
       }
       else if (GVcurrentfpw <= 0 && gpsmin >= MIN_MINUTES_FREE) {
         GVcurrentfpw = GVoilerConf.fpw;
-        DEBUG_OUT.println(F(MSG_DBG_RECORDING_CONTINUED));
+        infoPrintf(PSTR(MSG_DBG_RECORDING_CONTINUED));
       }
       GVlastFScheck = millis();
     }
@@ -84,7 +84,7 @@ void handleFileCreate() {
   }
   String newPath = GVwebServer.arg(0);
     
-  DEBUG_OUT.println("handleFileCreate: " + newPath);
+  debugPrintf(PSTR("handleFileCreate: %s\n"), newPath);
   if (newPath == "/") {
     return GVwebServer.send(500, TEXT_PLAIN, BAD_PATH);
   }
@@ -120,8 +120,7 @@ void handleFileDelete() {
     return GVwebServer.send(500, TEXT_PLAIN, BAD_ARGS);
   }
   String path = GVwebServer.arg(0);
-  DEBUG_OUT.print(F(MSG_DBG_HANDLEFILEDELETE_PATH));
-  DEBUG_OUT.println(path);
+  debugPrintf(PSTR(MSG_DBG_HANDLEFILEDELETE_PATH), path);
   if (path == "/") {
     return GVwebServer.send(500, TEXT_PLAIN, BAD_PATH);
   }
@@ -141,7 +140,7 @@ void handleFileDelete() {
  ***********************************************/
 void handleFileUpload() {
   if (GVwebServer.uri() != F("/edit")) {
-    DEBUG_OUT.println(F(MSG_DBG_HANDLEFILEUPLOAD_URI));
+    debugPrintf(PSTR(MSG_DBG_HANDLEFILEUPLOAD_URI));
     return;
   }
   HTTPUpload& upload = GVwebServer.upload();
@@ -152,7 +151,7 @@ void handleFileUpload() {
     if (!fname.startsWith("/")) {
       fname = "/" + fname;
     }
-    DEBUG_OUT.print(F(MSG_DBG_HANDLEFILEUPLOAD_NAME)); DEBUG_OUT.println(fname);
+    debugPrintf(PSTR(MSG_DBG_HANDLEFILEUPLOAD_NAME), fname);
     GVfsUploadFile = _FILESYS.open(fname, "w");
   } else if (upload.status == UPLOAD_FILE_WRITE) {
     GVmyLedx.on(LED_GRUEN);
@@ -161,7 +160,7 @@ void handleFileUpload() {
     }
     GVmyLedx.off();
   } else if (upload.status == UPLOAD_FILE_END) {
-    DEBUG_OUT.print(F(MSG_DBG_HANDLEFILEUPLOAD_SIZE)); DEBUG_OUT.println(upload.totalSize);
+    debugPrintf(PSTR(MSG_DBG_HANDLEFILEUPLOAD_SIZE), upload.totalSize);
     if (GVfsUploadFile) {
       GVfsUploadFile.close();
       GVmyLedx.start LED_FILE_UPLOAD_SUCCESS;

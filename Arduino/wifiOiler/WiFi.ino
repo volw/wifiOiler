@@ -40,8 +40,7 @@ uint8_t readWifiData(void) {
         value = String(line.substring(pos+1));
         key.trim(); value.trim();
         if (key.length() > 0) {
-          DEBUG_OUT.print(F(MSG_DBG_ADD_WIFI_TO_MULTIWIFI));
-          DEBUG_OUT.println(key.c_str());
+          debugPrintf(PSTR(MSG_DBG_ADD_WIFI_TO_MULTIWIFI), key.c_str());
           GVwifiMulti.addAP(key.c_str(), value.c_str());
           counter++;
         }
@@ -60,7 +59,7 @@ uint8_t readWifiData(void) {
 bool setupWiFi(void) {
   bool connected = false;
   
-  DEBUG_OUT.println(F(MSG_DBG_START_SEARCHING_WIFI));
+  infoPrintf(PSTR(MSG_DBG_START_SEARCHING_WIFI));
   GVwifiAPmode = false;
   WiFi.disconnect();  // angeblich werden vorher gemerkte Zugangsdaten damit gelöscht...
   WiFi.hostname(GVoilerConf.apn);
@@ -69,16 +68,14 @@ bool setupWiFi(void) {
   if (readWifiData() > 0)
   {
     //WiFi.mode(WIFI_STA);   // Only station Mode
-    DEBUG_OUT.print(F(MSG_DBG_TRY_CONNECT_WIFI));
+    debugPrintf(PSTR(MSG_DBG_TRY_CONNECT_WIFI));
     GVmyDisplay.PrintMessage("Suche WLAN");
 
     byte count = 0;
     while ((GVwifiMulti.run() != WL_CONNECTED) && (count < 3)) { // scan timout = 5000, connect timeout = 5000
-      DEBUG_OUT.print(".");
       GVmyDisplay.MessageAdd(".");
       count++;
     }
-    DEBUG_OUT.println();
   
     if (GVwifiMulti.run() == WL_CONNECTED) {
       GVmyDisplay.PrintMessage("Connected:");
@@ -86,7 +83,7 @@ bool setupWiFi(void) {
       GVmyDisplay.MessageAdd("\n");
       GVmyDisplay.MessageAdd(WiFi.localIP().toString(), 1500);
 
-      DEBUG_OUT.printf(PSTR(MSG_DBG_CONNECT_SUCCESS), WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
+      infoPrintf(PSTR(MSG_DBG_CONNECT_SUCCESS), WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
       GVmyLedx.start LED_WIFI_CONNECT_SUCCESS;
       GVmyDisplay.PrintWlanState(WIFI_WLAN);
       GVwifiAPmode = false;
@@ -95,12 +92,12 @@ bool setupWiFi(void) {
     else 
     {
       GVmyDisplay.MessageAdd("\nFailed!",1500);
-      DEBUG_OUT.println(F(MSG_DBG_WIFI_NOT_CONNECTED));
+      warnPrintf(PSTR(MSG_DBG_WIFI_NOT_CONNECTED));
       WiFi.disconnect();
     }
     GVwifiMulti.cleanAPlist();
   }
-  else DEBUG_OUT.println(F(MSG_DBG_NO_WIFI_CONFIGS_FOUND));
+  else warnPrintf(PSTR(MSG_DBG_NO_WIFI_CONFIGS_FOUND));
 
   if (!connected)
   {
@@ -108,14 +105,13 @@ bool setupWiFi(void) {
     GVmyDisplay.PrintMessage("Starting\nAcc. Point\n");
     GVmyDisplay.MessageAdd(GVoilerConf.apn, 1500);
     WiFi.softAPConfig(myIP, myIP, IPAddress(255, 255, 255, 0));
-    DEBUG_OUT.printf(PSTR(MSG_DBG_START_ACCCESS_POINT), GVoilerConf.apn.c_str(), GVoilerConf.app.c_str());
+    infoPrintf(PSTR(MSG_DBG_START_ACCCESS_POINT), GVoilerConf.apn.c_str(), GVoilerConf.app.c_str());
     delay(200);
     
     if (WiFi.softAP(GVoilerConf.apn, GVoilerConf.app))
     {
       delay(500); // Without delay I've seen the IP address blank
-      DEBUG_OUT.print(F(MSG_DBG_ACCESS_POINT_IP));
-      DEBUG_OUT.println(WiFi.softAPIP());
+      infoPrintf(PSTR(MSG_DBG_ACCESS_POINT_IP), WiFi.softAPIP().toString().c_str());
       GVmyDisplay.PrintWlanState(WIFI_ACCESSPOINT);
       GVmyLedx.add LED_WIFI_CONNECT_FAILED;
       GVmyLedx.add LED_WIFI_CONNECT_SUCCESS;
@@ -127,7 +123,7 @@ bool setupWiFi(void) {
     }
     else 
     {
-      DEBUG_OUT.println(F(MSG_DBG_ACCESS_POINT_FAILED));
+      errorPrintf(PSTR(MSG_DBG_ACCESS_POINT_FAILED));
       GVmyDisplay.PrintWlanState(WIFI_INACTIVE);
       GVmyLedx.start LED_WIFI_CONNECT_FAILED;
       WiFi.disconnect();
@@ -141,11 +137,11 @@ bool setupWiFi(void) {
  *****************************************************************/
 void setupMDNS(void) {
   if (!MDNS.begin(GVoilerConf.apn)) {
-    DEBUG_OUT.println(F(MSG_DBG_MDNS_ERROR));
+    criticalPrintf(PSTR(MSG_DBG_MDNS_ERROR));
     while(1); // trigger watch dog
   } else {
     MDNS.addService("http", "tcp", 80);  //is only added once (there is a check inside addService)
-    DEBUG_OUT.printf(PSTR(MSG_DBG_MDNS_STARTED), GVoilerConf.apn.c_str());
+    infoPrintf(PSTR(MSG_DBG_MDNS_STARTED), GVoilerConf.apn.c_str());
   }
 }
 
@@ -156,7 +152,7 @@ void toggleWiFi(void)
 {
   if (GVwifiSleeping)   // dann aufwecken
   {
-    DEBUG_OUT.println(F(MSG_DBG_STARTING_WIFI));
+    infoPrintf(PSTR(MSG_DBG_STARTING_WIFI));
     WiFi.forceSleepWake(); // Wifi on
     delay(100);
 
@@ -173,7 +169,7 @@ void toggleWiFi(void)
   }
   else    // schlafen legen
   {
-    DEBUG_OUT.println(F(MSG_DBG_STOPPING_WIFI));
+    infoPrintf(PSTR(MSG_DBG_STOPPING_WIFI));
     MDNS.close();
     WiFi.disconnect();
     delay(100);

@@ -86,7 +86,13 @@ String getContentType(String fname) {
 void handleNotFound(void) {
   if (!handleFileRead(GVwebServer.uri())) {
     String msg=F(MSG_HTTP_WEB_FILE_NOT_FOUND)+GVwebServer.uri();
-    DEBUG_OUT.print(C_FILENOTFOUND);
+
+    #ifdef _CAPTIVE_PORTAL_
+      warnPrintf(PSTR("[GVwebServer.onNotFound] serve index.htm, not found: '%s'\n"), GVwebServer.uri().c_str());
+    #else
+      warnPrintf(PSTR("[GVwebServer.onNotFound] not found: '%s'\n"), GVwebServer.uri().c_str());
+    #endif
+   
 #ifdef _CAPTIVE_PORTAL_
     if (GVwifiAPmode && !handleFileRead("index.htm")) {
       GVwebServer.send(404, TEXT_PLAIN, msg);
@@ -94,9 +100,26 @@ void handleNotFound(void) {
     else 
 #endif
     GVwebServer.send(404, TEXT_PLAIN, msg);
+  } else DEBUG_OUT.print("[GVwebServer.onNotFound] serve: ");
+  DEBUG_OUT.println(GVwebServer.uri());
+}
+
+/***************** captive portal version *************************
+void handleNotFound(void) {
+  if (!handleFileRead(GVwebServer.uri())) {
+    String msg=F(MSG_HTTP_WEB_FILE_NOT_FOUND)+GVwebServer.uri();
+    DEBUG_OUT.print(C_FILENOTFOUND);
+
+    if (GVwifiAPmode && !handleFileRead("index.htm")) {
+      GVwebServer.send(404, TEXT_PLAIN, msg);
+    } 
+    else 
+
+    GVwebServer.send(404, TEXT_PLAIN, msg);
   } else DEBUG_OUT.print(C_SERVEFILE);
   DEBUG_OUT.println(GVwebServer.uri());
 }
+*/
 
 /*************************************************
  * Lesen einer Datei aus LittleFS Dateisystem

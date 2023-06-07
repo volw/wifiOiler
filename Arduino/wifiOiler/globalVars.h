@@ -158,11 +158,4 @@ std::vector<updateFile> GVupdateFiles;
 HTTPClient GVhttp;
 WiFiClient GVwifiClient = GVwebServer.client();
 
-#ifdef _CAPTIVE_PORTAL_
-  const char PROGMEM * C_FILENOTFOUND   = "[GVwebServer.onNotFound] serve index.htm, not found: ";
-#else
-  const char PROGMEM * C_FILENOTFOUND   = "[GVwebServer.onNotFound] not found: ";
-#endif
-const char PROGMEM * C_SERVEFILE      = "[GVwebServer.onNotFound] serve: ";
-
 LittleFSlogger GVmyLogger;  // Serial und/oder in Datei

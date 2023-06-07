@@ -49,6 +49,8 @@ class Configuration {
     bool     gdl = false;             // GPS Debug logging to file (/gpsLog.txt)
     bool     wso = true;              // WiFi beim Starten automatisch an (true) oder aus (false)?
     String   gts = "20";              // track file filename prefix (if more bikes than oilerbases ;-)
+    uint8_t  lvl = 4;                 // Log Level (default = info)
+
 
     void read() { this->fworker(true); }
     void write() { this->fworker(false); }
