@@ -43,8 +43,7 @@ int isServerAvailable(void) {
   } else if (httpCode <= 0) {
     errorPrintf(PSTR(MSG_DBG_CHECK_URL_ERROR), GVhttp.errorToString(httpCode).c_str());
   } else {
-    DEBUG_OUT.print("httpCode = ");
-    DEBUG_OUT.println(httpCode);
+    debugPrintf(PSTR(MSG_DBG_FILECHECK_RESULT), httpCode);
   }
   return (httpCode);
 }

@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ************************************************************************/
-#ifndef _wifioiler_h_
-#define _wifioiler_h_
+#pragma once
 
 // VERSION: für Update Vorgang, Version wird auch auf Startseite des Ölers angezeigt.
 // _DISPLAY_AVAILABLE_: wenn undefiniert, wird etwas Speicherplatz (7 KB) gespart - ansonsten keine Auswirkung (auch wenn kein Display angeschl. ist)
@@ -32,8 +31,6 @@
 #define LOG_FILE_NAME "/myLogger.txt"
 // Log wird nicht "rund"-geschrieben - wenn größer (check beim Start), dann wird gelöscht!
 #define LOG_FILE_MAX_BYTES 200000
-#define DEBUG_OUT GVmyLogger
-//#define DEBUG_OUT Serial
 #define FS_BROWSER_URL "/littlefsb.htm"
 
 // wird der HTTP_USER_AGENT geändert (Sonderzeichen vermeiden!), dann sollte auch in der 'oilerbase.php' (oilerbase)
@@ -179,5 +176,3 @@ typedef PumpModes tPumpMode;
 // we have to do some forward declarations because default
 // values for params are not working for 'normal' functions:
 bool checkforUpdate(bool justCheck = false, bool reboot = true);
-
-#endif

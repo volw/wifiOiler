@@ -44,14 +44,6 @@ void setup()
   delay(100); // = less garbage...
   Serial.println();
 
-  GVmyDisplay.Init();
-  GVmyDisplay.PrintMessage("Init", 10000);
-
-  // schon mal was auf's Display bringen (wird erst in Loop angezeigt über Check()):
-  GVmyDisplay.PrintModeStr(getPumpModeStr(GVpumpMode));
-  GVmyDisplay.PrintMeter(getModeMeters(GVpumpMode));
-  GVmyDisplay.PrintKmh(0);
-
   bool deleteLog = false;
   if (!_FILESYS.begin()) {
     Serial.println(F(MSG_ERROR_INITIALISING_FILESYSTEM));
@@ -61,8 +53,16 @@ void setup()
     f.close();
     if (deleteLog) _FILESYS.remove(LOG_FILE_NAME);
   }
-
   GVoilerConf.read();
+
+  GVmyDisplay.Init();
+  GVmyDisplay.PrintMessage("Init", 10000);
+
+  // schon mal was auf's Display bringen (wird erst in Loop angezeigt über Check()):
+  GVmyDisplay.PrintModeStr(getPumpModeStr(GVpumpMode));
+  GVmyDisplay.PrintMeter(getModeMeters(GVpumpMode));
+  GVmyDisplay.PrintKmh(0);
+
   GVmyDisplay.MessageAdd(".", 10000);
   GVcurrentfpw = GVoilerConf.fpw;  // merken, GVcurrentfpw bestimmt je nach Platz im FS, ob Tracks geschrieben werden...
 

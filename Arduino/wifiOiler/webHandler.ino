@@ -48,7 +48,7 @@ void setupWebServer(void) {
     GVwebServer.send(200, TEXT_PLAIN, "");
   }, handleFileUpload);
 
-  GVwebServer.onNotFound(handleNotFound);
+  GVwebServer.onNotFound(serveFile);
   GVwebServer.begin();
   GVhttp.setAuthorization(GVoilerConf.bac.c_str());   // wenn keine Auth. vom Server gefordert wird, geht das trotzdem...
 }
@@ -83,43 +83,26 @@ String getContentType(String fname) {
 /*************************************************
  * notFound Handler
  *************************************************/
-void handleNotFound(void) {
+void serveFile(void) {
   if (!handleFileRead(GVwebServer.uri())) {
     String msg=F(MSG_HTTP_WEB_FILE_NOT_FOUND)+GVwebServer.uri();
 
     #ifdef _CAPTIVE_PORTAL_
-      warnPrintf(PSTR("[GVwebServer.onNotFound] serve index.htm, not found: '%s'\n"), GVwebServer.uri().c_str());
-    #else
-      warnPrintf(PSTR("[GVwebServer.onNotFound] not found: '%s'\n"), GVwebServer.uri().c_str());
+      if (GVwifiAPmode) {
+        warnPrintf(PSTR(MSG_DBG_LINK_NOT_FOUND_CAP), GVwebServer.uri().c_str());    // "serve index.htm, not found: '%s'\n"
+        if (!handleFileRead("index.htm")) {
+          errorPrintf(PSTR(MSG_DBG_ERROR_INDEX_HTM_NOT_FOUND));
+          GVwebServer.send(404, TEXT_PLAIN, msg);
+        }
+        return;
+      }
     #endif
-   
-#ifdef _CAPTIVE_PORTAL_
-    if (GVwifiAPmode && !handleFileRead("index.htm")) {
-      GVwebServer.send(404, TEXT_PLAIN, msg);
-    } 
-    else 
-#endif
+    errorPrintf(PSTR(MSG_DBG_LINK_NOT_FOUND), GVwebServer.uri().c_str());    // "ERROR: file or link not found: '%s'\n"
     GVwebServer.send(404, TEXT_PLAIN, msg);
-  } else DEBUG_OUT.print("[GVwebServer.onNotFound] serve: ");
-  DEBUG_OUT.println(GVwebServer.uri());
+    return;
+  }
+  debugPrintf(PSTR(MSG_DBG_LINK_SERVED), GVwebServer.uri().c_str());  // "serve '%s'\n"
 }
-
-/***************** captive portal version *************************
-void handleNotFound(void) {
-  if (!handleFileRead(GVwebServer.uri())) {
-    String msg=F(MSG_HTTP_WEB_FILE_NOT_FOUND)+GVwebServer.uri();
-    DEBUG_OUT.print(C_FILENOTFOUND);
-
-    if (GVwifiAPmode && !handleFileRead("index.htm")) {
-      GVwebServer.send(404, TEXT_PLAIN, msg);
-    } 
-    else 
-
-    GVwebServer.send(404, TEXT_PLAIN, msg);
-  } else DEBUG_OUT.print(C_SERVEFILE);
-  DEBUG_OUT.println(GVwebServer.uri());
-}
-*/
 
 /*************************************************
  * Lesen einer Datei aus LittleFS Dateisystem
@@ -128,7 +111,7 @@ void handleNotFound(void) {
  *************************************************/
 bool handleFileRead(String path) 
 {
-  //DEBUG_OUT.println("[handleFileRead] " + path);
+  debugPrintf(PSTR(MSG_DBG_PATH_REQUESTED), path.c_str());   // "called with path '%s'\n"
   // wenn keine Datei mitgegeben wurde, nehmen wir index.htm an:
   if (path.endsWith("/")) path += "index.htm";
   if (!path.startsWith("/")) path = "/"+path;
@@ -151,8 +134,7 @@ bool handleFileRead(String path)
     }
     else 
     {
-      DEBUG_OUT.print(F(MSG_DBG_WEB_FILE_READ_ERROR));
-      DEBUG_OUT.println(path);
+      errorPrintf(PSTR(MSG_DBG_WEB_FILE_READ_ERROR), path.c_str());    //"ERROR reading file '%s'\n"
     }
     return true;
   }

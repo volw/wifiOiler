@@ -49,7 +49,7 @@ class Configuration {
     bool     gdl = false;             // GPS Debug logging to file (/gpsLog.txt)
     bool     wso = true;              // WiFi beim Starten automatisch an (true) oder aus (false)?
     String   gts = "20";              // track file filename prefix (if more bikes than oilerbases ;-)
-    uint8_t  lvl = 4;                 // Log Level (default = info)
+    uint8_t  lvl = _LOG_INFO_;        // Log Level (default = info)
 
 
     void read() { this->fworker(true); }
@@ -202,7 +202,14 @@ class Configuration {
         // all params in ini file? let's check:
         char *missedItem;
         while (valueList.getFirst(false, &missedItem)) {
-          DEBUG_OUT.printf(PSTR(MSG_DBG_MISSING_CONF_OPTION), missedItem);
+          
+          // hier konnte das Makro noch nicht genutzt werden:
+          // warnPrintf(PSTR(MSG_DBG_MISSING_CONF_OPTION), missedItem);
+          if(this->lvl >= _LOG_WARN_)
+          {
+            GVmyLogger.printf(PSTR(MSG_DBG_MISSING_CONF_OPTION), __FUNCTION__, missedItem);
+          }
+          
           outFile.print("\n");
           keyWorker(String(missedItem), "", readMode);
           valueList.set(missedItem, true);

@@ -48,7 +48,7 @@ bool checkforUpdate(bool justCheck, bool reboot) {
     if (file) {
       Update.onProgress(updateCallback);
       if (!Update.begin(file.size(), U_FLASH)) {
-        Update.printError(DEBUG_OUT);
+        //Update.printError(Serial);
         errorPrintf(PSTR(MSG_DBG_UPDATE_ERROR));
       } else {
         GVmyLedx.on(LED_ROT);
@@ -160,7 +160,7 @@ bool downloadFile(String subPath)
       GVupdFileSizeTotal = fileLen;
       GVupdSizeUploaded = 0;
 
-      //DEBUG_OUT.printf("[downloadFile] file size is %d\n", GVupdFileSizeTotal);
+      debugPrintf(PSTR(MSG_DBG_UPD_DOWNLOAD_FILE_SIZE), GVupdFileSizeTotal);
 
       // create buffer for read
       uint8_t buff[BUFFER_SIZE] = { 0 };
@@ -179,7 +179,7 @@ bool downloadFile(String subPath)
           
           // get available data size
           size_t size = stream->available();
-          //DEBUG_OUT.printf("[downloadFile] stream size available: %d\n", size);
+          debugPrintf(PSTR(MSG_DBG_UPD_DOWNLOAD_STREAM_SIZE), size);
           if(size) {
             GVmyLedx.on(LED_GRUEN);
             // read up to (buffersize) byte
@@ -193,7 +193,7 @@ bool downloadFile(String subPath)
           }
           GVwebServer.handleClient(); // allow action while loading...
         }
-        //DEBUG_OUT.println(F("[downloadFile] connection closed or file end - closing file..."));
+        debugPrintf(PSTR(MSG_DBG_UPD_DOWNLOAD_FILE_END));   //  "connection closed or file end - closing file..."
         GVoutFile.close();
         GVmyLedx.start LED_FILE_UPLOAD_SUCCESS;
         GVmyDisplay.PrintMessage("Success");

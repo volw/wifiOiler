@@ -67,24 +67,18 @@
 #define MSG_DBG_STOPPING_WIFI             "stopping WiFi...\n"
 
 // button
+#define MSG_DBG_BUTTON_STATE              "Button state == %s\n"
 #define MSG_DBG_BUTTON_PRESSED_ON_START   "Button pressed during start..\n"
 #define MSG_DBG_ENTER_MAINTENANCE_MODE    "enter maintenance mode..\n"
 #define MSG_DBG_BUTTON_LONG_PRESSED       "toggle WiFi requested..\n"
 #define MSG_DBG_BUTTON_SHORT_PRESSED      "next pump mode requested..\n"
 
 // oiler
-#define MSG_DBG_NEW_PUMP_MODE             "New pump mode is >%s< - meters til pump: %s\n" // pump mode, meter as string
-#define MSG_DBG_PUMP_DEACTIVATED          "(Pumpe deactivated)"
-#define MSG_DBG_OIL_TANK_EMPTY            "Tank empty? Refill oil tank and reset counter (see configuration)\n"
-#define MSG_DBG_TRIGGER_PUMP              "trigger pump after %d(s), pump mode is >%s<\n"
+#define MSG_DBG_NEW_PUMP_MODE             "New pump mode is '%s' - meters til pump: %s\n" // pump mode, meter as string
+#define MSG_DBG_PUMP_DEACTIVATED          "(Pump deactivated)"
+#define MSG_DBG_OIL_TANK_EMPTY            "Oil tank empty? Refill oil tank and reset counter (see configuration)\n"
+#define MSG_DBG_TRIGGER_PUMP              "trigger pump after %d(s), pump mode is '%s'\n"
 #define MSG_DBG_ERROR_OPEN_OILCNT_FILE    "Error opening the OilCounter file\n"
-
-// oiler
-#define MSG_DBG_NEW_PUMP_MODE             "Neuer Pumpemmodus ist >%s< - nächster Pumpvorgang in (Meter): %s\n" // pump mode, meter as string
-#define MSG_DBG_PUMP_DEACTIVATED          "(Pumpe deaktiviert)"
-#define MSG_DBG_OIL_TANK_EMPTY            "Tank leer? - Öl nachfüllen und Zähler zurücksetzen (s. Konfiguration)\n"
-#define MSG_DBG_TRIGGER_PUMP              "pumpen nach (s): %d, Pumpenmodus ist >%s<\n"
-#define MSG_DBG_ERROR_OPEN_OILCNT_FILE    "Fehler beim Öffnen der OilCounter Datei\n"
 
 // update
 #define MSG_DBG_UPDATE_INIT               "Looking for firmware file '%s'\n" // firmware file
@@ -102,6 +96,9 @@
 #define MSG_DBG_UPD_INFO_GET_ERROR        "http.GET() failed with error: %s\n" // %s = http.errorToString(httpCode)
 #define MSG_DBG_UPD_DOWNLOAD_INFO         "downloading '%s' to '%s'\n" // source, target
 #define MSG_DBG_UPD_DOWNLOAD_RET_CODE     "GET return code: %d\n"
+#define MSG_DBG_UPD_DOWNLOAD_FILE_SIZE    "file size: %d bytes\n"
+#define MSG_DBG_UPD_DOWNLOAD_STREAM_SIZE  "stream size available: %d\n"
+#define MSG_DBG_UPD_DOWNLOAD_FILE_END     "connection closed or file end - closing file...\n"
 #define MSG_DBG_UPD_DOWNLOAD_OPEN_ERROR   "Error opening file for writing!\n"
 #define MSG_DBG_UPD_DOWNLOAD_GET_ERROR    "http.Get() failed, error: %s\n" // http.errorToString(httpCode)
 #define MSG_DBG_UPD_DOWNLOAD_COMPLETE     "download complete:: '%s'\n" // filename
@@ -135,8 +132,13 @@
 #define MSG_HTTP_NO_TRACKS_FOUND          "\nNo track files found - nothing to upload\n"
 
 // webhandler
-#define MSG_DBG_WEB_FILE_READ_ERROR       "[handleFileRead] error reading file '%s'\n"  // file name
-#define MSG_HTTP_WEB_FILE_NOT_FOUND       "File or link not found: '%s'\n"              // file name
+#define MSG_DBG_PATH_REQUESTED            "called with path '%s'\n"
+#define MSG_DBG_WEB_FILE_READ_ERROR       "ERROR reading file '%s'\n"  // file name
+#define MSG_HTTP_WEB_FILE_NOT_FOUND       "ERROR: file or link not found: "              // followed by link/file name
+#define MSG_DBG_LINK_NOT_FOUND_CAP        "serve index.htm, not found: '%s'\n"    // link
+#define MSG_DBG_LINK_NOT_FOUND            "ERROR: file or link not found: '%s'\n" // link
+#define MSG_DBG_LINK_SERVED               "serve '%s'\n"                          // link
+#define MSG_DBG_ERROR_INDEX_HTM_NOT_FOUND "ERROR: index.htm not found!!\n"
 
 // configuration
-#define MSG_DBG_MISSING_CONF_OPTION       "[fworker] missing parameter in ini file: %s\n"   // printf (name of option)
+#define MSG_DBG_MISSING_CONF_OPTION       "[%s] missing parameter in ini file: %s\n"   // _FUNCTION_, name of option

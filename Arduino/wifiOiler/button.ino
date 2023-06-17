@@ -32,7 +32,7 @@ void setupButton(void)
     debugPrintf(PSTR(MSG_DBG_BUTTON_PRESSED_ON_START));
     GVmyLedx.start LED_START_BUTTON_PRESSED;
     infoPrintf(PSTR(MSG_DBG_ENTER_MAINTENANCE_MODE));
-    //GVmyLedx.printInfo(DEBUG_OUT);
+    //GVmyLedx.printInfo(Serial);
     GVmyLedx.delay();
     while (digitalRead(BUTTON_PIN) == HIGH) yield();  // warten, bis Button losgelassen wird
     GVmyLedx.on(LED_GRUEN);
@@ -53,7 +53,7 @@ void checkButton()
   GVbuttonState = digitalRead(BUTTON_PIN);
   if (GVbuttonState != GVlastButtonState)
   {
-    //DEBUG_OUT.println(GVbuttonState == HIGH ? "HIGH" : "Low");
+    debugPrintf(PSTR(MSG_DBG_BUTTON_STATE), GVbuttonState == HIGH ? "HIGH" : "Low");
     if (GVbuttonState == HIGH)
     {
       if (GVmillisPressed == 0) GVmillisPressed = millis();

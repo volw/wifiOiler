@@ -67,6 +67,7 @@
 #define MSG_DBG_STOPPING_WIFI             "stoppe WiFi...\n"
 
 // button
+#define MSG_DBG_BUTTON_STATE              "Button state == %s\n"
 #define MSG_DBG_BUTTON_PRESSED_ON_START   "Button während des Starts gedrückt..\n"
 #define MSG_DBG_ENTER_MAINTENANCE_MODE    "Wartungsmodus wird gestartet..\n"
 #define MSG_DBG_BUTTON_LONG_PRESSED       "WiFi-Umschaltung ausgelöst..\n"
@@ -95,6 +96,9 @@
 #define MSG_DBG_UPD_INFO_GET_ERROR        "http.GET() Fehler: %s\n" // %s = http.errorToString(httpCode)
 #define MSG_DBG_UPD_DOWNLOAD_INFO         "downloading '%s' to '%s'\n" // source, target
 #define MSG_DBG_UPD_DOWNLOAD_RET_CODE     "GET return code: %d\n"
+#define MSG_DBG_UPD_DOWNLOAD_FILE_SIZE    "file size: %d bytes\n"
+#define MSG_DBG_UPD_DOWNLOAD_STREAM_SIZE  "stream size available: %d\n"
+#define MSG_DBG_UPD_DOWNLOAD_FILE_END     "connection closed or file end - closing file...\n"
 #define MSG_DBG_UPD_DOWNLOAD_OPEN_ERROR   "Fehler beim Öffnen der Datei zum Schreiben!\n"
 #define MSG_DBG_UPD_DOWNLOAD_GET_ERROR    "http.Get() Fehler: %s\n" // http.errorToString(httpCode)
 #define MSG_DBG_UPD_DOWNLOAD_COMPLETE     "Download abgeschlossen: '%s'\n" // filename
@@ -128,10 +132,13 @@
 #define MSG_HTTP_NO_TRACKS_FOUND          "\nKeine Dateien zum Hochladen gefunden\n"
 
 // webhandler
-#define MSG_DBG_WEB_FILE_READ_ERROR       "FEHLER beim Lesen der Datei '%s'\n" // file name
-#define MSG_HTTP_WEB_FILE_NOT_FOUND       "Datei oder Link nicht vorhanden: " // followed by link/file name
-#define MSG_DBG_LINK_NOT_FOUND_CAP        "serve index.htm, not found: '%s'\n"  // link
-#define MSG_DBG_LINK_NOT_FOUND            "not found: '%s'\n"                   // link
+#define MSG_DBG_PATH_REQUESTED            "called with path '%s'\n"
+#define MSG_DBG_WEB_FILE_READ_ERROR       "FEHLER beim Lesen der Datei '%s'\n"  // file name
+#define MSG_HTTP_WEB_FILE_NOT_FOUND       "FEHLER: Datei oder Link nicht vorhanden: "   // followed by link/file name
+#define MSG_DBG_LINK_NOT_FOUND_CAP        "zeige index.htm, da Link/Datei nicht gefunden: '%s'\n"  // link
+#define MSG_DBG_LINK_NOT_FOUND            "FEHLER: Link/Datei nicht gefunden: '%s'\n"   // link
+#define MSG_DBG_LINK_SERVED               "zeige '%s'\n"                        // link
+#define MSG_DBG_ERROR_INDEX_HTM_NOT_FOUND "FEHLER: konnte index.htm nicht finden!!\n"
 
 // configuration
-#define MSG_DBG_MISSING_CONF_OPTION       "[fworker] Option nicht in ini Datei: %s\n"   // printf (name of option)
+#define MSG_DBG_MISSING_CONF_OPTION       "[%s] Option nicht in ini Datei: %s\n"   // _FUNCTION_, name of option

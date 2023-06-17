@@ -151,7 +151,7 @@ void handleFileUpload() {
     if (!fname.startsWith("/")) {
       fname = "/" + fname;
     }
-    debugPrintf(PSTR(MSG_DBG_HANDLEFILEUPLOAD_NAME), fname);
+    debugPrintf(PSTR(MSG_DBG_HANDLEFILEUPLOAD_NAME), fname.c_str());
     GVfsUploadFile = _FILESYS.open(fname, "w");
   } else if (upload.status == UPLOAD_FILE_WRITE) {
     GVmyLedx.on(LED_GRUEN);
