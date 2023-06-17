@@ -33,8 +33,8 @@
 #define MSG_DBG_FS_FREE_SPACE_INFO        "LittleFS free: %d bytes = %d GPS records (%dh:%02d)\n" // freespace, gpsrec, gpsmin/60, gpsmin%60
 #define MSG_DBG_RECORDING_STOPPED         "track Aufzeichnung gestoppt\n"
 #define MSG_DBG_RECORDING_CONTINUED       "track Aufzeichnung fortgesetzt\n"
-#define MSG_HTML_TARGET_FILE_EXISTS       "Zieldatei existiert bereits\n"
-#define MSG_HTML_SOURCE_FILE_NOT_EXISTS   "Quelldatei existiert nicht\n"
+#define MSG_HTML_TARGET_FILE_EXISTS       "Zieldatei existiert bereits"
+#define MSG_HTML_SOURCE_FILE_NOT_EXISTS   "Quelldatei existiert nicht"
 #define MSG_HTML_ERROR_OPEN_SOURCE        "FEHLER: Quelldatei konnte nicht geöffnet werden"
 #define MSG_HTML_ERROR_OPEN_TARGET        "FEHLER: Zieldatei konnte nicht geöffnet werden"
 #define MSG_HTML_ERROR_RENAMING_FILE      "FEHLER: Datei konnte nicht umbenannt werden"

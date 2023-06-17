@@ -211,57 +211,15 @@ void handlePumpMode(void) {
 void handleConfigPage(void) {
   if (GVwebServer.args() > 0)
   {
-    // Konfiguration aus den Argumenten lesen
-    if (GVwebServer.hasArg(F("apn"))) GVoilerConf.apn = GVwebServer.arg(F("apn"));           // Access Point Name
-    if (GVwebServer.hasArg(F("app"))) GVoilerConf.app = GVwebServer.arg(F("app"));           // Access Point Passwort
-    if (GVwebServer.hasArg(F("bac"))) GVoilerConf.bac = GVwebServer.arg(F("bac"));           // Basic Authentication Credentials "user:password"
-    if (GVwebServer.hasArg(F("ffn"))) GVoilerConf.ffn = GVwebServer.arg(F("ffn"));           // Firmware FileName
-    if (GVwebServer.hasArg(F("fpw"))) GVoilerConf.fpw = GVwebServer.arg(F("fpw")).toInt();   // Abstand zwischen GPS writes (s)
-    if (GVwebServer.hasArg(F("gdl"))) GVoilerConf.gdl = GVwebServer.arg(F("gdl"))=="1";      // Bool: GPS logging
-    if (GVwebServer.hasArg(F("glf"))) GVoilerConf.glf = GVwebServer.arg(F("glf")).toInt();   // GPS Low-Filter
-    if (GVwebServer.hasArg(F("gts"))) GVoilerConf.gts = GVwebServer.arg(F("gts"));           // GPS Track Filename Suffix
-    if (GVwebServer.hasArg(F("lgf"))) GVoilerConf.lgf = GVwebServer.arg(F("lgf"))=="1";      // Bool: logging to file
-    if (GVwebServer.hasArg(F("lgs"))) GVoilerConf.lgs = GVwebServer.arg(F("lgs"))=="1";      // Bool: logging to Serial
-    if (GVwebServer.hasArg(F("nmm"))) GVoilerConf.nmm = GVwebServer.arg(F("nmm")).toInt();   // Normal Mode Meters
-    if (GVwebServer.hasArg(F("omm"))) GVoilerConf.omm = GVwebServer.arg(F("omm")).toInt();   // Offroad Mode Meters
-    if (GVwebServer.hasArg(F("otk"))) GVoilerConf.otk = GVwebServer.arg(F("otk")).toInt();   // Tank Kapazität
-    if (GVwebServer.hasArg(F("pac"))) GVoilerConf.pac = GVwebServer.arg(F("pac")).toInt();   // Pump Action Count
-    if (GVwebServer.hasArg(F("rmm"))) GVoilerConf.rmm = GVwebServer.arg(F("rmm")).toInt();   // Regen Mode Meters
-    if (GVwebServer.hasArg(F("sim"))) GVoilerConf.sim = GVwebServer.arg(F("sim")).toInt();   // Simulation Meter (Notprogramm)
-    if (GVwebServer.hasArg(F("uhn"))) GVoilerConf.uhn = GVwebServer.arg(F("uhn"));           // Upload Host Name
-    if (GVwebServer.hasArg(F("uhp"))) GVoilerConf.uhp = GVwebServer.arg(F("uhp")).toInt();   // Upload Host Port
-    if (GVwebServer.hasArg(F("url"))) GVoilerConf.url = GVwebServer.arg(F("url"));           // Upload Host URL
-    if (GVwebServer.hasArg(F("use"))) GVoilerConf.use = GVwebServer.arg(F("use")).toInt();   // ..davon verbraucht
-    if (GVwebServer.hasArg(F("wso"))) GVoilerConf.wso = GVwebServer.arg(F("wso"))=="1";      // Bool: autom. WiFi-Start
-    if (GVwebServer.hasArg(F("wts"))) GVoilerConf.wts = GVwebServer.arg(F("wts")).toInt();   // Wartezeit Simulation (s)
+    for (int i = 0; i < GVwebServer.args(); i++)
+    {
+      GVoilerConf.set(GVwebServer.argName(i), GVwebServer.arg(i));
+    }
     GVoilerConf.write();
-    checkFilesystemSpace(); // GVcurrentfpw wird dort ggf. korrigiert
   }
 
   // sending config values as json string:
-  String output = "{\"wts\":\"" + String(GVoilerConf.wts) + "\"";
-  output += ",\"nmm\":\"" + String(GVoilerConf.nmm) + "\"";
-  output += ",\"rmm\":\"" + String(GVoilerConf.rmm) + "\"";
-  output += ",\"omm\":\"" + String(GVoilerConf.omm) + "\"";
-  output += ",\"sim\":\"" + String(GVoilerConf.sim) + "\"";
-  output += ",\"pac\":\"" + String(GVoilerConf.pac) + "\"";
-  output += ",\"glf\":\"" + String(GVoilerConf.glf) + "\"";
-  output += ",\"otk\":\"" + String(GVoilerConf.otk) + "\"";
-  output += ",\"use\":\"" + String(GVoilerConf.use) + "\"";
-  output += ",\"ffn\":\"" + String(GVoilerConf.ffn) + "\"";
-  output += ",\"fpw\":\"" + String(GVoilerConf.fpw) + "\"";
-  output += ",\"apn\":\"" + String(GVoilerConf.apn) + "\"";
-  output += ",\"app\":\"" + String(GVoilerConf.app) + "\"";
-  output += ",\"uhn\":\"" + String(GVoilerConf.uhn) + "\"";
-  output += ",\"uhp\":\"" + String(GVoilerConf.uhp) + "\"";
-  output += ",\"url\":\"" + String(GVoilerConf.url) + "\"";
-  output += ",\"bac\":\"" + String(GVoilerConf.bac) + "\"";
-  output += ",\"lgf\":\"" + String(GVoilerConf.lgf) + "\"";
-  output += ",\"lgs\":\"" + String(GVoilerConf.lgs) + "\"";
-  output += ",\"gdl\":\"" + String(GVoilerConf.gdl) + "\"";
-  output += ",\"wso\":\"" + String(GVoilerConf.wso) + "\"";
-  output += ",\"gts\":\"" + String(GVoilerConf.gts) + "\"}";
-  GVwebServer.send(200, F("text/json"), output);
+  GVwebServer.send(200, F("text/json"), GVoilerConf.getJSON());
 }
 
 /***************************************************

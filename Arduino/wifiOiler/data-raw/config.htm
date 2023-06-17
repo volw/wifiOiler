@@ -143,6 +143,9 @@
 
 <label for="gts">GPS track file: Zusatz vor Dateiname (max. 10 Zeichen). Ohne Zusatz werden die Namen wie folgt gebildet: YYMMDD-HHMM.dat (vor &Auml;nderung alle Dateien herunterladen</label>
 <input type="text" id="gts" maxlength="10" onclick="this.select();">
+
+<label for="lvl">Log Level (0=Critical,1=Error,2=Warning,3=Info,4=Debug)</label>
+<input type="number" id="lvl" onclick="this.select();" min="0" max="4">
 </div>
 
 <a onclick="putConfig()">Speichern</a>
