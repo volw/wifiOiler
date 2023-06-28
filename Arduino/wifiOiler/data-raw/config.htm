@@ -7,6 +7,33 @@
 	<title>Konfiguration</title>
 	<link rel="stylesheet" href="wifiOiler.css">
 	<script>
+		const aConfig = [
+			{ key:"wts",type:"number",label:"Wartezeit Simulation" },
+			{ key:"nmm",type:"number",label:"Normal Mode Meter" },
+			{ key:"rmm",type:"number",label:"Rain Mode Meter" },
+			{ key:"omm",type:"number",label:"Offroad Mode Meter" },
+			{ key:"sim",type:"number",label:"Meter/s bei Simulation (Wert x 3,6 = km/h)" },
+			{ key:"pac",type:"number",label:"Anzahl Pumpaktionen pro √ñlvorgang" },
+			{ key:"glf",type:"number",label:"GPS Low-Filter (cm)" },
+			{ key:"otk",type:"number",label:"√ñltank Kapazit√§t" },
+			{ key:"use",type:"number",label:"...davon verbraucht" },
+			{ key:"ffn",type:"text",  label:"Name neuer Firmware Datei" },
+			{ key:"fpw",type:"number",label:"Sek. zw. GPS Trackpoints (0 = no tracks)" },
+			{ key:"apn",type:"text",  label:"eigener Host/Access Point Name" },
+			{ key:"app",type:"text",  label:"Access Point Passwort" },
+			{ key:"uhn",type:"text",  label:"Upload Host Name" },
+			{ key:"uhp",type:"number",label:"Upload Host Port" },
+			{ key:"url",type:"text",  label:"Upload Host URL" },
+			{ key:"bac",type:"text",  label:"User:Password for basic authentication at oilerbase (empty for no basic auth)." },
+			{ key:"lgf",type:"bool",  label:"Logging to file?" },
+			{ key:"lgs",type:"bool",  label:"Logging to Serial?" },
+			{ key:"gdl",type:"bool",  label:"GPS Logging to File?" },
+			{ key:"wso",type:"bool",  label:"WiFi automatisch starten?" },
+			{ key:"gts",type:"text",  label:"GPS track file: Zusatz vor Dateiname (max. 10 Zeichen). Ohne Zusatz werden die Namen wie folgt gebildet: YYMMDD-HHMM.dat (vor √Ñnderung alle Dateien herunterladen)" },
+			{ key:"lvl",type:"number",label:"Log Level (0=Critical,1=Error,2=Warning,3=Info,4=Debug)" },
+			{ key:"mrf",type:"number",label:"max. log files (file rotation, 0=none)" },
+		]		
+		
 		var configVal="",line=0,oldval=[];
 		const theUrl="/config";
 		const $ = function(id){return document.getElementById(id);}
@@ -15,10 +42,27 @@
 		function frage(msg, func){msgBase(msg,"twobtn",func);$("mb_btnNo").onclick = function(){$('id_msgbox').style.display="none";}}
 		function aniStart(){$('overlay').style.display = 'block';}
 		function aniStop(){$('overlay').style.display = 'none';}
-		function onBodyLoad(){getConfig();$("sim").addEventListener("input", calc);}
-		function calc() {
-       var kmh=($("sim").value*3.6);
-			 $("kmh").innerText=" = "+kmh.toFixed(1)+" km/h";}
+		function buildForm(){
+			frm = $('form');
+			for (var i = 0; i < aConfig.length; i++){
+				// create label
+				var obj = document.createElement("label");
+				obj.for = aConfig[i]["key"];
+				obj.appendChild(document.createTextNode(aConfig[i]["label"]));
+				frm.appendChild(obj);
+				
+				if (aConfig[i]["type"] === "bool"){
+					obj = document.createElement("select");
+          obj.innerHTML = "<option value=1>Ja</option><option value=0>Nein</option>";
+				} else { // "text" or "number"
+					obj = document.createElement("input");
+					obj.type = aConfig[i]["type"];
+				}
+				obj.id = aConfig[i]["key"];
+  			frm.appendChild(obj);
+			}
+		}
+		function onBodyLoad(){buildForm();getConfig();}
     function setValues(){
 			JSON.parse(configVal,function(key,value) {
 				var o=$(key);
@@ -55,7 +99,6 @@
 				if (xhr.status==200){
 					configVal=xhr.responseText;
 					setValues();
-					calc();
 				} else meldung("FEHLER "+xhr.responseText);}
 		  xhr.onloadend=(e)=>{aniStop();}
 		  xhr.onerror=(e)=>{meldung("FEHLER: "+xhr.statusText);}
@@ -70,84 +113,7 @@
 
 <body onload="onBodyLoad();">
 <p>Ge&auml;nderte Werte werden rot hinterlegt...</p><br>
-
-<div id="form">
-<!-- Anzahl Sekunden, nach der das Notlaufprogramm starten soll, wenn kein GPS Empfang m&ouml;glich ist. -->
-<label for="wts">Wartezeit Simulation</label>
-<input type="number" id="wts" onclick="this.select();">
-
-<!-- Anzahl Meter (bei Pumpenmodus 'Normal'), nach der die Pumpe ausgelˆst werden soll. -->
-<label for="nmm">Normal Mode Meter</label>
-<input type="number" id="nmm" onclick="this.select();">
-
-<!-- Anzahl Meter (bei Pumpenmodus 'Regen'), nach der die Pumpe ausgelˆst werden soll. -->
-<label for="rmm">Rain Mode Meter</label>
-<input type="number" id="rmm" onclick="this.select();">
-
-<!-- Anzahl Meter (bei Pumpenmodus 'Offroad'), nach der die Pumpe ausgelˆst werden soll. -->
-<label for="omm">Offroad Mode Meter</label>
-<input type="number" id="omm" onclick="this.select();">
-
-<!-- Bestimmt die angenommene Geschwindigkeit w‰hrend des Notlaufprogramms (zusammen mit den Meterangaben oben den Abstand zwischen den ÷lvorg‰ngen) -->
-<label>Meter/s bei Simulation</label>
-<input type="number" id="sim" onclick="this.select();"><div id="kmh"></div>
-
-<label for="pac">Anzahl Pumpaktionen pro &Ouml;lvorgang</label>
-<input type="number" id="pac" onclick="this.select();">
-
-<label for="glf">GPS Low-Filter (cm)</label>
-<input type="number" id="glf" onclick="this.select();">
-
-<label for="otk">&Ouml;ltank Kapazit&auml;t</label>
-<input type="number" id="otk" onclick="this.select();">
-
-<label for="use">...davon verbraucht</label>
-<input type="number" id="use" onclick="this.select();">
-<button onclick="resUse();">reset</button>
-
-<label for="ffn">Name neuer Firmware Datei</label>
-<input type="text" id="ffn" onclick="this.select();">
-
-<label for="fpw">Sek. zw. GPS Trackpoints <br>(0 = no tracks)</label>
-<input type="number" id="fpw" onclick="this.select();">
-
-<label for="apn">eigener Host/Access Point Name</label>
-<input type="text" id="apn" onclick="this.select();">
-
-<label for="app">Access Point Passwort</label>
-<input type="text" id="app" onclick="this.select();">
-
-<label for="uhn">Upload Host Name</label>
-<input type="text" id="uhn" onclick="this.select();">
-
-<label for="uhp">Upload Host Port</label>
-<input type="number" id="uhp" onclick="this.select();">
-
-<label for="url">Upload Host URL</label>
-<input type="text" id="url" onclick="this.select();">
-
-<label for="bac">User:Password for basic authentication at oilerbase (empty for no basic auth).</label>
-<input type="text" id="bac" onclick="this.select();">
-
-<label for="lgf">Logging to file?</label>
-<select id="lgf" ><option value=1>Ja</option><option value=0>Nein</option></select>
-
-<label for="lgs">Logging to Serial?</label>
-<select id="lgs" ><option value=1>Ja</option><option value=0>Nein</option></select>
-
-<label for="gdl">GPS Logging to File?</label>
-<select id="gdl" ><option value=1>Ja</option><option value=0>Nein</option></select>
-
-<label for="wso">WiFi automatisch starten?</label>
-<select id="wso" ><option value=1>Ja</option><option value=0>Nein</option></select>
-
-<label for="gts">GPS track file: Zusatz vor Dateiname (max. 10 Zeichen). Ohne Zusatz werden die Namen wie folgt gebildet: YYMMDD-HHMM.dat (vor &Auml;nderung alle Dateien herunterladen</label>
-<input type="text" id="gts" maxlength="10" onclick="this.select();">
-
-<label for="lvl">Log Level (0=Critical,1=Error,2=Warning,3=Info,4=Debug)</label>
-<input type="number" id="lvl" onclick="this.select();" min="0" max="4">
-</div>
-
+<div id="form"></div>
 <a onclick="putConfig()">Speichern</a>
 <a onclick="history.back()">Abbruch</a>
 <div id="overlay"><div id="overlay_content"><span id="spinner"></span></div></div>

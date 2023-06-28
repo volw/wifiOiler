@@ -5,7 +5,7 @@
  */
 #pragma once
 
-#define _LIST_LEN_ 22
+#define _LIST_LEN_ 23
 // #define debug_out(...) Serial.printf(__VA_ARGS__)
 // no debug messages:
 #define debug_out(...)
@@ -25,8 +25,8 @@ class ValueList {
   // add new option here (1/5):
   Item ValueList[_LIST_LEN_] = {
     {"apn"},{"app"},{"bac"},{"ffn"},{"fpw"},{"gdl"},{"glf"},{"gts"},{"lgf"},{"lgs"},
-    {"lvl"},{"nmm"},{"omm"},{"otk"},{"pac"},{"rmm"},{"sim"},{"uhn"},{"uhp"},{"url"},
-    {"wso"},{"wts"}
+    {"lvl"},{"mrf"},{"nmm"},{"omm"},{"otk"},{"pac"},{"rmm"},{"sim"},{"uhn"},{"uhp"},
+    {"url"},{"wso"},{"wts"}
   };
 
   public:
@@ -65,6 +65,7 @@ class Configuration {
     bool     lgf = true;              // file logging activated
     bool     lgs = true;              // Serial logging activated
     uint8_t  lvl = _LOG_INFO_;        // Log Level (default = info)
+    uint8_t  mrf = 3;                 // max. log files (file rotation)
     uint16_t nmm = 6000;              // Normal Mode Meters
     uint16_t omm = 1500;              // Offroad Mode Meters
     uint16_t otk = 8000;              // Tank Kapazität
@@ -105,6 +106,7 @@ class Configuration {
       output += ",\"lgf\":\"" + String(this->lgf) + "\"";
       output += ",\"lgs\":\"" + String(this->lgs) + "\"";
       output += ",\"lvl\":\"" + String(this->lvl) + "\"";
+      output += ",\"mrf\":\"" + String(this->mrf) + "\"";
       output += ",\"nmm\":\"" + String(this->nmm) + "\"";
       output += ",\"omm\":\"" + String(this->omm) + "\"";
       output += ",\"otk\":\"" + String(this->otk) + "\"";
@@ -135,6 +137,7 @@ class Configuration {
       else if (key.equals(F("lgf"))) this->lgf = toBool(value); // file logging activated
       else if (key.equals(F("lgs"))) this->lgs = toBool(value); // Serial logging activated
       else if (key.equals(F("lvl"))) this->lvl = value.toInt(); // Log Level (default = info)
+      else if (key.equals(F("mrf"))) this->mrf = value.toInt(); // max. log files (file rotation)
       else if (key.equals(F("nmm"))) this->nmm = value.toInt(); // Normal Mode Meters
       else if (key.equals(F("omm"))) this->omm = value.toInt(); // Offroad Mode Meters
       else if (key.equals(F("otk"))) this->otk = value.toInt(); // Tank Kapazität
@@ -177,6 +180,7 @@ class Configuration {
       else if (key.equals(F("lgf"))) outFile.printf("lgf = %s\n", this->lgf ? "ja" : "nein"); // file logging activated                                                             
       else if (key.equals(F("lgs"))) outFile.printf("lgs = %s\n", this->lgs ? "ja" : "nein"); // Serial logging activated                                                           
       else if (key.equals(F("lvl"))) outFile.printf("lvl = %d\n", this->lvl);                 // Log Level (default = info)                                                         
+      else if (key.equals(F("mrf"))) outFile.printf("mrf = %d\n", this->mrf);                 // max. log files (file rotation)
       else if (key.equals(F("nmm"))) outFile.printf("nmm = %d\n", this->nmm);                 // Normal Mode Meters                                                                 
       else if (key.equals(F("omm"))) outFile.printf("omm = %d\n", this->omm);                 // Offroad Mode Meters                                                                
       else if (key.equals(F("otk"))) outFile.printf("otk = %d\n", this->otk);                 // Tank Kapazität                                                                     

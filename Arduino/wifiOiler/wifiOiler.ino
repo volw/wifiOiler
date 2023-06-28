@@ -30,6 +30,7 @@
 //#include "messages_en.h"
 #include "globalVars.h"
 #include "configuration.h"
+#include "rotate.h"
 
 /*******************************************************************
  ******************** Setup ****************************************
@@ -44,19 +45,27 @@ void setup()
   delay(100); // = less garbage...
   Serial.println();
 
+  GVmyDisplay.Init();
+  GVmyDisplay.PrintMessage("Init", 10000);
+
   bool deleteLog = false;
   if (!_FILESYS.begin()) {
     Serial.println(F(MSG_ERROR_INITIALISING_FILESYSTEM));
-  } else {  // check, if log file is too big...
-    File f = _FILESYS.open(LOG_FILE_NAME, "r");
-    deleteLog = (f.size() > LOG_FILE_MAX_BYTES);
-    f.close();
-    if (deleteLog) _FILESYS.remove(LOG_FILE_NAME);
+  } else {  // read config / rotate log / check log file size...
+    GVoilerConf.read();
+    if (_FILESYS.exists(LOG_FILE_NAME)) {
+      // try to rotate:
+      if (GVoilerConf.mrf > 0) {
+        rotateFile(LOG_FILE_NAME, GVoilerConf.mrf);
+      }
+      // still there and too big?
+      if (_FILESYS.exists(LOG_FILE_NAME)) {
+        File f = _FILESYS.open(LOG_FILE_NAME, "r");
+        deleteLog = (f.size() > LOG_FILE_MAX_BYTES);
+        f.close();
+      }
+    }
   }
-  GVoilerConf.read();
-
-  GVmyDisplay.Init();
-  GVmyDisplay.PrintMessage("Init", 10000);
 
   // schon mal was auf's Display bringen (wird erst in Loop angezeigt über Check()):
   GVmyDisplay.PrintModeStr(getPumpModeStr(GVpumpMode));
