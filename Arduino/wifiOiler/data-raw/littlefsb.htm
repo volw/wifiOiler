@@ -6,7 +6,7 @@
 </style>
 
 <script>
-var scrollPos=0, activeEntry = null;
+var scrollPos=0, activeEntry = null, callUpdate = false;
 var texts=["bak","c","cpp","css","h","htm","html","ini","js","json","md","txt","xml","ino"];
 const $ = function(id){return document.getElementById(id);}
 function validFName(fname){return(/^(?!com[0-9]$)(?!con$)(?!lpt[0-9]$)(?!nul$)(?!prn$)\/?[^\\\?\s\|\/\*:<>"]*[^\\\?\s\|\/\.\*:<>"]+$/i.test(fname))}
@@ -73,9 +73,9 @@ function getList(fname = ""){
     	var strJSON = xhr.responseText;
     	if (strJSON != null) addList($("_fsb_f_list_"), "/", JSON.parse(strJSON));
     	setActiveEntry(fname);
-    } else meldung("FEHLER: "+xhr.responseText);}
+    } else meldung("[getList,xhr.onload] FEHLER: "+xhr.responseText);}
   xhr.onloadend=(e)=>{aniStop();}
-  xhr.onerror=(e)=>{meldung("FEHLER: "+xhr.statusText);}
+  xhr.onerror=(e)=>{meldung("[getList,xhr.onerror] FEHLER: "+xhr.statusText);}
   xhr.open("GET", "/list?dir", true);
   xhr.send(null);}
 function addList(parent, path, items){
@@ -143,7 +143,7 @@ function loadFile(fname) {
       	$("_fsb_edit_ta_").value = xhr.responseText;
       	$("_fsb_label_").innerText = fname;
       	$("_fsb_edit_ta_").focus();
-      } else meldung("FEHLER: "+xhr.responseText);}
+      } else meldung("[loadFile,xhr.onload] FEHLER: "+xhr.responseText);}
     xhr.open("GET", fname, true);
     xhr.send(null);}
   else if (fname.endsWith(".dat") && activeEntry != null){
@@ -168,19 +168,33 @@ function uploadFile() {
   var datei = $("_fsb_finp_");
   xhr = new XMLHttpRequest();
   xhr.onload=()=>{
-  	if (xhr.status==200){
-    	getList($("_fsb_t_file_").value);
-    	$("_fsb_t_file_").value = "";
-    	$("_fsb_finp_").value = "";
-    } else meldung("FEHLER: "+xhr.responseText);}
-  xhr.onloadend=()=>{aniStop();}
-  xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
+  	if (xhr.status!=200){
+			meldung("[uploadFile,xhr.onload] FEHLER: "+xhr.responseText+" status:"+xhr.status);}}
+  xhr.onloadend=()=>{aniStop();checkForUpdate();}
+  xhr.onerror=()=>{meldung("[uploadFile,xhr.onerror] FEHLER (xhr.onerror): "+xhr.statusText);}
   xhr.upload.onprogress=(e)=>{updProgress(e);}
   var formData = new FormData();
   formData.append("data", datei.files[0], $("_fsb_t_file_").value);
   xhr.open("POST", "/edit", true);
-  xhr.send(formData);
-}
+  xhr.send(formData);}
+function checkForUpdate(){
+	callUpdate = false;
+  aniStart();
+  xhr = new XMLHttpRequest();
+  xhr.onload=()=>{
+		if (xhr.status==200) {
+			callUpdate = (xhr.responseText=="YES");
+			if (!callUpdate) {
+	    	getList($("_fsb_t_file_").value);
+	    	$("_fsb_t_file_").value = "";
+	    	$("_fsb_finp_").value = "";				
+			}}}
+  xhr.onloadend=()=>{
+  	aniStop();
+  	if (callUpdate) window.location.href = "/reboot.htm?update";}
+  xhr.onerror=()=>{meldung("[checkForUpdate] ERROR (xhr.onerror): "+xhr.statusText);}
+	xhr.open('GET', '/checkupd', true);
+  xhr.send(null);}
 function doSave(forceLoad=false) {
   var fname = $("_fsb_label_").innerText;
   if (!fname.startsWith("/")) fname="/"+fname;
@@ -192,7 +206,7 @@ function doSave(forceLoad=false) {
   xhr.onload=()=>{
 		if (xhr.status==200){
 			if (!fileExists(fname)||forceLoad) getList(fname);
-		} else meldung("FEHLER: "+xhr.responseText);}
+		} else meldung("[doSave,xhr.onload] FEHLER: "+xhr.responseText);}
   xhr.onloadend=()=>{aniStop();}
   xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
   var formData = new FormData();
@@ -210,7 +224,7 @@ function deleteFile(file) {
   xhr = new XMLHttpRequest();
   xhr.onload=()=>{
 		if (xhr.status==200) getList();
-		else meldung("FEHLER: "+xhr.responseText);}  
+		else meldung("[deleteFile,xhr.onload] FEHLER: "+xhr.responseText);}  
   xhr.onloadend=()=>{aniStop();}
   xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
   var formData = new FormData();
@@ -227,7 +241,7 @@ function doNewFile() {
 		if (xhr.status==200){
 			$("_fsb_t_file_").value = "";
 			getList(fname);
-		} else meldung("FEHLER: "+xhr.responseText);}  
+		} else meldung("[doNewFile,xhr.onload] FEHLER: "+xhr.responseText);}  
   xhr.onloadend=()=>{aniStop();}
   xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
   if (!fname.startsWith("/")){fname = "/" + fname;}
@@ -259,7 +273,7 @@ function copyFile(oldf,newf) {
   	if (xhr.status==200){
   		$("_fsb_t_file_").value = "";
   		getList(newf);
-  	} else meldung("FEHLER: "+xhr.responseText);}
+  	} else meldung("[copyFile,xhr.onload] FEHLER: "+xhr.responseText);}
   xhr.onloadend=()=>{aniStop();}
   xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
   var formData = new FormData();
@@ -287,7 +301,7 @@ function renameFile(oldf,newf) {
 		if (xhr.status==200){
 			$("_fsb_t_file_").value = "";
 			getList(newf);
-		} else meldung("FEHLER: "+xhr.responseText);}  
+		} else meldung("[renameFile,xhr.onload] FEHLER: "+xhr.responseText);}  
   xhr.onloadend=()=>{aniStop();}
   xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
   var formData = new FormData();
@@ -321,7 +335,7 @@ function extractFile(fname,fexname) {
 			$("_fsb_edit_ta_").value = xhr.responseText;
 			$("_fsb_label_").innerText = fexname; 
     	doSave(true);  // async doSave() will do the rest
-    } else meldung("FEHLER: "+xhr.responseText);}  
+    } else meldung("[extractFile,xhr.onload] FEHLER: "+xhr.responseText);}  
   xhr.onloadend=()=>{aniStop();}
   xhr.onerror=()=>{meldung("ERROR: "+xhr.statusText);}
   xhr.open("GET", fname, true);

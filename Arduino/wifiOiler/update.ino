@@ -30,7 +30,7 @@ void updateCallback(size_t currSize, size_t totalSize) {
  * check for new binary in file system (file name see <GVoilerConf.ffn>)
  * when found: update & restart
  **************************************************************/
-bool checkforUpdate(bool justCheck, bool reboot) {
+bool checkforUpdate(bool justCheck) {
   bool update = false;
 
   String FirmwareFilename = GVoilerConf.ffn;
@@ -68,7 +68,7 @@ bool checkforUpdate(bool justCheck, bool reboot) {
     if (!_FILESYS.remove(FirmwareFilename)) 
       errorPrintf(PSTR(MSG_DBG_ERROR_DEL_FIRMWARE_FILE));
 
-    if (update && reboot)
+    if (update)
     {
       GVmyDisplay.PrintMessage(F("Reboot..."));
       infoPrintf(PSTR(MSG_DBG_BOOT_AFTER_UPDATE));

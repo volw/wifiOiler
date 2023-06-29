@@ -4,35 +4,47 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="validator:url" content="https://validator.w3.org/nu/">
 <meta name="validator:date" content="2023-03-13">
+<meta charset="utf-8">
 <link rel="stylesheet" href="wifiOiler.css">
 <style>body {text-align: center;}</style>
 <script src="/animation.js"></script>
 <script>
-var animation = new Animation();
+var gAnimation = new Animation();
+var gTimeout = 3000;
+var gTitle = "Firmware gefunden - Update läuft...";
+var gRetries = 8;
 const $ = function(id){return document.getElementById(id);}
-function init(){animation.init($("wrapper"));animation.run();initReboot();}
+function init(){
+	gAnimation.init($("wrapper"));
+	gAnimation.run();
+	const urlParams = new URLSearchParams(window.location.search);
+	if (urlParams.has('update')){
+		$("doctitle").innerText = gTitle;
+		gRetries += 8;	// etwas mehr Zeit geben bei Update
+	}
+	initReboot();
+}
 function initReboot(){
 	xmlHttp = new XMLHttpRequest();
-  xmlHttp.timeout = 3000;
+  xmlHttp.timeout = gTimeout;
   xmlHttp.ontimeout=function(){requestAnimationFrame(()=>checkResultNew());}
 	xmlHttp.onreadystatechange = function(){
 	  if (xmlHttp.readyState == 4){
       if (xmlHttp.status == 200) requestAnimationFrame(()=>checkResultNew());}};
 	xmlHttp.open("GET", "/reboot?bootnow", true);
 	xmlHttp.send(null);}
-var retries = 10;
 function Retry(){
-	retries--;
-	if (retries <= 0){
-		$("status").innerHTML = "<b>FEHLER: &Ouml;ler konnte nicht erreicht werden.<br>WiFi anschalten oder neu booten</b>";
-    animation.stop();$("button").style.display="block";
+	gRetries--;
+	if (gRetries <= 0){
+		$("status").innerHTML = "<b>FEHLER: Öler konnte nicht erreicht werden.<br>WiFi anschalten oder neu booten</b>";
+    gAnimation.stop();$("button").style.display="block";
 	} else {
-    if (retries<=7) $("status").innerHTML = "<b>TimeOut in " + (3*retries) + "s";
+    if (gRetries<=5) $("status").innerHTML = "<b>TimeOut in " + (3*gRetries) + "s";
 		requestAnimationFrame(()=>checkResultNew());}}
 function checkResultNew(){
 	const xhr = new XMLHttpRequest();
 	xhr.open('GET', '/favicon.ico', true);
-	xhr.timeout = 3000; // time in milliseconds
+	xhr.timeout = gTimeout; // time in milliseconds
 	xhr.onload = () => {
   	if (xhr.readyState === 4) {
 	    if (xhr.status === 200) {
@@ -48,11 +60,11 @@ document.addEventListener("DOMContentLoaded", init);
 </script>
 </head>
 <body>
-  <h2>Neustart des &Ouml;lers</h2>
-  <p>Nach dem Neustart wird automatisch zum Hauptmen&uuml; weitergeleitet.</p>
+  <h2 id="doctitle">Neustart des Ölers</h2>
+  <p>Nach dem Neustart wird automatisch zum Hauptmenü weitergeleitet.</p>
   <p>Bitte warten...</p>
   <div id="wrapper"></div>
   <b id="status"></b>
-  <a id="button" onclick="window.location.href = '/';" style="display:none;">Zur&uuml;ck</a>
+  <a id="button" onclick="window.location.href = '/';" style="display:none;">Zurück</a>
 </body>
 </html>

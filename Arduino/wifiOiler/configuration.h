@@ -80,7 +80,6 @@ class Configuration {
     uint16_t wts = 180;               // Wartezeit Simulation (s)
     /* -------------------------------------------------------*/
     // add new option here (2/5) as member of class "Configuration":
-
     
     void read() { this->fworker(true); }
     void write() { this->fworker(false); }

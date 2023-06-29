@@ -33,7 +33,8 @@ void setupWebServer(void) {
   GVwebServer.on(F("/update"), HTTP_GET, handleUpdate);
   GVwebServer.on(F("/version"), HTTP_GET, handleVersion);
   GVwebServer.on(F("/copyfile"), HTTP_PUT, handleCopyFile);
-  
+  GVwebServer.on(F("/checkupd"), HTTP_GET, handleCheckUpd);
+
   //LittleFS Browser & editor:
   GVwebServer.on(F("/edit"), HTTP_GET, []() {
     if (!handleFileRead(FS_BROWSER_URL)) {
@@ -287,3 +288,9 @@ void handleRunTimeInfo(void) {
   output += ",\"tl\":\"" + sZeit + "\"}";                             // left time for track recording
   GVwebServer.send(200, F("text/json"), output);
 }
+
+
+void handleCheckUpd(void)
+{
+  GVwebServer.send( 200, TEXT_HTML, checkforUpdate(true) ? "YES" : "NO" );
+}  

@@ -175,4 +175,4 @@ typedef PumpModes tPumpMode;
 //**************************************************************
 // we have to do some forward declarations because default
 // values for params are not working for 'normal' functions:
-bool checkforUpdate(bool justCheck = false, bool reboot = true);
+bool checkforUpdate(bool justCheck = false);

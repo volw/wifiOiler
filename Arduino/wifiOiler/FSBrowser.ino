@@ -166,8 +166,7 @@ void handleFileUpload() {
       GVmyLedx.start LED_FILE_UPLOAD_SUCCESS;
       GVmyDisplay.PrintMessage("Success");
       GVmyLedx.delay();
-      // update in main loop, if firmware file:
-      GVupdateResult = UPD_REBOOT_NOW;
+      // HTML will initiate (check for) update
     }
     checkFilesystemSpace();
   }
