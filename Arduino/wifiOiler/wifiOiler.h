@@ -22,7 +22,7 @@
 // _NO_PUMP_: nur während Entwicklung sinnvoll: Pumpe wird dauerhaft deaktiviert, damit's nicht ständig piept
 // _CAPTIVE_PORTAL_: Access Point wird als Captive Portal erstellt (wie Anmeldeseite eines Hotspots z.B. in Hotels)
 // _NO_OLD_FILES_: wenn definiert, wird beim Update keine vorh. Datei mit Endung .old gesichert
-#define VERSION "4.2.030"
+#define VERSION "4.2.031"
 #define _DISPLAY_AVAILABLE_
 //#define _NO_PUMP_
 #define _CAPTIVE_PORTAL_
