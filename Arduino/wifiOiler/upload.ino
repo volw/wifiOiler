@@ -203,7 +203,7 @@ void handleUpload(void)
           {
             GVmyLedx.start LED_TRACK_UPLOAD_SUCCESS;
             uploadOK++;
-            debugPrintf(PSTR(MSG_DBG_TRACK_UPLOAD_OK));
+            infoPrintf(PSTR(MSG_DBG_TRACK_UPLOAD_OK));
             uploadResponse += F("OK\n"); GVwebServer.handleClient();
           }
           else 

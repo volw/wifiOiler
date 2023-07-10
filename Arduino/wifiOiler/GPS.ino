@@ -48,7 +48,6 @@ bool evalGPS(char data) {
 /************************************************************************************
  * Lesen von GPS Daten und ggf. Auswertung auslösen
  * Im Wartungsmodus keine Auswertung, um MCU damit nicht zu belasten
- * 
  ************************************************************************************/
 void checkGPSdata() {
   if (!GVmaintenanceMode)
@@ -64,7 +63,8 @@ void checkGPSdata() {
         }
 
         // nur RMC und GGA Saetze auswerten:
-        if (isGGArecord() || isRMCrecord())
+        bool isGGA = isGGArecord();
+        if (isGGA || isRMCrecord())
         {
           GVmyDisplay.PrintGpsState(GPS_ACTIVE);
           GVlastGPSData = millis();
@@ -72,7 +72,7 @@ void checkGPSdata() {
           // TinyGPSPlus Objekt fuettern:
           for (int i = 0; GVgpsBuffer[i]; i++) GVgpsNew.encode(GVgpsBuffer[i]);
   
-          if (isGGArecord()) analyzeGPSInfo();
+          if (isGGA) analyzeGPSInfo();
         }
         GVgpsBufferIndex = 0;
       }
@@ -287,7 +287,7 @@ void writeGPSInfo(float dist) {
     GVmyDisplay.PrintFileState(false);
     return;
   }
-  if ((GVlastGPSwrite + ((long)(GVoilerConf.fpw * 1000) - 200L)) > millis())
+  if ((GVlastGPSwrite + ((long)(GVoilerConf.fpw * 1000) - 200L)) > millis())  // -200, um Sekundengrenze nicht zu treffen (unwahrscheinlich - aber möglich)
     return; 
 
   GVoutFile = _FILESYS.open(GVgpsTrackFilename, "a");
