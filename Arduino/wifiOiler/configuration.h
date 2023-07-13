@@ -125,6 +125,7 @@ class Configuration {
 
     bool set(String key, String value)
     {
+      //+++ Parameter prüfen, ob bei Änderung Aktion ausgelöst werden muss/sollte
            if (key.equals(F("apn"))) this->apn = value;         // Name eigener Access Point
       else if (key.equals(F("app"))) this->app = value;         // Passwort eigener Access Point
       else if (key.equals(F("bac"))) this->bac = value;         // base64 encoded "user:password", empty if no auth. needed
@@ -135,7 +136,10 @@ class Configuration {
       else if (key.equals(F("gts"))) this->gts = value;         // track file filename prefix (if more bikes than oilerbases ;-)
       else if (key.equals(F("lgf"))) this->lgf = toBool(value); // file logging activated
       else if (key.equals(F("lgs"))) this->lgs = toBool(value); // Serial logging activated
-      else if (key.equals(F("lvl"))) this->lvl = value.toInt(); // Log Level (default = info)
+      else if (key.equals(F("lvl"))) { 
+        this->lvl = value.toInt();                              // Log Level (default = info)
+        StaticLogger.setLogLevel(this->lvl);
+      }
       else if (key.equals(F("mrf"))) this->mrf = value.toInt(); // max. log files (file rotation)
       else if (key.equals(F("nmm"))) this->nmm = value.toInt(); // Normal Mode Meters
       else if (key.equals(F("omm"))) this->omm = value.toInt(); // Offroad Mode Meters

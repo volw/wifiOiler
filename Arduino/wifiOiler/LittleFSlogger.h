@@ -16,6 +16,20 @@
   #define MY_TZ TZ_Europe_Berlin
 #endif
 
+// ********************* some logging Makros ************************************
+#define _LOG_CRITICAL_ 0  // Fehler, der eine weitere Bearbeitung unmöglich macht
+#define _LOG_ERROR_    1  // Fehler, der stört aber grundsätzlich die Funktionalität weiter ermöglicht
+#define _LOG_WARN_     2  // es kann weiter gehen - aber es könnte besser sein
+#define _LOG_INFO_     3  // einfach info
+#define _LOG_DEBUG_    4  // detaillierte Info
+// die geschweiften Klammern sind hier wichtig, da sonst Einzelanweisungen falsch interpretiert werden,
+// also nicht als Block, z.B. bei     if (condition) logPrintf(...);
+// #define criticalPrintf(...) if(GVoilerConf.lvl>=_LOG_CRITICAL_){StaticLogger.printf("[%s] ",__FUNCTION__);StaticLogger.printf(__VA_ARGS__);}
+#define criticalPrintf(...) if(StaticLogger.getLogLevel()>=_LOG_CRITICAL_){StaticLogger.printf("[%s] ",__FUNCTION__);StaticLogger.printf(__VA_ARGS__);}
+#define errorPrintf(...)    if(StaticLogger.getLogLevel()>=_LOG_ERROR_)   {StaticLogger.printf("[%s] ",__FUNCTION__);StaticLogger.printf(__VA_ARGS__);}
+#define warnPrintf(...)     if(StaticLogger.getLogLevel()>=_LOG_WARN_)    {StaticLogger.printf("[%s] ",__FUNCTION__);StaticLogger.printf(__VA_ARGS__);}
+#define infoPrintf(...)     if(StaticLogger.getLogLevel()>=_LOG_INFO_)    {StaticLogger.printf("[%s] ",__FUNCTION__);StaticLogger.printf(__VA_ARGS__);}
+#define debugPrintf(...)    if(StaticLogger.getLogLevel()>=_LOG_DEBUG_)   {StaticLogger.printf("[%s] ",__FUNCTION__);StaticLogger.printf(__VA_ARGS__);}
 
 class LittleFSlogger: public Print {
   protected:
@@ -24,9 +38,9 @@ class LittleFSlogger: public Print {
     bool usefile = false;
     bool newline = true;
     bool toSerial = true;
+    uint8_t logLevel = _LOG_WARN_;
 
   public:
-    //LittleFSlogger() {}
 
     bool begin(String fname = "", bool toSer = true) {
       // if toSer is true, logger will print to Serial as well
@@ -46,6 +60,14 @@ class LittleFSlogger: public Print {
         return ((bool)logfile);
       }
       return true;
+    }
+
+    void setLogLevel(uint8_t _logLevel){
+      logLevel = _logLevel;
+    }
+
+    uint8_t getLogLevel(){
+      return logLevel;
     }
 
     void flush(void){
@@ -149,4 +171,4 @@ class LittleFSlogger: public Print {
     
     using Print::write; // Import other write() methods to support things like write(0) properly
     using Print::printf;
-};
+} static StaticLogger;

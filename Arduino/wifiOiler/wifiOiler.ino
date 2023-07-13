@@ -78,9 +78,10 @@ void setup()
   // Logging in Datei und Serial (sonst als 2. Parameter: false)
   // VORSICHT: falls Datei sehr groß wird, können Schreiboperationen (incl.
   // Öffnen und schließen der Datei) seeehr langsam sein und das ganze Ding ausbremsen.
-  if (!GVmyLogger.begin(GVoilerConf.lgf ? LOG_FILE_NAME : "", GVoilerConf.lgs)) {
+  if (!StaticLogger.begin(GVoilerConf.lgf ? LOG_FILE_NAME : "", GVoilerConf.lgs)) {
     Serial.println(F(MSG_ERROR_INITIALISING_LOGGER));
   }
+  StaticLogger.setLogLevel(GVoilerConf.lvl);
   GVmyDisplay.MessageAdd(".", 10000);
   
   infoPrintf(PSTR(MSG_PROGRESS_STARTING_INIT));

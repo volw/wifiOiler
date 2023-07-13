@@ -157,5 +157,3 @@ std::vector<updateFile> GVupdateFiles;
 
 HTTPClient GVhttp;
 WiFiClient GVwifiClient = GVwebServer.client();
-
-LittleFSlogger GVmyLogger;  // Serial und/oder in Datei
