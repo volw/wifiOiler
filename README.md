@@ -26,6 +26,8 @@ In diesem Repo zu finden:
 - Anleitungen für Aufbau, Inbetriebnahme und Bedienung (s. "docs").
 - Einbauvorschlag.
 
+Wem das alles zuviel an Bastelei ist und Hilfe bei Erstellung der Platine, bzw. Steuereinheit benötigt, kann sich gerne melden...
+
 ## Credits
 
 Detlev Axon, creator of [RehOiler](https://www.rehtronik.de/startseite1.html)
