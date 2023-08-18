@@ -287,7 +287,7 @@ void writeGPSInfo(float dist) {
     GVmyDisplay.PrintFileState(false);
     return;
   }
-  if ((GVlastGPSwrite + ((long)(GVoilerConf.fpw * 1000) - 200L)) > millis())  // -200, um Sekundengrenze nicht zu treffen (unwahrscheinlich - aber möglich)
+  if ((GVlastGPSwrite + (long)(GVoilerConf.fpw * 1000L) - 300L) > millis())  // -300, um Sekundengrenze nicht zu treffen (unwahrscheinlich - aber möglich)
     return; 
 
   GVoutFile = _FILESYS.open(GVgpsTrackFilename, "a");

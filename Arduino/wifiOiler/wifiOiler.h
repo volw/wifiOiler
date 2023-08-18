@@ -22,14 +22,13 @@
 // _NO_PUMP_: nur während Entwicklung sinnvoll: Pumpe wird dauerhaft deaktiviert, damit's nicht ständig piept
 // _CAPTIVE_PORTAL_: Access Point wird als Captive Portal erstellt (wie Anmeldeseite eines Hotspots z.B. in Hotels)
 // _NO_OLD_FILES_: wenn definiert, wird beim Update keine vorh. Datei mit Endung .old gesichert
-#define VERSION "4.2.031"
+#define VERSION "4.2.032"
 #define _DISPLAY_AVAILABLE_
 //#define _NO_PUMP_
 #define _CAPTIVE_PORTAL_
 #define _NO_OLD_FILES_
 
 #define LOG_FILE_NAME "/myLogger.txt"
-// Log wird nicht "rund"-geschrieben - wenn größer (check beim Start), dann wird gelöscht!
 #define LOG_FILE_MAX_BYTES 200000
 #define FS_BROWSER_URL "/littlefsb.htm"
 

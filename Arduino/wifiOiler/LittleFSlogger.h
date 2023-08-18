@@ -24,7 +24,6 @@
 #define _LOG_DEBUG_    4  // detaillierte Info
 // die geschweiften Klammern sind hier wichtig, da sonst Einzelanweisungen falsch interpretiert werden,
 // also nicht als Block, z.B. bei     if (condition) logPrintf(...);
-// #define criticalPrintf(...) if(GVoilerConf.lvl>=_LOG_CRITICAL_){StaticLogger.printf("[%s] ",__FUNCTION__);StaticLogger.printf(__VA_ARGS__);}
 #define criticalPrintf(...) if(StaticLogger.getLogLevel()>=_LOG_CRITICAL_){StaticLogger.printf("[%s] ",__FUNCTION__);StaticLogger.printf(__VA_ARGS__);}
 #define errorPrintf(...)    if(StaticLogger.getLogLevel()>=_LOG_ERROR_)   {StaticLogger.printf("[%s] ",__FUNCTION__);StaticLogger.printf(__VA_ARGS__);}
 #define warnPrintf(...)     if(StaticLogger.getLogLevel()>=_LOG_WARN_)    {StaticLogger.printf("[%s] ",__FUNCTION__);StaticLogger.printf(__VA_ARGS__);}
