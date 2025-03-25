@@ -40,6 +40,8 @@ int isServerAvailable(void) {
   }
   if (httpCode == 401) {
     errorPrintf(PSTR(MSG_DBG_CHECK_URL_HTTP_ERR_401));
+  } else if (httpCode == 404) {
+    errorPrintf(PSTR(MSG_DBG_CHECK_URL_HTTP_ERR_404));
   } else if (httpCode <= 0) {
     errorPrintf(PSTR(MSG_DBG_CHECK_URL_ERROR), GVhttp.errorToString(httpCode).c_str());
   } else {

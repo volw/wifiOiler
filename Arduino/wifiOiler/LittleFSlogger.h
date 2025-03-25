@@ -48,6 +48,8 @@
 #define infoPrintf(...)     if(StaticLogger.getLogLevel()>=_LOG_INFO_)    {StaticLogger.printf("[%s] ",__FUNCTION__);StaticLogger.printf(__VA_ARGS__);}
 #define debugPrintf(...)    if(StaticLogger.getLogLevel()>=_LOG_DEBUG_)   {StaticLogger.printf("[%s] ",__FUNCTION__);StaticLogger.printf(__VA_ARGS__);}
 
+#define logPrintf(...)      StaticLogger.log(__FUNCTION__, __VA_ARGS__);
+
 class LittleFSlogger: public Print {
   protected:
     String filename;
@@ -129,6 +131,15 @@ class LittleFSlogger: public Print {
         for (size_t i = 0; i < size; i++) n += write((uint8_t)buffer[i]);
         return n;
     }
+
+    void log(const char * func, uint8_t logLevel, const char * message)
+    {
+      if (logLevel >= this->getLogLevel())
+      {
+        this->printf("[%s] %s", func, message);
+      }
+    }
+    
   #ifdef __USE_TIME__
 
     char * getDateTimeString() {

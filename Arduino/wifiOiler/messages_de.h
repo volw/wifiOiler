@@ -16,6 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ************************************************************************/
 
+// man könnte auch mit macro StaticLogger.log() arbeiten, dann würden die #defines so aussehen:
+// #define MSG_PROGRESS_STARTING_INIT    _LOG_INFO_, PSTR("********** Starting...\n")
+// der LogLevel ist hier ebenfalls definiert und kann übersichtlicher vergeben werden
+// im Aufruf dann:
+// logPrintf(MSG_PROGRESS_STARTING_INIT);
+
 // general
 #define MSG_GLOBAL_YES "Ja"
 #define MSG_GLOBAL_NO  "Nein"
@@ -118,6 +124,7 @@
 #define MSG_DBG_CHECK_URL_SERVER_IP       "IP-Adresse von '%s' ist %s\n"  // server, ip
 #define MSG_DBG_CHECK_URL_ERROR           "GET() fehlgeschlagen, error: %s\n" // error message from get()
 #define MSG_DBG_CHECK_URL_HTTP_ERR_401    "401: fehlende Authorisierung (Basic Authentication nötig?)\n"
+#define MSG_DBG_CHECK_URL_HTTP_ERR_404    "404: Adresse konnte nicht gefunden/kontaktiert werden\n"
 #define MSG_DBG_FILECHECK_RESULT          "httpCode = %d\n" // printf: http-code returned
 #define MSG_DBG_SEND_FILE_START           "Starte Übertragung der Datei...\n"
 #define MSG_DBG_SEND_FILE_COMPLETED       "Übertragung beendet\n"

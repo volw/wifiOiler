@@ -118,6 +118,7 @@
 #define MSG_DBG_CHECK_URL_SERVER_IP       "ip address of '%s' is %s\n"  // server, ip
 #define MSG_DBG_CHECK_URL_ERROR           "GET() failed, error: %s\n" // error message from get()
 #define MSG_DBG_CHECK_URL_HTTP_ERR_401    "401: not authorized (missing basic authentication?)\n"
+#define MSG_DBG_CHECK_URL_HTTP_ERR_404    "404: not found / no connection possible\n"
 #define MSG_DBG_FILECHECK_RESULT          "httpCode = %d\n" // http-code returned
 #define MSG_DBG_SEND_FILE_START           "Initiate transfer of file...\n"
 #define MSG_DBG_SEND_FILE_COMPLETED       "transfer completed\n"
