@@ -19,7 +19,7 @@ Die Entwicklungsumgebung wird ab jetzt der Einfachheit halber IDE genannt. Hier 
 
 Um ein LittleFS Dateisystem auf dem SoC einzurichten und zu nutzen, bzw. Dateien dorthin hochzuladen, kann ein Upload Tool in die Arduino IDE integriert werden. Es lädt auf Knopfdruck alle Dateien hoch, die sich im Unterverzeichnis "data" eines Sketches befinden.
 
-- Im Verzeichnis "sketchbook" ein Unterverzeichnis mit Namen "tools" anlegen (nach unserem Beispiel: "F:\apps\arduino-1.8.13\sketchbook\tools").
+- Im "portable" Verzeichnis ein Unterverzeichnis "sketchbook" und darin ein Unterverzeichnis mit Namen "tools" anlegen (nach unserem Beispiel: "F:\apps\arduino-1.8.13\portable\sketchbook\tools").
 - Von der github Seite [LittleFS Upload Tool](https://github.com/earlephilhower/arduino-esp8266littlefs-plugin/releases) das aktuellste Release herunterladen und das in der Zip-Datei enthaltene Verzeichnis in das tools Verzeichnis kopieren. Das Ergebnis sollte nach unserem Beispiel etwa so aussehen: "F:\apps\arduino-1.8.13\portable\sketchbook\tools\ESP8266LittleFS\tool". In diesem Verzeichnis befindet sich das eigentliche tool "esp8266littlefs.jar" (Stand Februar 2021).
 - Nun die Arduino IDE beenden und wieder starten. Im Menü sollte der Eintrag "Werkzeuge" -> "ESP8266 LittleFS Data Upload" zu finden sein.
 
