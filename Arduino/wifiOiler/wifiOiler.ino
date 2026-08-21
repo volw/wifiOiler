@@ -14,14 +14,19 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Dependencies:
+ * - Adafruit BusIO, last build with version 1.17.4
+ * - Adafruit GFX Library, last build with version 1.12.4
+ * - Adafruit SSD1306, last build with version 2.5.16
  ************************************************************************/
  // ACHTUNG: defines in wifioiler.h beachten!!
-#include <ESP8266WiFiMulti.h>
-#include <DNSServer.h>
-#include <ESP8266mDNS.h>
-#include <ESP8266WebServer.h>
-#include <ESP8266HTTPClient.h>
-#include <TinyGPS++.h>
+#include <ESP8266WiFiMulti.h>   // ESP8266 Package
+#include <DNSServer.h>          // ESP8266 Package
+#include <ESP8266mDNS.h>        // ESP8266 Package
+#include <ESP8266WebServer.h>   // ESP8266 Package
+#include <ESP8266HTTPClient.h>  // ESP8266 Package
+#include "src/tinyGPS/TinyGPS++.h"
 #include "src/biLedx/biLedx.h"  // lib für nicht-modales Blinken (zweifarbiger) LEDs
 #include "wifiOiler.h"
 #include "LittleFSlogger.h"
